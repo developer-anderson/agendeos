@@ -15,6 +15,9 @@ class CreateServicosTable extends Migration
     {
         Schema::create('servicos', function (Blueprint $table) {
             $table->id();
+            $table->string('nome', 400);
+            $table->float('valor', 8, 2);
+            $table->longText('observacoes')->nullable();
             $table->timestamps();
         });
     }

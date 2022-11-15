@@ -15,6 +15,14 @@ class CreateOrdemServicosTable extends Migration
     {
         Schema::create('ordem_servicos', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_cliente');
+            $table->integer('id_servico');
+            $table->integer('id_veiculo');
+            $table->integer('situacao');
+            $table->timestamps('inicio_os');
+            $table->timestamps('previsao_os');
+            $table->longText('observacoes')->nullable();
+            $table->integer('remarketing')->nullable();
             $table->timestamps();
         });
     }

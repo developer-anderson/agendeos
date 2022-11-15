@@ -36,6 +36,12 @@ class ServicosController extends Controller
     public function store(Request $request)
     {
         //
+        $post = $request->all();
+        Servicos::create( $post);
+        return [
+            "erro" => false,
+            "mensagem" => "Serviço cadastrado com  sucesso!"
+        ];
     }
 
     /**
@@ -44,9 +50,10 @@ class ServicosController extends Controller
      * @param  \App\Models\Servicos  $servicos
      * @return \Illuminate\Http\Response
      */
-    public function show(Servicos $servicos)
+    public function show($id)
     {
-        //
+        $registro = Servicos::find($id);
+        return $registro;
     }
 
     /**
@@ -67,9 +74,15 @@ class ServicosController extends Controller
      * @param  \App\Models\Servicos  $servicos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Servicos $servicos)
+
+    public function update(Request $request, $id)
     {
-        //
+        $dados = $request->all();
+        Servicos::find($id)->update($dados);
+        return [
+            "erro" => false,
+            "mensagem" => "Serviço editado com  sucesso!"
+        ];
     }
 
     /**
@@ -78,8 +91,13 @@ class ServicosController extends Controller
      * @param  \App\Models\Servicos  $servicos
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Servicos $servicos)
+    public function delete($id)
     {
-        //
+        Servicos::find($id)->delete();
+        $response = [
+            "erro" => false,
+            "mensagem" => "Serviço apagado com sucesso!"
+        ];
+        return  $response;
     }
 }

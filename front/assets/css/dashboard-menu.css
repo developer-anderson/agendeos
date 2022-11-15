@@ -1,0 +1,147 @@
+.dashboard-menu {
+    background-color: #343834 !important;
+    position: relative;
+}
+
+.box-logo {
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+    background-color: #343834;
+}
+
+.logo {
+    max-width: 24vh;
+    margin: 0;
+    padding: 10px 20px;
+}
+
+.scroll-y {
+    overflow-y: scroll;
+    height: 100vh;
+    padding-top: 4vw;
+}
+
+.scroll-y::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 15px;
+}
+
+.scroll-y::-webkit-scrollbar-thumb {
+    background: #27d07ead;
+    border-radius: 15px;
+    border-right: 2px solid #343834;
+}
+
+.scroll-y::-webkit-scrollbar-track {
+    background-color: #343834;
+    border-radius: 15px;
+}
+
+.dashboard-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    color: #dadada;
+    font-size: 15px;
+}
+
+.dashboard-menu-list li a i {
+    margin-right: 8px;
+    font-size: 17px;
+    color: #eeeeee;
+}
+
+.sub-title-dashboard {
+    padding: 13px 30px 3px 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.item-list-menu a {
+    display: flex;
+    align-items: center;
+    padding: 10px 30px 10px 20px;
+}
+
+.item-list-menu a:hover {
+    background-color: #242524a6;
+}
+
+.item-list-menu button {
+    border: 0;
+    outline: none;
+    background: transparent;
+    padding: 0;
+    color: #cbcbcb;
+    width: 100%;
+    padding: 10px 30px 10px 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.item-list-menu button:hover {
+    background-color: #242524a6;
+}
+
+.item-list-menu button:focus {
+    background-color: #242524;
+    border-left: 4px solid #27D07D;
+}
+
+.item-list-menu button i:last-child {
+    position: absolute;
+    right: 0;
+}
+
+.item-list-menu button i {
+    margin-right: 8px;
+    font-size: 17px;
+    color: #eeeeee;
+}
+
+.item-list-menu a span {
+    margin-left: 40px;
+}
+
+.sub-menu {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.sub-menu-list {
+    background: transparent;
+    list-style: none;
+    padding-left: 0;
+    border-left: 4px solid #27D07D;
+}
+
+.container-header-mobile {
+    display: none;
+}
+
+
+@media only screen and (max-width: 768px) {
+
+    .container-header-mobile {
+        display: block;
+        background-color: #343834;
+        position: fixed;
+        width: 100%;
+        z-index: 99999;
+    }
+    
+    .box-logo {
+        display: none;
+    }
+
+    .scroll-y {
+        background-color: #343834;
+        height: 101%;
+        width: 230px;
+    }
+}

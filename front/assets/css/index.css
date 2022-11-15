@@ -1,0 +1,118 @@
+body {
+	overflow: hidden;
+}
+
+.col-dashboard {
+	background-color: #343834;
+	padding: 0;
+}
+
+.col-geral-content {
+	padding: 0;
+	overflow-y: scroll !important;
+	max-height: 100vh;
+}
+
+.col-geral-content main {
+	padding: 20px;
+	min-height: 100%;
+}
+
+
+.col-geral-dates {
+	padding: 0;
+    padding-right: 5px;
+}
+
+.col-geral-dates:last-child {
+	padding: 0;
+}
+
+.card-geral-dates-content {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #fff;
+	padding: 10px;
+	box-shadow: 1px 1px 5px 1px #d6d6d6be;
+	height: 110px;
+	border-radius: 5px;
+}
+
+.card-geral-dates-text h3 {
+	margin: 0;
+}
+
+.card-geral-dates-text p {
+	margin: 0;
+	font-size: 13px;
+}
+
+.inc-dec-percentage {
+	align-self: flex-start;
+    margin: 0 10px;
+}
+
+#box-graphics {
+	margin-top: 25px;
+}
+
+.line-graphics-content {
+	background-color: #fff;
+	padding: 20px;
+	box-shadow: 1px 1px 5px 1px #d6d6d6be;
+	border-radius: 5px;
+}
+
+.line-graphics-title {
+	display: flex;
+}
+
+.line-graphics-title h4 {
+	margin-right: 8px;
+	font-weight: bold;
+}
+
+.line-graphics-title h4:last-child {
+	justify-self: flex-end;
+}
+
+.content-svg {
+	padding: 0 10px;
+}
+
+.tracking-heading-icon {
+	font-size: 30px;
+}
+
+.tracking-list li {
+	border: transparent !important;
+	padding-top: 16px !important;
+}
+
+/* calendario */
+#calendar {
+	background-color: #fff;
+	padding: 20px 0;
+	box-shadow: 1px 1px 5px 1px #d6d6d6be;
+	border-radius: 5px;
+	margin-top: 25px;
+
+}
+
+@media only screen and (max-width:768px) {
+	.col-dashboard {
+		display: none;
+	}
+
+	.card-geral-dates-content {
+		margin-bottom: 15px;
+	}
+	.col-line-graphics {
+		padding: 0;
+	}
+
+	.filter-date {
+		width: 90% !important;
+	}
+}

@@ -36,6 +36,12 @@ class VeiculosController extends Controller
     public function store(Request $request)
     {
         //
+        $post = $request->all();
+        Veiculos::create( $post);
+        return [
+            "erro" => false,
+            "mensagem" => "Veiculo cadastrado com  sucesso!"
+        ];
     }
 
     /**
@@ -47,6 +53,8 @@ class VeiculosController extends Controller
     public function show(Veiculos $veiculos)
     {
         //
+        $registro = Veiculos::find($veiculos);
+        return $registro;
     }
 
     /**
@@ -70,6 +78,12 @@ class VeiculosController extends Controller
     public function update(Request $request, Veiculos $veiculos)
     {
         //
+        $dados = $request->all();
+        Veiculos::find($veiculos)->update($dados);
+        return [
+            "erro" => false,
+            "mensagem" => "Veiculo editado com  sucesso!"
+        ];
     }
 
     /**
@@ -81,5 +95,10 @@ class VeiculosController extends Controller
     public function destroy(Veiculos $veiculos)
     {
         //
+        Veiculos::find($veiculos)->delete();
+        $response = [
+            "erro" => false,
+            "mensagem" => "Veiculo apagado com sucesso!"
+        ];
     }
 }

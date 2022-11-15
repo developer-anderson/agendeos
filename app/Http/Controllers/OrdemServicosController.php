@@ -47,6 +47,8 @@ class OrdemServicosController extends Controller
     public function show(OrdemServicos $ordemServicos)
     {
         //
+        $registro = OrdemServicos::find($ordemServicos);
+        return $registro;
     }
 
     /**

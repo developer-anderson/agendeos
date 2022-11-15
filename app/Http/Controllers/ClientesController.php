@@ -12,30 +12,20 @@ class ClientesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getAll()
     {
         //
+        return Clientes::all();
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //
+        $post = $request->all();
+        Clientes::create( $post);
+        return [
+            "erro" => false,
+            "mensagem" => "Cliente cadastrado com  sucesso!"
+        ];
     }
 
     /**
@@ -47,17 +37,8 @@ class ClientesController extends Controller
     public function show(Clientes $clientes)
     {
         //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Clientes  $clientes
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Clientes $clientes)
-    {
-        //
+        $registro = Clientes::find($clientes);
+        return $registro;
     }
 
     /**
@@ -70,6 +51,12 @@ class ClientesController extends Controller
     public function update(Request $request, Clientes $clientes)
     {
         //
+        $dados = $request->all();
+        Clientes::find($clientes)->update($dados);
+        return [
+            "erro" => false,
+            "mensagem" => "Cliente editado com  sucesso!"
+        ];
     }
 
     /**
@@ -81,5 +68,11 @@ class ClientesController extends Controller
     public function destroy(Clientes $clientes)
     {
         //
+        Clientes::find($clientes)->delete();
+        $response = [
+            "erro" => false,
+            "mensagem" => "Cliente apagado com sucesso!"
+        ];
+        return  $response;
     }
 }

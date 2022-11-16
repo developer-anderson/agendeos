@@ -4,22 +4,62 @@ var token = ''
 $(document).ready(function(){
   $('.celular').mask('(00) 0.0000-0000');
   $('.telefone').mask('(00) 0000-0000');
-  $('.cnpj').mask('00.000.000/0000-0');
+  $('.cnpj').mask('00.000.000/0000-00');
   $('.ie').mask('000.000.000.000');
   $('.cpf').mask('000.000.000-00');
   $('.cep').mask('00.000-000');
+  $(".cnpj").blur(function() {
+    
+    var cnpj = $(this).val().replace(/[^0-9]/g, '');
+    
+   
+    if(cnpj.length == 14) {
+    
+      
+      $.ajax({
+        url:'https://www.receitaws.com.br/v1/cnpj/' + cnpj,
+        method:'GET',
+        dataType: 'jsonp', // Em requisições AJAX para outro domínio é necessário usar o formato "jsonp" que é o único aceito pelos navegadores por questão de segurança
+        complete: function(xhr){
+        
+          // Aqui recuperamos o json retornado
+          response = xhr.responseJSON;
+          
+          // Na documentação desta API tem esse campo status que retorna "OK" caso a consulta tenha sido efetuada com sucesso
+          if(response.status == 'OK') {
+            console.log(response)
+            // Agora preenchemos os campos com os valores retornados
+            $('#razaoSocialClientePj').val(response.nome);
+            $('#emailClientePj').val(response.email);
+            $('.cep').val(response.cep).trigger('blur');
+           
+          
+          // Aqui exibimos uma mensagem caso tenha ocorrido algum erro
+          } else {
+            console.log(response.message);
+            alert("Não foi possivel consultar os dados da empresa na receita"); // Neste caso estamos imprimindo a mensagem que a própria API retorna
+          }
+        }
+      });
+    
+    // Tratativa para caso o CNPJ não tenha 14 caracteres
+    } else {
+      alert('CNPJ inválido');
+    }
+  });
   $(".cep").blur(function() {
+
     var cep = $(this).val().replace(/\D/g, '');
     if (cep != "") {
         var validacep = /^[0-9]{8}$/;
         if(validacep.test(cep)) {
 
           
-            $("#rua").val("...");
-            $("#bairro").val("...");
-            $("#cidade").val("...");
-            $("#uf").val("...");
-            $("#ibge").val("...");
+            $(".logradouro").val("Buscando informações....");
+            $(".bairro").val("...");
+            $(".cidade").val("...");
+            $(".estado").val("...");
+            
 
             //Consulta o webservice viacep.com.br/
             $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
@@ -30,6 +70,7 @@ $(document).ready(function(){
                     $(".bairro").val(dados.bairro);
                     $(".cidade").val(dados.localidade);
                     $(".estado").val(dados.uf);
+                    $(".cep").val($(this).val())
                   
                 } //end if.
                 else {

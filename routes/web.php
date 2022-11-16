@@ -15,12 +15,14 @@ use App\Http\Controllers\VeiculosController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, X-Auth-Token, Origin, Authorization');
+Route::options('/{any:.*}', [function (){ 
+   return response(['status' => 'success']); 
+  }
+ ]
+);
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('clientes/getall', 'ClientesController@getAll');
-Route::get('clientes/show{clientes}', 'ClientesController@show');
-Route::post('clientes/store', 'ClientesController@store');
-Route::put('clientes/update', 'ClientesController@update');
-Route::delete('clientes/destroy{clientes}', 'ClientesController@destroy');

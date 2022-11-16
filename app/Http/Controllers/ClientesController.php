@@ -15,17 +15,26 @@ class ClientesController extends Controller
     public function getAll()
     {
         //
-        return Clientes::all();
+        return response()->json([
+            Clientes::all()
+        ], 201);
+       
+    }
+    public function viewToken()
+    {
+        return csrf_token();
     }
     public function store(Request $request)
     {
         //
         $post = $request->all();
+       
         Clientes::create( $post);
-        return [
+        return response()->json([
             "erro" => false,
             "mensagem" => "Cliente cadastrado com  sucesso!"
-        ];
+        ], 201);
+     
     }
 
     /**

@@ -1,6 +1,6 @@
 // Ativar input de busca do header
 var btnActive = false;
-
+var token = ''
 const activeSearchs = () => {
   const headerInput = document.querySelector('.header-input');
   const headerBusca = document.querySelector('.header-busca');
@@ -36,7 +36,41 @@ function changeFormClientPj() {
     btnAddClientePj.classList.remove('d-none');
   }
 };
+function addCliente(formid){
+  var dados = $("#"+formid).serialize()
 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/api/clientes/store',
+    type: 'post',
+    dataType: 'json',
+    data: $("#"+formid).serialize(),
+  
+    success: function(response) {
+        console.log(response)
+        
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+}
+function getToken(){
+
+  $.ajax({
+    url: 'http://127.0.0.1:8001/api/clientes/viewToken',
+    type: 'get',
+    dataType: 'json',
+    success: function(response) {
+       token = response
+        
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+}
 function changeFormClientPf() {
   if(!btnActive) {
     formclientPf.classList.remove('d-none');

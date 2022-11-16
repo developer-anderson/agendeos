@@ -45,13 +45,13 @@
                                                     <div class="col-xxl-4 col-sm-6">
                                                         <fieldset class="form-group">
                                                             <label for="cpfClientePf">CPF:</label>
-                                                            <input type="text"  name="cpf" class="form-control" id="cpfClientePf">
+                                                            <input type="text"  name="cpf" class="form-control cpf" id="cpfClientePf">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-4 col-sm-6">
                                                         <fieldset class="form-group">
                                                             <label for="rgClientePf">RG:</label>
-                                                            <input type="text"  name="rg" class="form-control" id="rgClientePf">
+                                                            <input type="text"  name="rg" class="form-control rg" id="rgClientePf">
                                                         </fieldset>
                                                     </div>
 
@@ -64,13 +64,13 @@
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="telefoneClientePf">Telefone:</label>
-                                                            <input type="text"  name="telefone_f" class="form-control" id="telefoneClientePf">
+                                                            <input type="text"  name="telefone_f" class="form-control telefone" id="telefoneClientePf">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="whatsappCelularClientePf">Whatsapp/Celular:</label>
-                                                            <input type="text"  name="celular_f" class="form-control" id="whatsappCelularClientePf">
+                                                            <input type="text"  name="celular_f" class="form-control celular" id="whatsappCelularClientePf">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
@@ -157,13 +157,13 @@
                                                     <div class="col-xxl-4 col-sm-6">
                                                         <fieldset class="form-group">
                                                             <label for="cnpjClientePj">CNPJ:</label>
-                                                            <input type="text" name="cnpj" class="form-control" id="cnpjClientePj">
+                                                            <input type="text" name="cnpj" class="form-control cnpj" id="cnpjClientePj">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-4 col-sm-6">
                                                         <fieldset class="form-group">
                                                             <label for="ieClientePj">I.E:</label>
-                                                            <input type="text" name="ie" class="form-control" id="ieClientePj">
+                                                            <input type="text" name="ie" class="form-control ie" id="ieClientePj">
                                                         </fieldset>
                                                     </div>
 
@@ -176,13 +176,13 @@
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="telefoneClientePj">Telefone:</label>
-                                                            <input type="text" name="telefone_j" class="form-control" id="telefoneClientePj">
+                                                            <input type="text" name="telefone_j" class="form-control telefone" id="telefoneClientePj">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="whatsappCelularClientePj">Whatsapp/Celular:</label>
-                                                            <input type="text" name="celular_j" class="form-control" id="whatsappCelularClientePj">
+                                                            <input type="text" name="celular_j" class="form-control celular" id="whatsappCelularClientePj">
                                                         </fieldset>
                                                     </div>
 
@@ -205,13 +205,13 @@
                                                     <div class="col-xxl-4 col-sm-6">
                                                         <fieldset class="form-group">
                                                             <label for="telefoneResponsavelClientePj">Telefone:</label>
-                                                            <input type="text" name="telefone_rj" class="form-control" id="telefoneResponsavelClientePj">
+                                                            <input type="text" name="telefone_rj" class="form-control telefone" id="telefoneResponsavelClientePj">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-4 col-sm-6">
                                                         <fieldset class="form-group">
                                                             <label for="whatsappResponsavelClientePj">Celular/Whatsapp:</label>
-                                                            <input type="text" name="celular_rj" class="form-control" id="whatsappResponsavelClientePj">
+                                                            <input type="text" name="celular_rj" class="form-control celular" id="whatsappResponsavelClientePj">
                                                         </fieldset>
                                                     </div>
 

@@ -5,10 +5,10 @@
             <div class="col-12">
                 <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
                     <span class="float-md-left d-block d-md-inline-block">
-                        Copyright © 2022 | Todos os direitos reservados
+                        Copyright © 2022 - <?php echo(date("Y")); ?> | Todos os direitos reservados
                     </span>
                     <span class="float-md-right d-lg-block">Desenvolvido por
-                        <a class="text-babe-blue" href="#"><b>Wcriarte</b></a></span>
+                        <a class="text-babe-blue" href="#"><b>AgendeOS</b></a></span>
                 </p>
             </div>
         </div>
@@ -60,6 +60,8 @@
 <script src="../app-assets/js/core/libraries/jquery_ui/interactions.min.js"></script>
 <script src="../app-assets/js/core/libraries/jquery_ui/jquery-ui.min.js"></script>
 <script src="../app-assets/js/core/libraries/jquery_ui/touch.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js" integrity="sha512-0XDfGxFliYJPFrideYOoxdgNIvrwGTLnmK20xZbCAvPfLGQMzHUsaqZK8ZoH+luXGRxTrS46+Aq400nCnAT0/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- END: Library JS-->
 
 <!-- BEING: Bootstrap JS -->

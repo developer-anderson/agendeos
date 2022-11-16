@@ -1,6 +1,14 @@
 // Ativar input de busca do header
 var btnActive = false;
 var token = ''
+$(document).ready(function(){
+  $('.celular').mask('(00) 0.0000-0000');
+  $('.telefone').mask('(00) 0000-0000');
+  $('.cnpj').mask('00.000.000/0000-0');
+  $('.ie').mask('000.000.000.000');
+  $('.cpf').mask('000.000.000-00');
+  $('.cep').mask('00.000-000');
+});
 const activeSearchs = () => {
   const headerInput = document.querySelector('.header-input');
   const headerBusca = document.querySelector('.header-busca');

@@ -15,14 +15,7 @@ use App\Http\Controllers\VeiculosController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, X-Auth-Token, Origin, Authorization');
-Route::options('/{any:.*}', [function (){ 
-   return response(['status' => 'success']); 
-  }
- ]
-);
+
 Route::get('/', function () {
     return view('welcome');
 });

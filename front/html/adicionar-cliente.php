@@ -96,13 +96,13 @@
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="cepClientePf">CEP:</label>
-                                                            <input type="text" name="cep" class="form-control" id="cepClientePf">
+                                                            <input type="text" name="cep" class="form-control cep" id="cepClientePf">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="enderecoClientePf">Endereço:</label>
-                                                            <input type="text" name="logradouro" class="form-control" id="enderecoClientePf">
+                                                            <input type="text" name="logradouro" class="form-control logradouro" id="enderecoClientePf">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
@@ -120,19 +120,19 @@
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="bairroClientePf">Bairro:</label>
-                                                            <input type="text" name="bairro" class="form-control" id="bairroClientePf">
+                                                            <input type="text" name="bairro" class="form-control bairro" id="bairroClientePf">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="estadoClientePf">Estado:</label>
-                                                            <input type="text" name="estado" class="form-control" id="estadoClientePf">
+                                                            <input type="text" name="estado" class="form-control estado" id="estadoClientePf">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="cidadeClientePf">Cidade:</label>
-                                                            <input type="text" name="cidade" class="form-control" id="cidadeClientePf">
+                                                            <input type="text" name="cidade" class="form-control cidade" id="cidadeClientePf">
                                                         </fieldset>
                                                     </div>
 
@@ -222,13 +222,13 @@
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="cepClientePj">CEP:</label>
-                                                            <input name="cep" type="text" class="form-control" id="cepClientePj">
+                                                            <input name="cep" type="text" class="form-control cep" id="cepClientePj">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="enderecoClientePj">Endereço:</label>
-                                                            <input name="logradouro" type="text" class="form-control" id="enderecoClientePj">
+                                                            <input name="logradouro" type="text" class="form-control logradouro" id="enderecoClientePj">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
@@ -246,19 +246,19 @@
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="bairroClientePj">Bairro:</label>
-                                                            <input name="bairro" type="text" class="form-control" id="bairroClientePj">
+                                                            <input name="bairro" type="text" class="form-control bairro" id="bairroClientePj">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="estadoClientePj">Estado:</label>
-                                                            <input name="estado" type="text" class="form-control" id="estadoClientePj">
+                                                            <input name="estado" type="text" class="form-control estado" id="estadoClientePj">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">
                                                         <fieldset class="form-group">
                                                             <label for="cidadeClientePj">Cidade:</label>
-                                                            <input name="cidade" type="text" class="form-control" id="cidadeClientePj">
+                                                            <input name="cidade" type="text" class="form-control cidade" id="cidadeClientePj">
                                                         </fieldset>
                                                     </div>
                                                    <input type="hidden" name="tipo_cliente" value="PJ">

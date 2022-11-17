@@ -208,6 +208,21 @@ function getDataClient(id){
            }
          }else if(response[key].tipo_cliente == 'PJ'){
           $("#btnClientPj").trigger('click');
+          $("#razaoSocialClientePj").val(response[key].razao_social)
+           $("#cnpjClientePj").val(response[key].cnpj)
+           $("#ieClientePj").val(response[key].ie)
+           $("#emailClientePj").val(response[key].email_j)
+           $("#telefoneClientePj").val(response[key].telefone_j)
+           $("#whatsappCelularClientePj").val(response[key].celular_j)
+
+           $("#responsavelClientePj").val(response[key].nome_rj)
+           $("#emailResponsavelClientePj").val(response[key].email_rj)
+           $("#telefoneResponsavelClientePj").val(response[key].telefone_rj)
+           $("#whatsappResponsavelClientePj").val(response[key].celular_rj)
+           $("#cepClientePj").val(response[key].cep).trigger('blur')
+           $("#observacoesClientePj").text(response[key].observacoes)
+           $("#complementoClientePj").val(response[key].complemento)
+           $("#enderecoNumeroClientePj").val(response[key].numero)
          }
       }); 
     },

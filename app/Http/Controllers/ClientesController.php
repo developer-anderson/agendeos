@@ -53,7 +53,9 @@ class ClientesController extends Controller
     {
         //
         $registro = Clientes::find($clientes);
-        return $registro;
+        return response()->json(
+            $registro
+        , 200);
     }
 
     /**

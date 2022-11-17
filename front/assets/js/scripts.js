@@ -161,6 +161,62 @@ if(window.location.pathname  == "/html/listar-clientes.php"){
   getAllclientByType('PF')
   getAllclientByType('PJ')
 }
+if(window.location.pathname  == "/html/editar-cliente.php"){
+  const urlParams = new URLSearchParams(window.location.search);
+  const id_cliente = urlParams.get("id_cliente")
+ 
+  if(id_cliente){
+    getDataClient(id_cliente)
+  }
+  else{
+    alert("Erro ao encontrar o cliente informado");
+    window.location.href = 'listar-clientes.php';
+  }
+ 
+  
+}
+function getDataClient(id){
+
+  $.ajax({
+    url: 'http://127.0.0.1:8002/clientes/show'+id,
+    type: 'get',
+    dataType: 'json',
+    success: function(response) {
+      Object.keys(response).forEach(function(key, index) {
+         if(response[key].tipo_cliente == 'PF'){
+           $("#btnClientPf").trigger('click');
+         
+           $("#nomeClientePf").val(response[key].nome_f)
+           $("#cpfClientePf").val(response[key].cpf)
+           $("#emailClientePf").val(response[key].email_f)
+           $("#rgClientePf").val(response[key].rg)
+           $("#telefoneClientePf").val(response[key].telefone_f)
+           $("#whatsappCelularClientePf").val(response[key].celular_f)
+           $("#cepClientePf").val(response[key].cep).trigger('blur')
+           $("#observacoesClientePf").text(response[key].observacoes)
+           $("#complementoClientePf").val(response[key].complemento)
+           $("#enderecoNumeroClientePf").val(response[key].numero)
+          
+           if(response[key].sexo == 'M'){
+            $("#CheckClientePfMasculino").attr('checked', true)
+           }
+           else if(response[key].sexo == 'F'){
+            $("#CheckClientePfFeminino").attr('checked', true)
+           }
+           else{
+            $(".sexo").attr('checked', false)
+           }
+         }else if(response[key].tipo_cliente == 'PJ'){
+          $("#btnClientPj").trigger('click');
+         }
+      }); 
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+}
 function getAllclientByType(type = 'PF'){
 
   $.ajax({
@@ -190,7 +246,7 @@ function getAllclientByType(type = 'PF'){
           html += '<td class="big-item-table">'+response[key].celular_rj+ '</td>'
         }
 
-        html += '<td class="big-item-table action-buttons"><a href="editar-cliente.php?id_cliente=" '+response[key].id+ 'class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
+        html += '<td class="big-item-table action-buttons"><a href="editar-cliente.php?id_cliente='+response[key].id+ '"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
         html += '</tr>'
         
 

@@ -17,8 +17,14 @@ class ClientesController extends Controller
         //
         return response()->json([
             Clientes::all()
-        ], 201);
+        ], 200);
        
+    }
+    public function getAllclientByType($type = "PF")
+    {
+        return response()->json(
+            Clientes::where('tipo_cliente',$type)->get()
+        , 200);
     }
     public function viewToken()
     {

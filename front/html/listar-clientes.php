@@ -68,19 +68,11 @@
                                                                         <th class="sorting_asc">Email</th>
                                                                         <th class="sorting_asc">Telefone</th>
                                                                         <th class="sorting_asc">Whatsapp/Celular</th>
-                                                                        <th class="sorting_asc">Sexo</th>
-                                                                        <th class="sorting_asc">CEP</th>
-                                                                        <th class="sorting_asc">Endereço</th>
-                                                                        <th class="sorting_asc">Número</th>
-                                                                        <th class="sorting_asc">Complemento</th>
-                                                                        <th class="sorting_asc">Bairro</th>
-                                                                        <th class="sorting_asc">Estado</th>
-                                                                        <th class="sorting_asc">Cidade</th>
-                                                                        <th class="sorting_asc">Observações Gerais</th>
+                                                    
                                                                         <th class="sorting_asc">Ações</th>
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody>
+                                                                <tbody id="listaPF">
                                                                     <tr>
                                                                         <td class="big-item-table">Cliente Teste 1</td>
                                                                         <td class="big-item-table">000.111.222-77</td>
@@ -88,15 +80,7 @@
                                                                         <td class="big-item-table">contato@gmail.com</td>
                                                                         <td class="big-item-table">(77) 95555-4444</td>
                                                                         <td class="big-item-table">(77) 95555-4444</td>
-                                                                        <td>Masculino</td>
-                                                                        <td class="big-item-table">48.655-48</td>
-                                                                        <td class="big-item-table">R. do cliente</td>
-                                                                        <td>220</td>
-                                                                        <td>B</td>
-                                                                        <td class="big-item-table">Bairro teste</td>
-                                                                        <td>Bahia</td>
-                                                                        <td class="big-item-table">Salvador</td>
-                                                                        <td class="xxl-item-table">Lorem ipsum dolor sit, amet consectetur</td>
+                                                   
                                                                         <td class="big-item-table action-buttons">
                                                                             <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button>
 
@@ -167,21 +151,15 @@
                                                                         <th class="sorting_asc">Telefone</th>
                                                                         <th class="sorting_asc">Whatsapp/Celular</th>
                                                                         <th class="sorting_asc">Nome do Responsável</th>
-                                                                        <th class="sorting_asc">Email</th>
-                                                                        <th class="sorting_asc">Telefone</th>
-                                                                        <th class="sorting_asc">Celular/Whatsapp</th>
-                                                                        <th class="sorting_asc">CEP</th>
-                                                                        <th class="sorting_asc">Endereço</th>
-                                                                        <th class="sorting_asc">Número</th>
-                                                                        <th class="sorting_asc">Complemento</th>
-                                                                        <th class="sorting_asc">Bairro</th>
-                                                                        <th class="sorting_asc">Estado</th>
-                                                                        <th class="sorting_asc">Cidade</th>
+                                                                        <th class="sorting_asc">Email Responsável</th>
+                                                                        <th class="sorting_asc">Telefone Responsável</th>
+                                                                        <th class="sorting_asc">Celular/Whatsapp Responsável</th>
+                                                           
                                                                         <th class="sorting_asc">Ações</th>
-                                                                        <th class="sorting_asc">Observações</th>
+                                                                       
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody>
+                                                                <tbody id="listaPJ">
                                                                     <tr>
                                                                         <td class="big-item-table">Cliente Teste 2</td>
                                                                         <td class="big-item-table">000.111.222-77</td>
@@ -193,21 +171,7 @@
                                                                         <td class="big-item-table">contato@gmail.com</td>
                                                                         <td class="big-item-table">(77) 95555-4444</td>
                                                                         <td class="big-item-table">(77) 95555-4444</td>
-                                                                        <td class="big-item-table">45.654-555</td>
-                                                                        <td class="big-item-table">R. cliente PJ</td>
-                                                                        <td>4655</td>
-                                                                        <td></td>
-                                                                        <td class="big-item-table">Bairro teste</td>
-                                                                        <td class="big-item-table">Bahia</td>
-                                                                        <td class="big-item-table">Salvador</td>
-                                                                        <td class="xxl-item-table">Lorem ipsum dolor sit, amet consectetur</td>
-                                                                        <td class="big-item-table action-buttons">
-                                                                            <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button>
-
-                                                                            <button class="edit-table-item" id="editTableItem"><i class="fa fa-pencil"></i></button>
-
-                                                                            <button class="remove-table-item" id="removeTableItem"><i class="fa fa-trash-o"></i></button>
-                                                                        </td>
+                                                              
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
@@ -239,6 +203,7 @@
                         </div>
                     </section>
                 </main>
+              
                 <?php include 'footer.php'; ?>
             </div>
         </div>

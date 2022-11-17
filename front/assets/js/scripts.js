@@ -1,6 +1,6 @@
 // Ativar input de busca do header
 var btnActive = false;
-var token = ''
+var html = ''
 $(document).ready(function(){
   $('.celular').mask('(00) 0.0000-0000');
   $('.telefone').mask('(00) 0000-0000');
@@ -156,16 +156,46 @@ function addCliente(formid){
       alert(msg);
   });
 }
-getToken()
-function getToken(){
+
+if(window.location.pathname  == "/html/listar-clientes.php"){
+  getAllclientByType('PF')
+  getAllclientByType('PJ')
+}
+function getAllclientByType(type = 'PF'){
 
   $.ajax({
-    url: 'http://127.0.0.1:8002/token',
+    url: 'http://127.0.0.1:8002/clientes/getAllclientByType'+type,
     type: 'get',
     dataType: 'json',
     success: function(response) {
-       token = response
-       $(".token").val(token)
+      Object.keys(response).forEach(function(key, index) {
+        html += '<tr>'
+        if(type == 'PF'){
+          html += '<td class="big-item-table">'+response[key].nome_f+ '</td>'
+          html += '<td class="big-item-table">'+response[key].cpf+ '</td>'
+          html += '<td class="big-item-table">'+response[key].rg+ '</td>'
+          html += '<td class="big-item-table">'+response[key].email_f+ '</td>'
+          html += '<td class="big-item-table">'+response[key].telefone_f+ '</td>'
+          html += '<td class="big-item-table">'+response[key].celular_f+ '</td>'
+        }else{
+          html += '<td class="big-item-table">'+response[key].razao_social+ '</td>'
+          html += '<td class="big-item-table">'+response[key].cnpj+ '</td>'
+          html += '<td class="big-item-table">'+response[key].ie+ '</td>'
+          html += '<td class="big-item-table">'+response[key].email_j+ '</td>'
+          html += '<td class="big-item-table">'+response[key].telefone_j+ '</td>'
+          html += '<td class="big-item-table">'+response[key].celular_j+ '</td>'
+          html += '<td class="big-item-table">'+response[key].nome_rj+ '</td>'
+          html += '<td class="big-item-table">'+response[key].email_rj+ '</td>'
+          html += '<td class="big-item-table">'+response[key].telefone_rj+ '</td>'
+          html += '<td class="big-item-table">'+response[key].celular_rj+ '</td>'
+        }
+
+        html += '<td class="big-item-table action-buttons"><a href="editar-cliente.php?id_cliente=" '+response[key].id+ 'class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
+        html += '</tr>'
+        
+
+      });
+      $("#lista"+type).html(html)
         
     },
     error: function(xhr, ajaxOptions, thrownError) {

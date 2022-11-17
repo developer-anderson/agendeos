@@ -22,7 +22,7 @@ Route::get('/token', function (Request $request) {
     // ...
 });
 Route::get('clientes/getall', [ClientesController::class, 'getall']);
-
+Route::get('clientes/getAllclientByType{type}', [ClientesController::class, 'getAllclientByType']);
 Route::get('clientes/show{clientes}', [ClientesController::class, 'show']);
 Route::post('clientes/insert', [ClientesController::class, 'store']);
 Route::put('clientes/update',[ClientesController::class, 'update']);

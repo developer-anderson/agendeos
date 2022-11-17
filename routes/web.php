@@ -1,10 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ClientesController;
-use App\Http\Controllers\OrdemServicosController;
-use App\Http\Controllers\ServicosController;
-use App\Http\Controllers\VeiculosController;
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,6 +13,17 @@ use App\Http\Controllers\VeiculosController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+use App\Http\Controllers\ClientesController;
+Route::get('/token', function (Request $request) {
+    $token = $request->session()->token();
+ 
+    return  response()->json(csrf_token());;
+ 
+    // ...
 });
+Route::get('clientes/getall', [ClientesController::class, 'getall']);
+
+Route::get('clientes/show{clientes}', [ClientesController::class, 'show']);
+Route::post('clientes/insert', [ClientesController::class, 'store']);
+Route::put('clientes/update',[ClientesController::class, 'update']);
+Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy']);

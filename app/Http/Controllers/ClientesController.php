@@ -22,7 +22,7 @@ class ClientesController extends Controller
     }
     public function viewToken()
     {
-        return csrf_token();
+        return  response()->json(csrf_token());
     }
     public function store(Request $request)
     {
@@ -33,7 +33,7 @@ class ClientesController extends Controller
         return response()->json([
             "erro" => false,
             "mensagem" => "Cliente cadastrado com  sucesso!"
-        ], 201);
+        ], 200);
      
     }
 

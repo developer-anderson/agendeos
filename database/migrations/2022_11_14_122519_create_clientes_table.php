@@ -15,13 +15,13 @@ class CreateClientesTable extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-            $table->string('nome_f', 400);
-            $table->string('cpf')->nullable();
-            $table->string('rg')->nullable();
+            $table->string('nome_f', 400)->nullable();
+            $table->string('cpf')->nullable()->nullable();
+            $table->string('rg')->nullable()->nullable();
             $table->string('email_f', 500)->nullable();
             $table->string('telefone_f')->nullable();
             $table->string('celular_f')->nullable();
-            $table->enum('sexo', ['M', 'F']);
+            $table->enum('sexo', ['M', 'F'])->nullable();
             $table->string('nome_j', 400)->nullable();
             $table->string('email_j', 500)->nullable();
             $table->string('telefone_j')->nullable();

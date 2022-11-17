@@ -137,36 +137,40 @@ function changeFormClientPj() {
 };
 function addCliente(formid){
   var dados = $("#"+formid).serialize()
-
+ 
   $.ajax({
-    url: 'http://127.0.0.1:8001/api/clientes/store',
+    url: 'http://127.0.0.1:8002/clientes/insert',
+    
     type: 'post',
     dataType: 'json',
-    data: $("#"+formid).serialize(),
-  
-    success: function(response) {
-        console.log(response)
-        
-    },
-    error: function(xhr, ajaxOptions, thrownError) {
-      
-        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    data: $("#"+formid).serialize()
+  })
+  .done(function(response){
+    console.log(response)
+    if(!response.erro){
+      alert("Cliente cadastrado com Sucesso.")
+      window.location.href = 'listar-clientes.php';
     }
+  })
+  .fail(function(jqXHR, textStatus, msg){
+      alert(msg);
   });
 }
+getToken()
 function getToken(){
 
   $.ajax({
-    url: 'http://127.0.0.1:8001/api/clientes/viewToken',
+    url: 'http://127.0.0.1:8002/token',
     type: 'get',
     dataType: 'json',
     success: function(response) {
        token = response
+       $(".token").val(token)
         
     },
     error: function(xhr, ajaxOptions, thrownError) {
       
-        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
     }
   });
 }

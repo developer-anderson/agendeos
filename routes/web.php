@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 
 use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\VeiculosController;
 Route::get('/token', function (Request $request) {
     $token = $request->session()->token();
  
@@ -27,3 +28,9 @@ Route::get('clientes/show/{clientes}', [ClientesController::class, 'show']);
 Route::post('clientes/insert', [ClientesController::class, 'store']);
 Route::put('clientes/update/{clientes}',[ClientesController::class, 'update']);
 Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy']);
+
+Route::get('veiculos/getall', [VeiculosController::class, 'getall']);
+Route::get('veiculos/show/{veiculos}', [VeiculosController::class, 'show']);
+Route::post('veiculos/insert', [VeiculosController::class, 'store']);
+Route::put('veiculos/update/{veiculos}',[VeiculosController::class, 'update']);
+Route::delete('veiculos/destroy{veiculos}', [VeiculosController::class, 'destroy']);

@@ -1,6 +1,7 @@
 // Ativar input de busca do header
 var btnActive = false;
 var html = ''
+var options = ''
 var id_cliente = 0
 $(document).ready(function(){
   $('.celular').mask('(00) 0.0000-0000');
@@ -157,6 +158,27 @@ function addCliente(formid){
       alert(msg);
   });
 }
+function addVeiculo(formid){
+  var dados = $("#"+formid).serialize()
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/veiculos/insert',
+    
+    type: 'post',
+    dataType: 'json',
+    data: $("#"+formid).serialize()
+  })
+  .done(function(response){
+    console.log(response)
+    if(!response.erro){
+      alert("Veiculo cadastrado com Sucesso.")
+      window.location.href = 'listar-veiculo.php';
+    }
+  })
+  .fail(function(jqXHR, textStatus, msg){
+      alert(msg);
+  });
+}
 function editarCliente(formid){
   var dados = $("#"+formid).serialize()
  
@@ -181,6 +203,19 @@ function editarCliente(formid){
 if(window.location.pathname  == "/html/listar-clientes.php"){
   getAllclientByType('PF')
   getAllclientByType('PJ')
+}
+if(window.location.pathname  == "/html/adicionar-veiculo.php"){
+  getAllclientByType('PF', true)
+  getAllclientByType('PJ', true)
+  var urlParams = new URLSearchParams(window.location.search);
+  id_cliente = urlParams.get("id_cliente")
+
+ if(id_cliente){
+  setTimeout(function() {
+    $("#donoVeiculo").val(id_cliente).change()
+}, 3000)
+  
+ }
 }
 if(window.location.pathname  == "/html/editar-cliente.php"){
   var urlParams = new URLSearchParams(window.location.search);
@@ -253,23 +288,29 @@ function getDataClient(id){
     }
   });
 }
-function getAllclientByType(type = 'PF'){
-
+function getAllclientByType(type = 'PF', select = false){
+ 
   $.ajax({
     url: 'http://127.0.0.1:8001/clientes/getAllclientByType'+type,
     type: 'get',
     dataType: 'json',
     success: function(response) {
+    
       Object.keys(response).forEach(function(key, index) {
+      
         html += '<tr>'
         if(type == 'PF'){
+         
           html += '<td class="big-item-table">'+response[key].nome_f+ '</td>'
           html += '<td class="big-item-table">'+response[key].cpf+ '</td>'
           html += '<td class="big-item-table">'+response[key].rg+ '</td>'
           html += '<td class="big-item-table">'+response[key].email_f+ '</td>'
           html += '<td class="big-item-table">'+response[key].telefone_f+ '</td>'
           html += '<td class="big-item-table">'+response[key].celular_f+ '</td>'
-        }else{
+          options += '<option value="'+response[key].id +'">'+response[key].nome_f+'</option>'
+       
+        }else if(type == 'PJ'){
+         
           html += '<td class="big-item-table">'+response[key].razao_social+ '</td>'
           html += '<td class="big-item-table">'+response[key].cnpj+ '</td>'
           html += '<td class="big-item-table">'+response[key].ie+ '</td>'
@@ -280,14 +321,32 @@ function getAllclientByType(type = 'PF'){
           html += '<td class="big-item-table">'+response[key].email_rj+ '</td>'
           html += '<td class="big-item-table">'+response[key].telefone_rj+ '</td>'
           html += '<td class="big-item-table">'+response[key].celular_rj+ '</td>'
+          if(response[key].razao_social){
+            options += '<option value="'+response[key].id +'">'+response[key].razao_social+'</option>'
+          }
+          else{
+            options += '<option value="'+response[key].id +'">'+response[key].cnpj+'</option>'
+          }
+         
+          
         }
+      
 
         html += '<td class="big-item-table action-buttons"><a href="editar-cliente.php?id_cliente='+response[key].id+ '"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
         html += '</tr>'
         
 
       });
-      $("#lista"+type).html(html)
+
+      if(!select){
+        $("#lista"+type).html(html)
+        html = ''
+      }
+      else{
+        $("#donoVeiculo").append(options)
+        options = ''
+      }
+     
         
     },
     error: function(xhr, ajaxOptions, thrownError) {

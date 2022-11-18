@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Veiculos;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VeiculosController extends Controller
 {
@@ -17,14 +19,13 @@ class VeiculosController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function getAll()
     {
         //
+        return response()->json([
+            Veiculos::all()
+        ], 200);
+       
     }
 
     /**
@@ -54,7 +55,9 @@ class VeiculosController extends Controller
     {
         //
         $registro = Veiculos::find($veiculos);
-        return $registro;
+        return response()->json(
+            $registro
+        , 200);
     }
 
     /**
@@ -79,7 +82,7 @@ class VeiculosController extends Controller
     {
         //
         $dados = $request->all();
-        Veiculos::find($veiculos)->update($dados);
+        Veiculos::find($veiculos)->first()->fill($request->all())->save();;
         return [
             "erro" => false,
             "mensagem" => "Veiculo editado com  sucesso!"

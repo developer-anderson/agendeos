@@ -25,37 +25,31 @@
                                                     <div class="col-xxl-3 col-sm-4">
                                                         <fieldset class="form-group">
                                                             <label for="placaVeiculo">Placa:</label>
-                                                            <input type="text" class="form-control" id="placaVeiculo">
+                                                            <input type="text" name="placa" class="form-control" id="placaVeiculo">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-4">
                                                         <fieldset class="form-group">
                                                             <label for="marcaVeiculo">Marca:</label>
-                                                            <select class="custom-select block" id="marcaVeiculo">
-                                                                <option selected="">...</option>
-                                                            </select>
+                                                            <input class="form-control" name="marca" id='marca' />
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-4">
                                                         <fieldset class="form-group">
                                                             <label for="modeloVeiculo">Modelo:</label>
-                                                            <select class="custom-select block" id="modeloVeiculo">
-                                                                <option selected="">...</option>
-                                                            </select>
+                                                            <input class="form-control" name="modelo" id='modelo' />
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-4">
                                                         <fieldset class="form-group">
                                                             <label for="corVeiculo">Cor:</label>
-                                                            <select class="custom-select block" id="corVeiculo">
-                                                                <option selected="">...</option>
-                                                            </select>
+                                                            <input class="form-control" name="cor" id='cor' />
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-3 col-sm-4">
                                                         <fieldset class="form-group">
                                                             <label for="donoVeiculo">Dono do Veículo:</label>
-                                                            <select class="custom-select block" id="donoVeiculo">
+                                                            <select class="custom-select block" name="id_cliente" id="donoVeiculo">
                                                                 <option selected="">...</option>
                                                             </select>
                                                         </fieldset>
@@ -63,11 +57,11 @@
                                                     <div class="col-xxl-3 col-sm-4">
                                                         <fieldset class="form-group">
                                                             <label for="observacoesVeiculo">Observações</label>
-                                                            <textarea class="form-control" id="observacoesVeiculo" rows="4"></textarea>
+                                                            <textarea class="form-control" name="observacoes" id="observacoesVeiculo" rows="4"></textarea>
                                                         </fieldset>
                                                     </div>
                                                 </form>
-                                                <button type="submit" class="btn btn-primary" id="btnAddVeiculo">
+                                                <button type="button"  onclick="addVeiculo('veiculoForm')" class="btn btn-primary" id="btnAddVeiculo">
                                                     <i class="fa fa-check-square-o"></i> Adicionar
                                                 </button>
                                             </div>

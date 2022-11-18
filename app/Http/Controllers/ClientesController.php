@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clientes;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class ClientesController extends Controller
 {
     /**
@@ -67,9 +68,8 @@ class ClientesController extends Controller
      */
     public function update(Request $request, Clientes $clientes)
     {
-        //
         $dados = $request->all();
-        Clientes::find($clientes)->update($dados);
+        Clientes::find($clientes)->first()->fill($request->all())->save();
         return [
             "erro" => false,
             "mensagem" => "Cliente editado com  sucesso!"

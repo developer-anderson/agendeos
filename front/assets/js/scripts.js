@@ -1,6 +1,7 @@
 // Ativar input de busca do header
 var btnActive = false;
 var html = ''
+var id_cliente = 0
 $(document).ready(function(){
   $('.celular').mask('(00) 0.0000-0000');
   $('.telefone').mask('(00) 0000-0000');
@@ -139,7 +140,7 @@ function addCliente(formid){
   var dados = $("#"+formid).serialize()
  
   $.ajax({
-    url: 'http://127.0.0.1:8002/clientes/insert',
+    url: 'http://127.0.0.1:8001/clientes/insert',
     
     type: 'post',
     dataType: 'json',
@@ -156,14 +157,34 @@ function addCliente(formid){
       alert(msg);
   });
 }
-
+function editarCliente(formid){
+  var dados = $("#"+formid).serialize()
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/clientes/update/'+id_cliente,
+    
+    type: 'put',
+    dataType: 'json',
+    data: $("#"+formid).serialize()
+  })
+  .done(function(response){
+    console.log(response)
+    if(!response.erro){
+      alert("Cliente Editado com Sucesso.")
+      window.location.href = 'listar-clientes.php';
+    }
+  })
+  .fail(function(jqXHR, textStatus, msg){
+      alert(msg);
+  });
+}
 if(window.location.pathname  == "/html/listar-clientes.php"){
   getAllclientByType('PF')
   getAllclientByType('PJ')
 }
 if(window.location.pathname  == "/html/editar-cliente.php"){
-  const urlParams = new URLSearchParams(window.location.search);
-  const id_cliente = urlParams.get("id_cliente")
+  var urlParams = new URLSearchParams(window.location.search);
+   id_cliente = urlParams.get("id_cliente")
  
   if(id_cliente){
     getDataClient(id_cliente)
@@ -178,7 +199,7 @@ if(window.location.pathname  == "/html/editar-cliente.php"){
 function getDataClient(id){
 
   $.ajax({
-    url: 'http://127.0.0.1:8002/clientes/show'+id,
+    url: 'http://127.0.0.1:8001/clientes/show/'+id,
     type: 'get',
     dataType: 'json',
     success: function(response) {
@@ -235,7 +256,7 @@ function getDataClient(id){
 function getAllclientByType(type = 'PF'){
 
   $.ajax({
-    url: 'http://127.0.0.1:8002/clientes/getAllclientByType'+type,
+    url: 'http://127.0.0.1:8001/clientes/getAllclientByType'+type,
     type: 'get',
     dataType: 'json',
     success: function(response) {

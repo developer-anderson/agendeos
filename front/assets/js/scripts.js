@@ -3,6 +3,7 @@ var btnActive = false;
 var html = ''
 var options = ''
 var id_cliente = 0
+var id_veiculo = 0
 $(document).ready(function(){
   $('.celular').mask('(00) 0.0000-0000');
   $('.telefone').mask('(00) 0000-0000');
@@ -180,6 +181,27 @@ function addVeiculo(formid){
       alert(msg);
   });
 }
+function editarVeiculo(formid){
+  var dados = $("#"+formid).serialize()
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/veiculos/update/'+id_veiculo,
+    
+    type: 'put',
+    dataType: 'json',
+    data: $("#"+formid).serialize()
+  })
+  .done(function(response){
+    console.log(response)
+    if(!response.erro){
+      alert("Veiculo Editado com Sucesso.")
+      window.location.href = 'listar-veiculo.php';
+    }
+  })
+  .fail(function(jqXHR, textStatus, msg){
+      alert(msg);
+  });
+}
 function editarCliente(formid){
   var dados = $("#"+formid).serialize()
  
@@ -221,6 +243,19 @@ if(window.location.pathname  == "/html/adicionar-veiculo.php"){
   
  }
 }
+if(window.location.pathname  == "/html/editar-veiculo.php"){
+  var urlParams = new URLSearchParams(window.location.search);
+  id_veiculo = urlParams.get("id_veiculo")
+ 
+  if(id_veiculo){
+    getDataVeiculo(id_veiculo)
+  }
+  else{
+    alert("Erro ao encontrar o veiculo informado");
+    window.location.href = 'listar-veiculo.php';
+  }
+ 
+}
 if(window.location.pathname  == "/html/editar-cliente.php"){
   var urlParams = new URLSearchParams(window.location.search);
    id_cliente = urlParams.get("id_cliente")
@@ -234,6 +269,32 @@ if(window.location.pathname  == "/html/editar-cliente.php"){
   }
  
   
+}
+function getDataVeiculo(id){
+
+  $.ajax({
+    url: 'http://127.0.0.1:8001/veiculos/show/'+id,
+    type: 'get',
+    dataType: 'json',
+    success: function(response) {
+      Object.keys(response).forEach(function(key, index) {
+         $("#placaVeiculo").val(response[key].placa)
+         $("#marca").val(response[key].marca)
+         $("#modelo").val(response[key].modelo)
+         $("#cor").val(response[key].cor)
+         $("#observacoesVeiculo").text(response[key].observacoes)
+         getAllclientByType('PF', true)
+         getAllclientByType('PJ', true)
+        setTimeout(function() {
+          $("#donoVeiculo").val(response[key].id_cliente).change()
+        }, 2000)
+      }); 
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
 }
 function getDataClient(id){
 

@@ -60,7 +60,7 @@
                                                                             <th class="sorting_asc">Ações</th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody>
+                                                                    <tbody id="tveiculos">
                                                                         <tr>
                                                                             <td class="big-item-table">ABC123</td>
                                                                             <td class="big-item-table">Gol</td>

@@ -150,8 +150,9 @@ function addCliente(formid){
   .done(function(response){
     console.log(response)
     if(!response.erro){
+      id_cliente = response.id
       alert("Cliente cadastrado com Sucesso.")
-      window.location.href = 'listar-clientes.php';
+      window.location.href = 'adicionar-veiculo.php?id_cliente='+id_cliente;
     }
   })
   .fail(function(jqXHR, textStatus, msg){
@@ -213,7 +214,7 @@ if(window.location.pathname  == "/html/adicionar-veiculo.php"){
  if(id_cliente){
   setTimeout(function() {
     $("#donoVeiculo").val(id_cliente).change()
-}, 3000)
+}, 1000)
   
  }
 }

@@ -36,10 +36,11 @@ class ClientesController extends Controller
         //
         $post = $request->all();
        
-        Clientes::create( $post);
+        $clientes = Clientes::create( $post);
         return response()->json([
             "erro" => false,
-            "mensagem" => "Cliente cadastrado com  sucesso!"
+            "mensagem" => "Cliente cadastrado com  sucesso!",
+            'id' => $clientes->id
         ], 200);
      
     }

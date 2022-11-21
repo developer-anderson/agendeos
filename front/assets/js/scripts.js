@@ -205,6 +205,9 @@ if(window.location.pathname  == "/html/listar-clientes.php"){
   getAllclientByType('PF')
   getAllclientByType('PJ')
 }
+if(window.location.pathname  == "/html/listar-veiculo.php"){
+  getAllCar() 
+}
 if(window.location.pathname  == "/html/adicionar-veiculo.php"){
   getAllclientByType('PF', true)
   getAllclientByType('PJ', true)
@@ -347,6 +350,48 @@ function getAllclientByType(type = 'PF', select = false){
         $("#donoVeiculo").append(options)
         options = ''
       }
+     
+        
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+}
+function getAllCar(){
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/veiculos/getall',
+    type: 'get',
+    dataType: 'json',
+    success: function(response) {
+    
+      Object.keys(response).forEach(function(key, index) {
+      
+        html += '<td class="big-item-table">'+response[key].placa+ '</td>'
+        html += '<td class="big-item-table">'+response[key].marca+ '</td>'
+        html += '<td class="big-item-table">'+response[key].modelo+ '</td>'
+        html += '<td class="big-item-table">'+response[key].cor+ '</td>'
+        if(response[key].nome_f)
+        {
+          html += '<td class="big-item-table">'+response[key].nome_f+ '</td>'
+        }
+        else{
+          html += '<td class="big-item-table">'+response[key].razao_social+ '</td>'
+        }
+     
+    
+      
+
+        html += '<td class="big-item-table action-buttons"><a href="editar-veiculo.php?id_veiculo='+response[key].id+ '"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
+        html += '</tr>'
+        
+
+      });
+
+      $("#tveiculos").html(html)
+
      
         
     },

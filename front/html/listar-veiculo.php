@@ -56,7 +56,7 @@
                                                                             <th class="sorting_asc">Modelo</th>
                                                                             <th class="sorting_asc">Cor</th>
                                                                             <th class="sorting_asc">Dono do Veículo</th>
-                                                                            <th class="sorting_asc">Observações</th>
+                                                                     
                                                                             <th class="sorting_asc">Ações</th>
                                                                         </tr>
                                                                     </thead>

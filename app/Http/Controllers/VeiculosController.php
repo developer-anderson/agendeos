@@ -22,9 +22,8 @@ class VeiculosController extends Controller
     public function getAll()
     {
         //
-        return response()->json([
-            Veiculos::all()
-        ], 200);
+        $veiculos = DB::table('veiculos')->join('clientes', 'clientes.id', '=', 'veiculos.id_cliente')->select('veiculos.*', 'clientes.nome_f', 'clientes.razao_social')->get();
+        return response()->json( $veiculos , 200);
        
     }
 

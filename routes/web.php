@@ -34,3 +34,9 @@ Route::get('veiculos/show/{veiculos}', [VeiculosController::class, 'show']);
 Route::post('veiculos/insert', [VeiculosController::class, 'store']);
 Route::put('veiculos/update/{veiculos}',[VeiculosController::class, 'update']);
 Route::delete('veiculos/destroy{veiculos}', [VeiculosController::class, 'destroy']);
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+

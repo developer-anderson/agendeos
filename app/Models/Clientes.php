@@ -11,5 +11,5 @@ class Clientes extends Model
     protected $fillable = 
     ['nome_f', 'cpf', 'rg', 'email_f', 'telefone_f', 'celular_f', 'sexo', 'nome_j', 'email_j', 'telefone_j', 'celular_j',
      'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'estado', 'cidade', 'observacoes', 'cnpj', 'ie', 'nome_rj', 
-     'email_rj', 'telefone_rj', 'celular_rj', 'tipo_cliente', 'ie', 'razao_social'];
+     'email_rj', 'telefone_rj', 'celular_rj', 'tipo_cliente', 'ie', 'razao_social', 'user_id'];
 }

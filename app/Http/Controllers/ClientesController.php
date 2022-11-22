@@ -6,6 +6,7 @@ use App\Models\Clientes;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 class ClientesController extends Controller
 {
     /**
@@ -16,15 +17,17 @@ class ClientesController extends Controller
     public function getAll()
     {
         //
+        $user = Auth::user();
         return response()->json([
-            Clientes::all()
+            Clientes::where('user_id',Auth::id())->get()
         ], 200);
        
     }
     public function getAllclientByType($type = "PF")
     {
+        $user = Auth::user();
         return response()->json(
-            Clientes::where('tipo_cliente',$type)->get()
+            Clientes::where('tipo_cliente',$type)->where('user_id',Auth::id())->get()
         , 200);
     }
     public function viewToken()
@@ -34,8 +37,10 @@ class ClientesController extends Controller
     public function store(Request $request)
     {
         //
-        $post = $request->all();
+        $user = Auth::user();
        
+        $post = $request->all();
+        $post['user_id'] = Auth::id();
         $clientes = Clientes::create( $post);
         return response()->json([
             "erro" => false,

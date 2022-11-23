@@ -26,14 +26,17 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
+            "LaravelFrontendPresets\\NowUiPreset\\": "presets/NowUi/src/",
             "Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
+            "LaravelFrontendPresets\\NowUiPreset\\": "presets/NowUi/src/",
             "Tests\\": "tests/"
         }
     },
+    
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

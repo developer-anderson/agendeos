@@ -25,7 +25,7 @@ class ClientesController extends Controller
     }
     public function getAllclientByType($type = "PF")
     {
-        $user = Auth::user();
+     
         return response()->json(
             Clientes::where('tipo_cliente',$type)->where('user_id',Auth::id())->get()
         , 200);

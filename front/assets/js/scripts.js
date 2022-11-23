@@ -181,6 +181,26 @@ function addVeiculo(formid){
       alert(msg);
   });
 }
+function login(formid){
+  var dados = $("#"+formid).serialize()
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/login/authenticate',
+    
+    type: 'post',
+    dataType: 'json',
+    data: $("#"+formid).serialize()
+  })
+  .done(function(response){
+    console.log(response)
+    alert("Login realizado com sucesso")
+    window.location.href = 'index.php';
+  
+  })
+  .fail(function(jqXHR, textStatus, msg){
+      alert('E-mail ou senha é inválido');
+  });
+}
 function editarVeiculo(formid){
   var dados = $("#"+formid).serialize()
  

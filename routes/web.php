@@ -35,8 +35,10 @@ Route::post('veiculos/insert', [VeiculosController::class, 'store']);
 Route::put('veiculos/update/{veiculos}',[VeiculosController::class, 'update']);
 Route::delete('veiculos/destroy{veiculos}', [VeiculosController::class, 'destroy']);
 
-Auth::routes();
+Route::get('/login', [App\Http\Controllers\LoginController::class, 'show'])->name('login');
+Route::get('/register', [App\Http\Controllers\RegisterController::class, 'show'])->name('register');
+Route::get('/reset-password', [App\Http\Controllers\ResetPassword::class, 'show'])->name('reset-password');
+Route::post('logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 

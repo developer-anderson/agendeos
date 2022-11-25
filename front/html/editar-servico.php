@@ -1,6 +1,6 @@
 <?php include 'head.php'; ?>
 
-<body>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-2 col-dashboard">
@@ -17,7 +17,7 @@
                                 <div class="col-12 col-mobile">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Adicionar serviço</h4>
+                                            <h4 class="card-title">Editar  serviço</h4>
                                         </div>
                                         <div class="card-content">
                                             <div class="card-body">
@@ -38,12 +38,12 @@
                                                     <div class="col-xxl-6 col-sm-6">
                                                         <fieldset class="form-group">
                                                             <label for="observacoesGeraisCliente">Observações Gerais</label>
-                                                            <textarea class="form-control" name="observacoes" id="observacoesGeraisCliente" rows="6"></textarea>
+                                                            <textarea class="form-control" name="observacoes" id="observacoes" rows="6"></textarea>
                                                         </fieldset>
                                                     </div>
                                                 </form>
-                                                <button type="button" onclick="addServico('servicoForm')" class="btn btn-primary" id="btnAddServico">
-                                                    <i class="fa fa-check-square-o"></i> Adicionar
+                                                <button type="button" onclick="editarServico('servicoForm')" class="btn btn-primary" id="btnAddServico">
+                                                    <i class="fa fa-check-square-o"></i> Atualizar
                                                 </button>
                                             </div>
                                         </div>
@@ -100,8 +100,8 @@
                                                         </fieldset>
                                                     </div>
                                                 </form>
-                                                <button type="button" onclick="addServico('servicoForm')" class="btn btn-primary" id="btnAddServico">
-                                                    <i class="fa fa-check-square-o"></i> Adicionar
+                                                <button type="button" onclick="editarServico('servicoForm')" class="btn btn-primary" id="btnAddServico">
+                                                    <i class="fa fa-check-square-o"></i> Atualizar
                                                 </button>
                                             </div>
                                         </div>

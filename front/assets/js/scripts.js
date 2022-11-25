@@ -4,6 +4,7 @@ var html = ''
 var options = ''
 var id_cliente = 0
 var id_veiculo = 0
+var id_servico = 0;
 if(!localStorage.getItem('id')){
   window.location.href = 'login.html';
 }
@@ -284,6 +285,27 @@ function editarVeiculo(formid){
       alert(msg);
   });
 }
+function editarServico(formid){
+  var dados = $("#"+formid).serialize()
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/servicos/update/'+id_servico,
+    
+    type: 'put',
+    dataType: 'json',
+    data: $("#"+formid).serialize()
+  })
+  .done(function(response){
+    console.log(response)
+    if(!response.erro){
+      alert("Servico Editado com Sucesso.")
+      window.location.href = 'listar-servico.php';
+    }
+  })
+  .fail(function(jqXHR, textStatus, msg){
+      alert(msg);
+  });
+}
 function editarCliente(formid){
   var dados = $("#"+formid).serialize()
  
@@ -341,6 +363,19 @@ if(window.location.pathname  == "/html/editar-veiculo.php"){
   }
  
 }
+if(window.location.pathname  == "/html/editar-servico.php"){
+  var urlParams = new URLSearchParams(window.location.search);
+  id_servico = urlParams.get("id_servico")
+ 
+  if(id_servico){
+    getDataServico(id_servico)
+  }
+  else{
+    alert("Erro ao encontrar o serviço informado");
+    window.location.href = 'listar-servico.php';
+  }
+ 
+}
 if(window.location.pathname  == "/html/editar-cliente.php"){
   var urlParams = new URLSearchParams(window.location.search);
    id_cliente = urlParams.get("id_cliente")
@@ -354,6 +389,23 @@ if(window.location.pathname  == "/html/editar-cliente.php"){
   }
  
   
+}
+function getDataServico(id){
+
+  $.ajax({
+    url: 'http://127.0.0.1:8001/servicos/show/'+id,
+    type: 'get',
+    dataType: 'json',
+    success: function(response) {
+      $("#nomeServico").val(response.nome)
+      $("#valorServico").val(response.valor)
+      $("#observacoes").text(response.observacoes)
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
 }
 function getDataVeiculo(id){
 

@@ -4,6 +4,9 @@ var html = ''
 var options = ''
 var id_cliente = 0
 var id_veiculo = 0
+if(!localStorage.getItem('id')){
+  window.location.href = 'login.html';
+}
 $(document).ready(function(){
   $('.celular').mask('(00) 0.0000-0000');
   $('.telefone').mask('(00) 0000-0000');
@@ -14,7 +17,7 @@ $(document).ready(function(){
   $(".cnpj").blur(function() {
     
     var cnpj = $(this).val().replace(/[^0-9]/g, '');
-    
+
    
     if(cnpj.length == 14) {
     
@@ -160,6 +163,28 @@ function addCliente(formid){
       alert(msg);
   });
 }
+function addServico(formid){
+  var dados = $("#"+formid).serialize()
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/servicos/insert',
+    
+    type: 'post',
+    dataType: 'json',
+    data: $("#"+formid).serialize()
+  })
+  .done(function(response){
+    console.log(response)
+    if(!response.erro){
+      id_cliente = response.id
+      alert("Servico cadastrado com Sucesso.")
+      window.location.href = 'listar-servico.php?';
+    }
+  })
+  .fail(function(jqXHR, textStatus, msg){
+      alert(msg);
+  });
+}
 function addVeiculo(formid){
   var dados = $("#"+formid).serialize()
  
@@ -181,17 +206,54 @@ function addVeiculo(formid){
       alert(msg);
   });
 }
+function moeda(a, e, r, t) {
+  let n = ""
+    , h = j = 0
+    , u = tamanho2 = 0
+    , l = ajd2 = ""
+    , o = window.Event ? t.which : t.keyCode;
+  if (13 == o || 8 == o)
+      return !0;
+  if (n = String.fromCharCode(o),
+  -1 == "0123456789".indexOf(n))
+      return !1;
+  for (u = a.value.length,
+  h = 0; h < u && ("0" == a.value.charAt(h) || a.value.charAt(h) == r); h++)
+      ;
+  for (l = ""; h < u; h++)
+      -1 != "0123456789".indexOf(a.value.charAt(h)) && (l += a.value.charAt(h));
+  if (l += n,
+  0 == (u = l.length) && (a.value = ""),
+  1 == u && (a.value = "0" + r + "0" + l),
+  2 == u && (a.value = "0" + r + l),
+  u > 2) {
+      for (ajd2 = "",
+      j = 0,
+      h = u - 3; h >= 0; h--)
+          3 == j && (ajd2 += e,
+          j = 0),
+          ajd2 += l.charAt(h),
+          j++;
+      for (a.value = "",
+      tamanho2 = ajd2.length,
+      h = tamanho2 - 1; h >= 0; h--)
+          a.value += ajd2.charAt(h);
+      a.value += r + l.substr(u - 2, u)
+  }
+  return !1
+}
 function login(formid){
   var dados = $("#"+formid).serialize()
  
   $.ajax({
-    url: 'http://127.0.0.1:8001/login/authenticate',
+    url: 'http://127.0.0.1:8001/login',
     
     type: 'post',
     dataType: 'json',
     data: $("#"+formid).serialize()
   })
   .done(function(response){
+    localStorage.setItem('id', response);
     console.log(response)
     alert("Login realizado com sucesso")
     window.location.href = 'index.php';
@@ -249,6 +311,9 @@ if(window.location.pathname  == "/html/listar-clientes.php"){
 }
 if(window.location.pathname  == "/html/listar-veiculo.php"){
   getAllCar() 
+}
+if(window.location.pathname  == "/html/listar-servico.php"){
+  getAllServicos()
 }
 if(window.location.pathname  == "/html/adicionar-veiculo.php"){
   getAllclientByType('PF', true)
@@ -376,7 +441,7 @@ function getDataClient(id){
 function getAllclientByType(type = 'PF', select = false){
  
   $.ajax({
-    url: 'http://127.0.0.1:8001/clientes/getAllclientByType'+type,
+    url: 'http://127.0.0.1:8001/clientes/getAllclientByType/'+type+'/'+localStorage.getItem('id'),
     type: 'get',
     dataType: 'json',
     success: function(response) {
@@ -443,13 +508,13 @@ function getAllclientByType(type = 'PF', select = false){
 function getAllCar(){
  
   $.ajax({
-    url: 'http://127.0.0.1:8001/veiculos/getall',
+    url: 'http://127.0.0.1:8001/veiculos/getall/'+localStorage.getItem('id'),
     type: 'get',
     dataType: 'json',
     success: function(response) {
     
       Object.keys(response).forEach(function(key, index) {
-      
+        html += '<tr>'
         html += '<td class="big-item-table">'+response[key].placa+ '</td>'
         html += '<td class="big-item-table">'+response[key].marca+ '</td>'
         html += '<td class="big-item-table">'+response[key].modelo+ '</td>'
@@ -472,6 +537,37 @@ function getAllCar(){
       });
 
       $("#tveiculos").html(html)
+
+     
+        
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+}
+function getAllServicos(){
+  var teste = ''
+  $.ajax({
+    url: 'http://127.0.0.1:8001/servicos/getall/'+localStorage.getItem('id'),
+    type: 'get',
+    dataType: 'json',
+    success: function(response) {
+    
+      Object.keys(response).forEach(function(key, index) {
+        html += '<tr>'
+        html += '<td class="big-item-table">'+response[key].nome+ '</td>'
+        html += '<td class="big-item-table">'+response[key].valor.toLocaleString('pt-br', {minimumFractionDigits: 2})+ '</td>'
+     
+    
+        html += '<td class="big-item-table action-buttons"><a href="editar-servico.php?id_servico='+response[key].id+ '"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
+        html += '</tr>'
+        
+
+      });
+      console.log(html)
+      $("#lservicos").html(html)
 
      
         
@@ -537,7 +633,9 @@ const openModal = (modal) => {
 const closeModal = (modal) => {
   modal.classList.add('d-none')
 }
-
+if(localStorage.getItem('id')){
+  $(".user_id").val(localStorage.getItem('id'))
+}
 const btnAddOs = document.getElementById('btnAddOs');
 const btnCloseModalOs = document.getElementById('btnCloseModalOs');
 const modalOs = document.getElementById('modalOs');

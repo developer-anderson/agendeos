@@ -53,15 +53,15 @@
                                                                         <tr>
                                                                             <th class="sorting_asc">Nome do Serviço</th>
                                                                             <th class="sorting_asc">Valor do Serviço (R$)</th>
-                                                                            <th class="sorting_asc">Descrição</th>
+                                                                        
                                                                             <th class="sorting_asc">Ações</th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody>
+                                                                    <tbody id="lservicos">
                                                                         <tr>
                                                                             <td class="big-item-table">Serviço Teste 1</td>
                                                                             <td class="big-item-table">200,00</td>
-                                                                            <td class="xxl-item-table">Lorem ipsum dolor sit amet consectetur</td>
+                                                                      
                                                                             <td class="big-item-table action-buttons">
                                                                                 <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button>
 

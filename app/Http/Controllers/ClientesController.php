@@ -14,20 +14,20 @@ class ClientesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll()
+    public function getAll($id)
     {
         //
         $user = Auth::user();
         return response()->json([
-            Clientes::where('user_id',Auth::id())->get()
+            Clientes::where('user_id',$id)->get()
         ], 200);
        
     }
-    public function getAllclientByType($type = "PF")
+    public function getAllclientByType($type = "PF", $id)
     {
-     
+        
         return response()->json(
-            Clientes::where('tipo_cliente',$type)->where('user_id',Auth::id())->get()
+            Clientes::where('tipo_cliente',$type)->where('user_id',$id)->get()
         , 200);
     }
     public function viewToken()
@@ -40,7 +40,7 @@ class ClientesController extends Controller
         $user = Auth::user();
        
         $post = $request->all();
-        $post['user_id'] = Auth::id();
+      
         $clientes = Clientes::create( $post);
         return response()->json([
             "erro" => false,

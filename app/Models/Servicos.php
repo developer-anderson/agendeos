@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Servicos extends Model
 {
     use HasFactory;
+    protected $fillable = 
+    ['nome', 'valor', 'observacoes', 'user_id'];
 }

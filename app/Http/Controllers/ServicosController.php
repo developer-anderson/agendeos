@@ -22,9 +22,14 @@ class ServicosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function getAll($id)
     {
         //
+      
+        return response()->json(
+            Servicos::where('user_id',$id)->get()
+        , 200);
+       
     }
 
     /**
@@ -53,7 +58,9 @@ class ServicosController extends Controller
     public function show($id)
     {
         $registro = Servicos::find($id);
-        return $registro;
+        return response()->json(
+            $registro
+        , 200);
     }
 
     /**
@@ -91,7 +98,7 @@ class ServicosController extends Controller
      * @param  \App\Models\Servicos  $servicos
      * @return \Illuminate\Http\Response
      */
-    public function delete($id)
+    public function destroy($id)
     {
         Servicos::find($id)->delete();
         $response = [

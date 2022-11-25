@@ -135,7 +135,7 @@
                                                             <input type="text" name="cidade" class="form-control cidade" id="cidadeClientePf">
                                                         </fieldset>
                                                     </div>
-
+                                                    <input name="user_id" type="hidden" class="form-control user_id" id="user_id">
                                                     <div class="col-xxl-3 col-sm-4">
                                                         <fieldset class="form-group">
                                                             <label for="observacoesClientePf">Observações</label>
@@ -247,6 +247,7 @@
                                                         <fieldset class="form-group">
                                                             <label for="bairroClientePj">Bairro:</label>
                                                             <input name="bairro" type="text" class="form-control bairro" id="bairroClientePj">
+                                                            <input name="user_id" type="hidden" class="form-control user_id" id="user_id">
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-xxl-2 col-sm-3">

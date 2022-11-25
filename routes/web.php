@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\VeiculosController;
+use App\Http\Controllers\ServicosController;
 Route::get('/token', function (Request $request) {
     $token = $request->session()->token();
  
@@ -23,19 +24,25 @@ Route::get('/token', function (Request $request) {
     // ...
 });
 Route::get('clientes/getall', [ClientesController::class, 'getall']);
-Route::get('clientes/getAllclientByType{type}', [ClientesController::class, 'getAllclientByType']);
+Route::get('clientes/getAllclientByType/{type}/{id}', [ClientesController::class, 'getAllclientByType']);
 Route::get('clientes/show/{clientes}', [ClientesController::class, 'show']);
 Route::post('clientes/insert', [ClientesController::class, 'store']);
 Route::put('clientes/update/{clientes}',[ClientesController::class, 'update']);
 Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy']);
 
-Route::get('veiculos/getall', [VeiculosController::class, 'getall']);
+Route::get('veiculos/getall/{id}', [VeiculosController::class, 'getall']);
 Route::get('veiculos/show/{veiculos}', [VeiculosController::class, 'show']);
 Route::post('veiculos/insert', [VeiculosController::class, 'store']);
 Route::put('veiculos/update/{veiculos}',[VeiculosController::class, 'update']);
 Route::delete('veiculos/destroy{veiculos}', [VeiculosController::class, 'destroy']);
 
-Route::get('/login', [App\Http\Controllers\LoginController::class, 'show'])->name('login');
+Route::get('servicos/getall/{id}', [ServicosController::class, 'getall']);
+Route::get('servicos/show/{servicos}', [ServicosController::class, 'show']);
+Route::post('servicos/insert', [ServicosController::class, 'store']);
+Route::put('servicos/update/{servicos}',[ServicosController::class, 'update']);
+Route::delete('servicos/destroy{servicos}', [ServicosController::class, 'destroy']);
+
+Route::post('/login', [App\Http\Controllers\LoginController::class, 'login'])->name('login');
 Route::get('/register', [App\Http\Controllers\RegisterController::class, 'show'])->name('register');
 Route::get('/reset-password', [App\Http\Controllers\ResetPassword::class, 'show'])->name('reset-password');
 Route::post('logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logout');

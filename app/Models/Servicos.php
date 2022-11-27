@@ -9,5 +9,5 @@ class Servicos extends Model
 {
     use HasFactory;
     protected $fillable = 
-    ['nome', 'valor', 'observacoes', 'user_id'];
+    ['nome', 'valor', 'tempo_estimado', 'observacoes', 'user_id'];
 }

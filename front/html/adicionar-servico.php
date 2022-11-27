@@ -21,25 +21,35 @@
                                         </div>
                                         <div class="card-content">
                                             <div class="card-body">
-                                                <form class="row" id="servicoForm">
-                                                    <div class="col-xxl-4 col-sm-6">
-                                                        <fieldset class="form-group">
-                                                            <label for="nomeServico">Nome do Serviço:</label>
-                                                            <input type="text" name="nome" class="form-control" id="nomeServico">
-                                                        </fieldset>
-                                                        <input name="user_id" type="hidden" class="form-control user_id" id="user_id">
+                                                <form class="" id="servicoForm">
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <fieldset class="form-group">
+                                                                <label for="nomeServico">Nome do Serviço:</label>
+                                                                <input type="text" name="nome" class="form-control" id="nomeServico">
+                                                            </fieldset>
+                                                            <input name="user_id" type="hidden" class="form-control user_id" id="user_id">
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <fieldset class="form-group">
+                                                                <label for="valorServico">Valor do Serviço (R$):</label>
+                                                                <input type="number" name="valor" onKeyPress="return(moeda(this,'.',',',event))" class="form-control" id="valorServico">
+                                                            </fieldset>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-xxl-3 col-sm-3">
-                                                        <fieldset class="form-group">
-                                                            <label for="valorServico">Valor do Serviço (R$):</label>
-                                                            <input type="number" name="valor" onKeyPress="return(moeda(this,'.',',',event))" class="form-control" id="valorServico">
-                                                        </fieldset>
-                                                    </div>
-                                                    <div class="col-xxl-6 col-sm-6">
-                                                        <fieldset class="form-group">
-                                                            <label for="observacoesGeraisCliente">Observações Gerais</label>
-                                                            <textarea class="form-control" name="observacoes" id="observacoesGeraisCliente" rows="6"></textarea>
-                                                        </fieldset>
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <fieldset class="form-group">
+                                                                <label for="tempo_estimado">Tempo Estimado de Conclusão:</label>
+                                                                <input type="time" name="tempo_estimado" class="form-control" id="tempo_estimado">
+                                                            </fieldset>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <fieldset class="form-group">
+                                                                <label for="observacoesGeraisCliente">Observações Gerais</label>
+                                                                <textarea class="form-control" name="observacoes" id="observacoes" rows="6"></textarea>
+                                                            </fieldset>
+                                                        </div>
                                                     </div>
                                                 </form>
                                                 <button type="button" onclick="addServico('servicoForm')" class="btn btn-primary" id="btnAddServico">

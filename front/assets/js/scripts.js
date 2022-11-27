@@ -398,6 +398,7 @@ function getDataServico(id){
     dataType: 'json',
     success: function(response) {
       $("#nomeServico").val(response.nome)
+      $("#tempo_estimado").val(response.tempo_estimado)
       $("#valorServico").val(response.valor)
       $("#observacoes").text(response.observacoes)
     },

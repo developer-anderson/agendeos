@@ -22,9 +22,14 @@ class OrdemServicosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function getAll($id)
     {
         //
+      
+        return response()->json(
+            OrdemServicos::where('user_id',$id)->get()
+        , 200);
+       
     }
 
     /**
@@ -36,6 +41,12 @@ class OrdemServicosController extends Controller
     public function store(Request $request)
     {
         //
+        $post = $request->all();
+        OrdemServicos::create( $post);
+        return [
+            "erro" => false,
+            "mensagem" => "Ordem de Servicos com  sucesso!"
+        ];
     }
 
     /**
@@ -48,7 +59,9 @@ class OrdemServicosController extends Controller
     {
         //
         $registro = OrdemServicos::find($ordemServicos);
-        return $registro;
+        return response()->json(
+            $registro
+        , 200);
     }
 
     /**
@@ -72,6 +85,12 @@ class OrdemServicosController extends Controller
     public function update(Request $request, OrdemServicos $ordemServicos)
     {
         //
+        $dados = $request->all();
+        OrdemServicos::find($ordemServicos)->update($dados);
+        return [
+            "erro" => false,
+            "mensagem" => "Ordem de Servicos editado com  sucesso!"
+        ];
     }
 
     /**
@@ -83,5 +102,11 @@ class OrdemServicosController extends Controller
     public function destroy(OrdemServicos $ordemServicos)
     {
         //
+        OrdemServicos::find($ordemServicos)->delete();
+        $response = [
+            "erro" => false,
+            "mensagem" => "Serviço apagado com sucesso!"
+        ];
+        return  $response;
     }
 }

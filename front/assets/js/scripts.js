@@ -350,6 +350,12 @@ if(window.location.pathname  == "/html/adicionar-veiculo.php"){
   
  }
 }
+if(window.location.pathname  == "/html/ordem-de-servico.php"){
+  getAllclientByType('PF', true)
+  getAllclientByType('PJ', true)
+  getAllServicos(true)
+ 
+}
 if(window.location.pathname  == "/html/editar-veiculo.php"){
   var urlParams = new URLSearchParams(window.location.search);
   id_veiculo = urlParams.get("id_veiculo")
@@ -600,7 +606,7 @@ function getAllCar(){
     }
   });
 }
-function getAllServicos(){
+function getAllServicos(select = false){
   var teste = ''
   $.ajax({
     url: 'http://127.0.0.1:8001/servicos/getall/'+localStorage.getItem('id'),
@@ -616,12 +622,60 @@ function getAllServicos(){
     
         html += '<td class="big-item-table action-buttons"><a href="editar-servico.php?id_servico='+response[key].id+ '"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
         html += '</tr>'
+        options += '<option value="'+response[key].id +'">'+response[key].nome+'</option>'
+
+      });
+      if(select){
+        $("#lservicos").html(options)
+      }
+      else{
+        $("#lservicos").html(html)
+      }
+      options = ''
+
+     
+        
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+}
+function getTerminoPrevisao(){
+  var teste = ''
+  let horario  = '00:00:00'
+  if($("#inicio_os_time").val()){
+     horario = $("#inicio_os_time").val()
+  }
+  $.ajax({
+    url: 'http://127.0.0.1:8001/servicos/terminoPrevisao/'+horario+'/'+$("#lservicos").val(),
+    type: 'get',
+    dataType: 'json',
+    success: function(response) {
+      $("#previsao_os_time").val(response)        
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+}
+function getAllCarByCliente(id){
+  var teste = ''
+  $.ajax({
+    url: 'http://127.0.0.1:8001/veiculos/cliente/'+id,
+    type: 'get',
+    dataType: 'json',
+    success: function(response) {
+    
+      Object.keys(response).forEach(function(key, index) {
+        options += '<option value="'+response[key].id +'">'+response[key].placa+' - '+response[key].marca+' - '+response[key].modelo+'</option>'
         
 
       });
-      console.log(html)
-      $("#lservicos").html(html)
-
+      $("#id_veiculo").html(options)
+      options = ''
      
         
     },

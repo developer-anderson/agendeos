@@ -192,7 +192,7 @@
                                                                 <div class="col-xxl-6 col-sm-6">
                                                                     <fieldset class="form-group">
                                                                         <label for="servicoOs">Serviço:</label>
-                                                                        <select class="custom-select block" id="servicoOs">
+                                                                        <select name="id_servico" onchange="getTerminoPrevisao()" class="custom-select block" id="lservicos">
                                                                             <option selected="">...</option>
                                                                         </select>
                                                                     </fieldset>
@@ -200,66 +200,74 @@
                                                                 <div class="col-xxl-6 col-sm-6">
                                                                     <fieldset class="form-group">
                                                                         <label for="clienteOs">Nome do cliente:</label>
-                                                                        <select class="custom-select block" id="clienteOs">
+                                                                        <select  name="id_cliente" onchange="getAllCarByCliente(this.value)" class="custom-select block" id="donoVeiculo">
                                                                             <option selected="">...</option>
                                                                         </select>
                                                                     </fieldset>
                                                                 </div>
-                                                                <div class="col-xxl-3 col-sm-3">
+                                                                <div class="col-xxl-6 col-sm-6">
                                                                     <div class="form-group">
                                                                         <label>Veículo</label>
                                                                         <div class="input-group date">
-                                                                            <select class="custom-select block" id="clienteOs">
+                                                                            <select name="id_veiculo" class="custom-select block" id="id_veiculo">
                                                                                 <option selected="">...</option>
                                                                             </select>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-xxl-3 col-sm-3">
+                                                                <div class="col-xxl-4 col-sm-4">
                                                                     <div class="form-group">
-                                                                        <label>Data e horário da OS</label>
-                                                                        <div class="input-group date" id="datetimepicker1">
-                                                                            <input type="text" class="form-control" id="dataHorarioOs">
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">
-                                                                                    <span class="fa fa-calendar"></span>
-                                                                                </span>
-                                                                            </div>
-                                                                        </div>
+                                                                        <label>Data de inicio da OS</label>
+                                                                        <input type="date" class="form-control"  name="inicio_os"  id="inicio_os">
+                                                                        
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-xxl-3 col-sm-3">
+                                                                <div class="col-xxl-2 col-sm-2">
+                                                                    <div class="form-group">
+                                                                        <label>Horário de inicio da OS</label>
+                                                                        <input type="time" class="form-control"  name="inicio_os_time" onchange="getTerminoPrevisao()"  id="inicio_os_time">
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xxl-4 col-sm-4">
                                                                     <div class="form-group">
                                                                         <label>Previsão de entrega</label>
-                                                                        <div class="input-group date" id="datetimepicker2">
-                                                                            <input type="text" class="form-control" id="dataEntregaOs">
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">
-                                                                                    <span class="fa fa-calendar"></span>
-                                                                                </span>
-                                                                            </div>
-                                                                        </div>
+                                                                        <input type="date" class="form-control" name="previsao_os" id="previsao_os">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-xxl-2 col-sm-3">
+                                                                <div class="col-xxl-2 col-sm-2">
+                                                                    <div class="form-group">
+                                                                        <label>Horário previsto da entrega</label>
+                                                                        <input type="time" class="form-control" name="previsao_os_time" id="previsao_os_time">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xxl-2 col-sm-2">
                                                                     <fieldset class="form-group">
-                                                                        <label for="clienteOs">Remarketing:</label>
-                                                                        <select class="custom-select block" id="clienteOs">
-                                                                            <option selected="">Não se aplica</option>
-                                                                            <option selected="">8 dias</option>
-                                                                            <option selected="">15 dias</option>
-                                                                            <option selected="">30 dias</option>
+                                                                        <label for="clienteOs">Remarketing (dias):</label>
+                                                                        <input type="text" class="form-control" name="remarketing" id="remarketing">
+                                                                    </fieldset>
+                                                                </div>
+                                                                <div class="col-xxl-4 col-sm-4">
+                                                                    <fieldset class="form-group">
+                                                                        <label for="situacao">Situação:</label>
+                                                                        <select class="custom-select block" name="situacao" id="situacao">
+                                                                            <option value="0">Aguardando Pagamento</option>
+                                                                            <option value="1">Pago</option>
+                                                                            <option value="2">Pago - serviço iniciado</option>
+                                                                            <option value="3">Pago - Aguardando retirada do Cliente</option>
+                                                                            <option value="4">Pago - Remarketing</option>
+                                                                            <option value="5">Remarketing</option>
                                                                         </select>
                                                                     </fieldset>
                                                                 </div>
                                                                 <div class="col-xxl-12 col-sm-12">
                                                                     <fieldset class="form-group">
                                                                         <label for="observacoesOs">Observações</label>
-                                                                        <textarea class="form-control" id="observacoesOs" rows="4"></textarea>
+                                                                        <textarea class="form-control" name="observacoes" id="observacoes" rows="4"></textarea>
                                                                     </fieldset>
                                                                 </div>
                                                             </form>
-                                                            <button type="submit" class="btn btn-primary" id="btnAddServico">
+                                                            <button type="button" onclick="addOs('OrdemDeServicoForm')" class="btn btn-primary" id="btnAddServico">
                                                                 <i class="fa fa-check-square-o"></i> Adicionar
                                                             </button>
                                                         </div>

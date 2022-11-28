@@ -31,7 +31,17 @@ class ServicosController extends Controller
         , 200);
        
     }
-
+    public function terminoPrevisao($horario, $id)
+    {
+        //
+        $servicos = Servicos::find($id);
+        $previsao = gmdate('H:i:s', strtotime( $horario ) + strtotime( $servicos->tempo_estimado ) );
+     
+        return response()->json(
+            $previsao
+        , 200);
+       
+    }
     /**
      * Store a newly created resource in storage.
      *

@@ -31,6 +31,7 @@ Route::put('clientes/update/{clientes}',[ClientesController::class, 'update']);
 Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy']);
 
 Route::get('veiculos/getall/{id}', [VeiculosController::class, 'getall']);
+Route::get('veiculos/cliente/{id}', [VeiculosController::class, 'getallCliente']);
 Route::get('veiculos/show/{veiculos}', [VeiculosController::class, 'show']);
 Route::post('veiculos/insert', [VeiculosController::class, 'store']);
 Route::put('veiculos/update/{veiculos}',[VeiculosController::class, 'update']);
@@ -38,6 +39,7 @@ Route::delete('veiculos/destroy{veiculos}', [VeiculosController::class, 'destroy
 
 Route::get('servicos/getall/{id}', [ServicosController::class, 'getall']);
 Route::get('servicos/show/{servicos}', [ServicosController::class, 'show']);
+Route::get('servicos/terminoPrevisao/{horario}/{servicos}', [ServicosController::class, 'terminoPrevisao']);
 Route::post('servicos/insert', [ServicosController::class, 'store']);
 Route::put('servicos/update/{servicos}',[ServicosController::class, 'update']);
 Route::delete('servicos/destroy{servicos}', [ServicosController::class, 'destroy']);

@@ -5,6 +5,7 @@ var options = ''
 var id_cliente = 0
 var id_veiculo = 0
 var id_servico = 0;
+var os_id = 0;
 if(!localStorage.getItem('id')){
   window.location.href = 'login.html';
 }
@@ -164,6 +165,28 @@ function addCliente(formid){
       alert(msg);
   });
 }
+function addOs(formid){
+  var dados = $("#"+formid).serialize()
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/os/insert',
+    
+    type: 'post',
+    dataType: 'json',
+    data: $("#"+formid).serialize()
+  })
+  .done(function(response){
+    console.log(response)
+    if(!response.erro){
+      id_cliente = response.id
+      alert("Serviço cadastrado com Sucesso.")
+      window.location.href = 'ordem-de-servico.php';
+    }
+  })
+  .fail(function(jqXHR, textStatus, msg){
+      alert(msg);
+  });
+}
 function addServico(formid){
   var dados = $("#"+formid).serialize()
  
@@ -285,6 +308,27 @@ function editarVeiculo(formid){
       alert(msg);
   });
 }
+function editaros(formid){
+  var dados = $("#"+formid).serialize()
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/os/update/'+os_id,
+    
+    type: 'put',
+    dataType: 'json',
+    data: $("#"+formid).serialize()
+  })
+  .done(function(response){
+    console.log(response)
+    if(!response.erro){
+      alert("Ordem de Serviço Editado com Sucesso.")
+      window.location.href = 'ordem-de-servico.php';
+    }
+  })
+  .fail(function(jqXHR, textStatus, msg){
+      alert(msg);
+  });
+}
 function editarServico(formid){
   var dados = $("#"+formid).serialize()
  
@@ -333,6 +377,9 @@ if(window.location.pathname  == "/html/listar-clientes.php"){
 }
 if(window.location.pathname  == "/html/listar-veiculo.php"){
   getAllCar() 
+}
+if(window.location.pathname  == "/html/ordem-de-servico.php"){
+  getAllOs() 
 }
 if(window.location.pathname  == "/html/listar-servico.php"){
   getAllServicos()
@@ -541,7 +588,7 @@ function getAllclientByType(type = 'PF', select = false){
         }
       
 
-        html += '<td class="big-item-table action-buttons"><a href="editar-cliente.php?id_cliente='+response[key].id+ '"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
+        html += '<td class="big-item-table action-buttons"><a href="editar-cliente.php?id_cliente='+response[key].id+ '"><button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></a></td>'
         html += '</tr>'
         
 
@@ -563,6 +610,84 @@ function getAllclientByType(type = 'PF', select = false){
         alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
     }
   });
+}
+function getAllOs(){
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:8001/os/getall/'+localStorage.getItem('id'),
+    type: 'get',
+    dataType: 'json',
+    success: function(response) {
+    
+      Object.keys(response).forEach(function(key, index) {
+        let inicio_os = new Date(response[key].inicio_os)
+        let previsao_os = new Date(response[key].previsao_os)
+        html += '<tr>'
+        html += '<td class="big-item-table">#'+response[key].id+ '</td>'
+        html += '<td class="big-item-table">'+response[key].valor+ '</td>'
+        if(response[key].nome_f){
+          html += '<td class="big-item-table">'+response[key].nome_f+ '</td>'
+        }
+        else{
+          html += '<td class="big-item-table">'+response[key].razao_social+ '</td>'
+        }
+        html += '<td class="big-item-table">'+response[key].nome+ '</td>'
+        html += '<td class="big-item-table">'+response[key].placa+ ' - '+ response[key].modelo + '</td>'
+        html += '<td class="big-item-table">'+inicio_os.getDay() + '/' + inicio_os.getMonth() + '/' + inicio_os.getFullYear() + ' ' + inicio_os.getHours() + ':' +inicio_os.getMinutes() + '</td>'
+        html += '<td class="big-item-table">'+previsao_os.getDay() + '/' + previsao_os.getMonth() + '/' + previsao_os.getFullYear() + ' ' + previsao_os.getHours() + ':' +previsao_os.getMinutes() + '</td>'
+        if(!response[key].situacao){
+          html += '<td > <div class="badge badge-warning">Aguardando Pagamento</div></td>'
+        }
+        else if(response[key].situacao == 1){
+
+          html += '<td > <div class="badge badge-success">Pago</div></td>'
+        }
+        else if(response[key].situacao == 2){
+
+          html += '<td > <div class="badge badge-success">Pago - serviço iniciado</div></td>'
+        }
+        else if(response[key].situacao == 3){
+
+          html += '<td > <div class="badge badge-success">Pago - Aguardando retirada do Cliente</div></td>'
+        }
+        else if(response[key].situacao == 4){
+
+          html += '<td > <div class="badge badge-success">Pago - Remarketing</div></td>'
+        }
+        else if(response[key].situacao == 5){
+
+          html += '<td > <div class="badge badge-warning">Remarketing</div></td>'
+        }
+        else if(response[key].situacao == 6){
+
+          html += '<td > <div class="badge badge-danger">Cancelado</div></td>'
+        }
+
+        html += '<td class="big-item-table action-buttons"><button onclick="getOs('+response[key].id+ ','+response[key].id_cliente+','+response[key].id_servico+','+response[key].id_veiculo+','+response[key].situacao+','+response[key].remarketing+','+response[key].observacoes+','+response[key].inicio_os+','+response[key].previsao_os+')"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></td>'
+        html += '</tr>'
+        
+
+      });
+
+      $("#tos").html(html)
+
+     
+        
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+}
+function getOs(id, id_cliente,id_servico, id_veiculo, situacao, remarketing, observacoes, inicio_os,  previsao_os){
+  $("#btnAddOs").trigger("click");
+  os_id = id
+}
+function limparForm(){
+  $("input").val();
+  $("#donoVeiculo").val(0).change();
+  $("textarea").text();
 }
 function getAllCar(){
  
@@ -589,7 +714,7 @@ function getAllCar(){
     
       
 
-        html += '<td class="big-item-table action-buttons"><a href="editar-veiculo.php?id_veiculo='+response[key].id+ '"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
+        html += '<td class="big-item-table action-buttons"><a href="editar-veiculo.php?id_veiculo='+response[key].id+ '"><button href="editar-veiculo.php?id_veiculo='+response[key].id+ '"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></a></td>'
         html += '</tr>'
         
 
@@ -620,7 +745,7 @@ function getAllServicos(select = false){
         html += '<td class="big-item-table">'+response[key].valor.toLocaleString('pt-br', {minimumFractionDigits: 2})+ '</td>'
      
     
-        html += '<td class="big-item-table action-buttons"><a href="editar-servico.php?id_servico='+response[key].id+ '"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></a></td>'
+        html += '<td class="big-item-table action-buttons"><a href="editar-servico.php?id_servico='+response[key].id+ '"> <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></a></td>'
         html += '</tr>'
         options += '<option value="'+response[key].id +'">'+response[key].nome+'</option>'
 

@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\VeiculosController;
 use App\Http\Controllers\ServicosController;
+use App\Http\Controllers\OrdemServicosController;
 Route::get('/token', function (Request $request) {
     $token = $request->session()->token();
  
@@ -29,6 +30,12 @@ Route::get('clientes/show/{clientes}', [ClientesController::class, 'show']);
 Route::post('clientes/insert', [ClientesController::class, 'store']);
 Route::put('clientes/update/{clientes}',[ClientesController::class, 'update']);
 Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy']);
+
+Route::get('os/getall/{id}', [OrdemServicosController::class, 'getall']);
+Route::get('os/show/{os}', [OrdemServicosController::class, 'show']);
+Route::post('os/insert', [OrdemServicosController::class, 'store']);
+Route::put('os/update/{os}',[OrdemServicosController::class, 'update']);
+Route::delete('os/destroy{os}', [OrdemServicosController::class, 'destroy']);
 
 Route::get('veiculos/getall/{id}', [VeiculosController::class, 'getall']);
 Route::get('veiculos/cliente/{id}', [VeiculosController::class, 'getallCliente']);

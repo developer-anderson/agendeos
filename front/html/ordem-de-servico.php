@@ -71,12 +71,12 @@
                                                                         <th class="sorting_asc">Veículo</th>
                                                                         <th class="sorting_asc">Data e horário da O.S.</th>
                                                                         <th class="sorting_asc">Previsão de entrega</th>
-                                                                        <th class="sorting_asc">Observações</th>
+                                                                        
                                                                         <th class="sorting_asc">Status</th>
                                                                         <th class="sorting_asc">Ações</th>
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody>
+                                                                <tbody id="tos">
                                                                     <tr>
                                                                         <td class="big-item-table id-os">
                                                                             <a href="#">#123456</a>
@@ -87,7 +87,7 @@
                                                                         <td class="big-item-table">123ABC</td>
                                                                         <td class="big-item-table">15/02/2022 às 15:30</td>
                                                                         <td class="big-item-table">15/03/2022</td>
-                                                                        <td class="xxl-item-table">Lorem ipsum dolor, sit amet consectetur adipisicing elit</td>
+                                                                        
                                                                         <td>
                                                                             <div class="badge badge-success">
                                                                                 Em aberto
@@ -111,7 +111,7 @@
                                                                         <td class="big-item-table">123ABC</td>
                                                                         <td class="big-item-table">15/02/2022 às 15:30</td>
                                                                         <td class="big-item-table">15/03/2022</td>
-                                                                        <td class="xxl-item-table">Lorem ipsum dolor, sit amet consectetur adipisicing elit</td>
+                                                                        
                                                                         <td>
                                                                             <div class="badge badge-warning">
                                                                                 Em atraso
@@ -135,7 +135,7 @@
                                                                         <td class="big-item-table">123ABC</td>
                                                                         <td class="big-item-table">15/02/2022 às 15:30</td>
                                                                         <td class="big-item-table">15/03/2022</td>
-                                                                        <td class="xxl-item-table">Lorem ipsum dolor, sit amet consectetur adipisicing elit</td>
+                                                                        
                                                                         <td>
                                                                             <div class="badge badge-danger">
                                                                                 Cancelado
@@ -184,7 +184,7 @@
                                                     <div class="card-header">
                                                         <h4 class="card-title card-title-modal-mobile">Adicionar ordem de serviço</h4>
 
-                                                        <button type="button" class="btn btn-close-modal" id="btnCloseModalOs"><i class="fa fa-times"></i></button>
+                                                        <button type="button" onclick="limparForm()" class="btn btn-close-modal" id="btnCloseModalOs"><i class="fa fa-times"></i></button>
                                                     </div>
                                                     <div class="card-content">
                                                         <div class="card-body">
@@ -197,11 +197,12 @@
                                                                         </select>
                                                                     </fieldset>
                                                                 </div>
+                                                                <input name="user_id" type="hidden" class="form-control user_id" id="user_id">
                                                                 <div class="col-xxl-6 col-sm-6">
                                                                     <fieldset class="form-group">
                                                                         <label for="clienteOs">Nome do cliente:</label>
                                                                         <select  name="id_cliente" onchange="getAllCarByCliente(this.value)" class="custom-select block" id="donoVeiculo">
-                                                                            <option selected="">...</option>
+                                                                            <option value="0">...</option>
                                                                         </select>
                                                                     </fieldset>
                                                                 </div>
@@ -257,6 +258,7 @@
                                                                             <option value="3">Pago - Aguardando retirada do Cliente</option>
                                                                             <option value="4">Pago - Remarketing</option>
                                                                             <option value="5">Remarketing</option>
+                                                                            <option value="6">Cancelado</option>
                                                                         </select>
                                                                     </fieldset>
                                                                 </div>

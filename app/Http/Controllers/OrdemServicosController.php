@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrdemServicos;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class OrdemServicosController extends Controller
 {
     /**
@@ -25,11 +25,9 @@ class OrdemServicosController extends Controller
     public function getAll($id)
     {
         //
-      
-        return response()->json(
-            OrdemServicos::where('user_id',$id)->get()
-        , 200);
-       
+        $os = DB::table('ordem_servicos')->join('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->join('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->join('servicos', 'servicos.id', '=', 'ordem_servicos.id_servico')->where('ordem_servicos.user_id',$id)
+        ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social' , 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor')->get();
+        return response()->json( $os , 200);
     }
 
     /**
@@ -42,13 +40,30 @@ class OrdemServicosController extends Controller
     {
         //
         $post = $request->all();
+        $post['inicio_os'] = $post['inicio_os'] ." ".$post['inicio_os_time'];
+        $post['previsao_os'] = $post['previsao_os'] ." ".$post['previsao_os_time'];
+   
         OrdemServicos::create( $post);
+        if($post['remarketing'])
+        {
+            $this->remarketing($post);
+        }
         return [
             "erro" => false,
             "mensagem" => "Ordem de Servicos com  sucesso!"
         ];
     }
-
+    public function remarketing($post)
+    {
+        //
+        $post['situacao'] = 5;
+        $remarketing = $post['remarketing'];
+        $post['remarketing'] = null;
+        $post['previsao_os'] = date('Y-m-d H:i:s', strtotime("+$remarketing days",strtotime($post['inicio_os'])));
+        $post['inicio_os'] = date('Y-m-d H:i:s', strtotime("+$remarketing days",strtotime($post['inicio_os'])));
+        
+        OrdemServicos::create($post);
+    }
     /**
      * Display the specified resource.
      *

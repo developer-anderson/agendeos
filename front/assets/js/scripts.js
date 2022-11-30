@@ -6,6 +6,8 @@ var id_cliente = 0
 var id_veiculo = 0
 var id_servico = 0;
 var os_id = 0;
+var os = {};
+var previsao_os_time = ''
 if(!localStorage.getItem('id')){
   window.location.href = 'login.html';
 }
@@ -551,7 +553,7 @@ function getAllclientByType(type = 'PF', select = false){
     type: 'get',
     dataType: 'json',
     success: function(response) {
-    
+      options += '<option value="0">Selecione o Cliente</option>'
       Object.keys(response).forEach(function(key, index) {
       
         html += '<tr>'
@@ -618,10 +620,15 @@ function getAllOs(){
     type: 'get',
     dataType: 'json',
     success: function(response) {
-    
+     os = response
       Object.keys(response).forEach(function(key, index) {
-        let inicio_os = new Date(response[key].inicio_os)
-        let previsao_os = new Date(response[key].previsao_os)
+        let inicio_os = response[key].inicio_os.split(" ")
+        let inicio_data = inicio_os[0].split("-")
+        let data_formadata_inicio = inicio_data[2] + '/' + inicio_data[1] + '/' + inicio_data[0]
+
+        let previsao_os = response[key].previsao_os.split(" ")
+        let previsao_data = inicio_os[0].split("-")
+        let data_formadata_previsao = previsao_data[2] + '/' + previsao_data[1] + '/' + previsao_data[0]
         html += '<tr>'
         html += '<td class="big-item-table">#'+response[key].id+ '</td>'
         html += '<td class="big-item-table">'+response[key].valor+ '</td>'
@@ -633,8 +640,8 @@ function getAllOs(){
         }
         html += '<td class="big-item-table">'+response[key].nome+ '</td>'
         html += '<td class="big-item-table">'+response[key].placa+ ' - '+ response[key].modelo + '</td>'
-        html += '<td class="big-item-table">'+inicio_os.getDay() + '/' + inicio_os.getMonth() + '/' + inicio_os.getFullYear() + ' ' + inicio_os.getHours() + ':' +inicio_os.getMinutes() + '</td>'
-        html += '<td class="big-item-table">'+previsao_os.getDay() + '/' + previsao_os.getMonth() + '/' + previsao_os.getFullYear() + ' ' + previsao_os.getHours() + ':' +previsao_os.getMinutes() + '</td>'
+        html += '<td class="big-item-table">'+data_formadata_inicio+ ' ' +inicio_os[1] + '</td>'
+        html += '<td class="big-item-table">'+data_formadata_previsao+ ' ' +previsao_os[1] + '</td>'
         if(!response[key].situacao){
           html += '<td > <div class="badge badge-warning">Aguardando Pagamento</div></td>'
         }
@@ -663,7 +670,7 @@ function getAllOs(){
           html += '<td > <div class="badge badge-danger">Cancelado</div></td>'
         }
 
-        html += '<td class="big-item-table action-buttons"><button onclick="getOs('+response[key].id+ ','+response[key].id_cliente+','+response[key].id_servico+','+response[key].id_veiculo+','+response[key].situacao+','+response[key].remarketing+','+response[key].observacoes+','+response[key].inicio_os+','+response[key].previsao_os+')"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></td>'
+        html += '<td class="big-item-table action-buttons"><button onclick="getOs('+key+')"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></td>'
         html += '</tr>'
         
 
@@ -680,14 +687,35 @@ function getAllOs(){
     }
   });
 }
-function getOs(id, id_cliente,id_servico, id_veiculo, situacao, remarketing, observacoes, inicio_os,  previsao_os){
+function getOs(chave){
   $("#btnAddOs").trigger("click");
-  os_id = id
+  $("#lservicos").val(os[chave].id_servico).change();
+  $("#donoVeiculo").val(os[chave].id_cliente).change();
+  setTimeout(function() {
+    $("#id_veiculo").val(os[chave].id_veiculo).change();
+  }, 1000)
+  $("#situacao").val(os[chave].situacao).change();
+  $("#remarketing").val(os[chave].remarketing)
+  $("#observacoes").text(os[chave].observacoes);
+  let inicio_os = os[chave].inicio_os.split(" ")
+  let previsao_os = os[chave].previsao_os.split(" ")
+  $("#inicio_os").val(inicio_os[0])
+  $("#inicio_os_time").val(inicio_os[1])
+  $("#previsao_os").val(previsao_os[0])
+  previsao_os_time = previsao_os[1]
+  $("#previsao_os_time").val(previsao_os[1])
+  $("#btnAddServico").text("Editar");
+  $("#btnAddServico").attr('onclick', "editaros('OrdemDeServicoForm')")
+  os_id = os[chave].id
 }
 function limparForm(){
-  $("input").val();
+  $("input").val('');
   $("#donoVeiculo").val(0).change();
-  $("textarea").text();
+  $("textarea").text('');
+  $("#lservicos").val(0).change();
+  $("#btnAddServico").text("Adicionar");
+  $("#btnAddServico").attr('onclick', "addOs('OrdemDeServicoForm')")
+  
 }
 function getAllCar(){
  
@@ -696,7 +724,7 @@ function getAllCar(){
     type: 'get',
     dataType: 'json',
     success: function(response) {
-    
+     
       Object.keys(response).forEach(function(key, index) {
         html += '<tr>'
         html += '<td class="big-item-table">'+response[key].placa+ '</td>'
@@ -738,7 +766,7 @@ function getAllServicos(select = false){
     type: 'get',
     dataType: 'json',
     success: function(response) {
-    
+      options += '<option value="0">Selecione o Serviço</option>'
       Object.keys(response).forEach(function(key, index) {
         html += '<tr>'
         html += '<td class="big-item-table">'+response[key].nome+ '</td>'
@@ -773,18 +801,33 @@ function getTerminoPrevisao(){
   if($("#inicio_os_time").val()){
      horario = $("#inicio_os_time").val()
   }
-  $.ajax({
-    url: 'http://127.0.0.1:8001/servicos/terminoPrevisao/'+horario+'/'+$("#lservicos").val(),
-    type: 'get',
-    dataType: 'json',
-    success: function(response) {
-      $("#previsao_os_time").val(response)        
-    },
-    error: function(xhr, ajaxOptions, thrownError) {
-      
-        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-    }
-  });
+  if($("#lservicos").val() > 0){
+    $.ajax({
+      url: 'http://127.0.0.1:8001/servicos/terminoPrevisao/'+horario+'/'+$("#lservicos").val(),
+      type: 'get',
+      dataType: 'json',
+      success: function(response) {
+        if(response != '00:00:00'){
+          $("#previsao_os_time").val(response) 
+        }
+        else{
+          if(!previsao_os_time){
+             $("#previsao_os_time").val('')
+          }
+         
+        }
+               
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        
+          alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+  }
+  else{
+    $("#previsao_os_time").val('')
+  }
+
 }
 function getAllCarByCliente(id){
   var teste = ''
@@ -793,7 +836,7 @@ function getAllCarByCliente(id){
     type: 'get',
     dataType: 'json',
     success: function(response) {
-    
+      options += '<option value="0">Selecione o Carro</option>'
       Object.keys(response).forEach(function(key, index) {
         options += '<option value="'+response[key].id +'">'+response[key].placa+' - '+response[key].marca+' - '+response[key].modelo+'</option>'
         

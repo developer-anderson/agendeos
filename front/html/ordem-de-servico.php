@@ -202,7 +202,7 @@
                                                                     <fieldset class="form-group">
                                                                         <label for="clienteOs">Nome do cliente:</label>
                                                                         <select  name="id_cliente" onchange="getAllCarByCliente(this.value)" class="custom-select block" id="donoVeiculo">
-                                                                            <option value="0">...</option>
+                                                                          
                                                                         </select>
                                                                     </fieldset>
                                                                 </div>
@@ -242,6 +242,7 @@
                                                                         <input type="time" class="form-control" name="previsao_os_time" id="previsao_os_time">
                                                                     </div>
                                                                 </div>
+                                                                <input name="user_id" type="hidden" class="form-control user_id" id="user_id">
                                                                 <div class="col-xxl-2 col-sm-2">
                                                                     <fieldset class="form-group">
                                                                         <label for="clienteOs">Remarketing (dias):</label>

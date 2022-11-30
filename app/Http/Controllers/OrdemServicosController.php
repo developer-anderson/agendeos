@@ -97,15 +97,19 @@ class OrdemServicosController extends Controller
      * @param  \App\Models\OrdemServicos  $ordemServicos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, OrdemServicos $ordemServicos)
+    public function update(Request $request,  $ordemServicos)
     {
         //
         $dados = $request->all();
-        OrdemServicos::find($ordemServicos)->update($dados);
-        return [
-            "erro" => false,
-            "mensagem" => "Ordem de Servicos editado com  sucesso!"
-        ];
+        //dd($ordemServicos);
+        OrdemServicos::find($ordemServicos)->first()->fill($request->all())->save();
+        return response()->json(
+             [
+                "erro" => false,
+                "mensagem" => "Ordem de Servicos editado com  sucesso!"
+            ]
+        , 200);
+     
     }
 
     /**

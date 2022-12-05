@@ -107,8 +107,8 @@ div.dataTables_paginate .previous {
   body {
     visibility: hidden; }
   .printable-content .card-body {
-    visibility: visible; }
-  .action-btns {
+    visibility: visible; margin-right: 200px; align-items: center; }
+  .action-btns, button {
     display: none; }
   div.app-content.content {
     margin: 0 !important; }

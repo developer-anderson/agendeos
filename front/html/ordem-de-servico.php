@@ -15,7 +15,7 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-12 col-mobile">
-                                    <button type="button" class="btn btn-outline-primary btn-add-os" id="btnAddOs"><i class="fa fa-plus"></i> Add</button>
+                                    <button type="button" class="btn btn-outline-primary btn-add-os" id="btnAddOs"><i class="fa fa-plus"></i> Lançar Os</button>
                                 </div>
 
                                 <div class="col-12">

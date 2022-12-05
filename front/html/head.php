@@ -35,7 +35,7 @@
     <link rel="stylesheet" type="text/css" href="../app-assets/css/colors.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/components.css">
     <!-- END: Theme CSS-->
-
+    <link rel="stylesheet" type="text/css" href="../app-assets/css/pages/app-invoice.css">
     <!-- BEGIN: Page CSS-->
     <link rel="stylesheet" type="text/css" href="../app-assets/css/core/menu/menu-types/vertical-menu-modern.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/core/colors/palette-gradient.css">

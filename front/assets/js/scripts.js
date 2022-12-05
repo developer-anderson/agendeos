@@ -670,7 +670,8 @@ function getAllOs(){
           html += '<td > <div class="badge badge-danger">Cancelado</div></td>'
         }
 
-        html += '<td class="big-item-table action-buttons"><button onclick="getOs('+key+')"class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></td>'
+        html += '<td class="big-item-table action-buttons"><button onclick="getOs('+key+')"class="see-table-item" id="seeTableItem"><i class="fa fa-pencil"></i></button><a href="pdf_os.php?os_id='+response[key].id+'"> <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></a></td>'
+        
         html += '</tr>'
         
 

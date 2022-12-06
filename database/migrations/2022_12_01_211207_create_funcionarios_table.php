@@ -61,6 +61,7 @@ class CreateFuncionariosTable extends Migration
             $table->string('bairro', 400)->nullable();
             $table->string('estado', 400)->nullable();
             $table->string('cidade', 400)->nullable();
+            $table->integer('user_id');
             $table->longText('observacoes')->nullable();
             $table->timestamps();
         });

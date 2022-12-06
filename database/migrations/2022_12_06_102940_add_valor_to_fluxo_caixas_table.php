@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSetorsTable extends Migration
+class AddValorToFluxoCaixasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateSetorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('setors', function (Blueprint $table) {
-            $table->id();
-            $table->string('nome', 400)->nullable();
-            $table->longText('observacoes')->nullable();
-            $table->integer('user_id');
-            $table->timestamps();
+        Schema::table('fluxo_caixas', function (Blueprint $table) {
+            //
+            $table->float('valor', 8, 2);
         });
     }
 
@@ -29,6 +26,8 @@ class CreateSetorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('setors');
+        Schema::table('fluxo_caixas', function (Blueprint $table) {
+            //
+        });
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFuncaosTable extends Migration
+class CreateFluxoCaixasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,15 @@ class CreateFuncaosTable extends Migration
      */
     public function up()
     {
-        Schema::create('funcaos', function (Blueprint $table) {
+        Schema::create('fluxo_caixas', function (Blueprint $table) {
             $table->id();
             $table->string('nome', 400)->nullable();
-            $table->longText('observacoes')->nullable();
+            $table->integer('pagamento_id')->nullable();
+            $table->integer('os_id')->nullable();
+            $table->date('data')->nullable();
+            $table->integer('produto_id')->nullable();
+            $table->integer('cliente_id')->nullable();
             $table->integer('user_id');
-            $table->integer('setor_id');
             $table->timestamps();
         });
     }
@@ -30,6 +33,6 @@ class CreateFuncaosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('funcaos');
+        Schema::dropIfExists('fluxo_caixas');
     }
 }

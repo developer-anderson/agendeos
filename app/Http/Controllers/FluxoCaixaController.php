@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\funcao;
+use App\Models\fluxo_caixa;
 use Illuminate\Http\Request;
 
-class FuncaoController extends Controller
+class FluxoCaixaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class FuncaoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\funcao  $funcao
+     * @param  \App\Models\fluxo_caixa  $fluxo_caixa
      * @return \Illuminate\Http\Response
      */
-    public function show(funcao $funcao)
+    public function show(fluxo_caixa $fluxo_caixa)
     {
         //
     }
@@ -52,10 +52,10 @@ class FuncaoController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\funcao  $funcao
+     * @param  \App\Models\fluxo_caixa  $fluxo_caixa
      * @return \Illuminate\Http\Response
      */
-    public function edit(funcao $funcao)
+    public function edit(fluxo_caixa $fluxo_caixa)
     {
         //
     }
@@ -64,10 +64,10 @@ class FuncaoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\funcao  $funcao
+     * @param  \App\Models\fluxo_caixa  $fluxo_caixa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, funcao $funcao)
+    public function update(Request $request, fluxo_caixa $fluxo_caixa)
     {
         //
     }
@@ -75,10 +75,10 @@ class FuncaoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\funcao  $funcao
+     * @param  \App\Models\fluxo_caixa  $fluxo_caixa
      * @return \Illuminate\Http\Response
      */
-    public function destroy(funcao $funcao)
+    public function destroy(fluxo_caixa $fluxo_caixa)
     {
         //
     }

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\OrdemServicos;
+use App\Models\fluxo_caixa;
 use Illuminate\Http\Request;
+use App\Models\Servicos;
 use Illuminate\Support\Facades\DB;
 class OrdemServicosController extends Controller
 {
@@ -43,7 +45,9 @@ class OrdemServicosController extends Controller
         $post['inicio_os'] = $post['inicio_os'] ." ".$post['inicio_os_time'];
         $post['previsao_os'] = $post['previsao_os'] ." ".$post['previsao_os_time'];
    
-        OrdemServicos::create( $post);
+       $os=  OrdemServicos::create( $post);
+       $post['os_id'] = $os->id;
+       $this->addReceita($post);
         if($post['remarketing'])
         {
             $this->remarketing($post);
@@ -64,6 +68,11 @@ class OrdemServicosController extends Controller
         
         OrdemServicos::create($post);
     }
+    public function getServico($id)
+    {
+        $registro = Servicos::find($id);
+        return  $registro;
+    }
     /**
      * Display the specified resource.
      *
@@ -78,7 +87,28 @@ class OrdemServicosController extends Controller
             $registro
         , 200);
     }
-
+    public function addReceita($data)
+    {
+        $data['cliente_id'] = $data['id_cliente'];
+        $data['os_id'] = $data['os_id'];
+        $servico = $this->getServico($data['id_servico']);
+        $data['valor'] = $servico->valor;
+        $data['nome'] = $servico->nome;
+        $data['produto_id'] = null;
+        if($data['situacao'] >= 2 and $data['situacao'] <= 4)
+        {
+            $data['pagamento_id'] = 1;
+        }
+        elseif($data['situacao'] == 0 or $data['situacao'] == 6){
+            $data['pagamento_id'] = $data['situacao'];
+        }
+        else{
+            $data['pagamento_id'] = 0;
+        }
+        $data['data'] = date("Y-m-d");
+       
+        fluxo_caixa::create($data);
+    }
     /**
      * Show the form for editing the specified resource.
      *

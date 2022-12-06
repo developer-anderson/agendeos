@@ -68,8 +68,14 @@
                                                     </div>
                                                     <div class="col-6">
                                                         <fieldset class="form-group">
-                                                            <label for="data">Vaor do item:</label>
-                                                            <input type="text" onKeyPress="return(moeda(this,'.',',',event))" class="form-control" name="valor" id='valor' />
+                                                            <label for="data">Valor do item:</label>
+                                                            <input type="text" onKeyPress="return(moeda(this,'.',',',event))" class="form-control" name="valor" value="0" id='valor' />
+                                                        </fieldset>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <fieldset class="form-group">
+                                                            <label for="data">Desconto:</label>
+                                                            <input type="text" onKeyPress="return(moeda(this,'.',',',event))" class="form-control" value="0" name="desconto" id='desconto' />
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-6">

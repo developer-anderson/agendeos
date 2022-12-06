@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddValorToFluxoCaixasTable extends Migration
+class AddDescontoToFluxoCaixasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class AddValorToFluxoCaixasTable extends Migration
     {
         Schema::table('fluxo_caixas', function (Blueprint $table) {
             //
-            $table->float('valor', 8, 2)->nullable();
+            $table->float('desconto', 8, 2)->nullable();
         });
     }
 

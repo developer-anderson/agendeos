@@ -69,6 +69,9 @@
 <script src="../assets/js/bootstrap.bundle.js"></script>
 <!-- END: Bootstrap JS -->
 <script src="../app-assets/js/scripts/forms/select/form-select2.js"></script>
+<script src="../app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
+    <script src="../app-assets/vendors/js/extensions/polyfill.min.js"></script>
+<script src="../app-assets/js/scripts/extensions/sweet-alerts.js"></script>
 <!-- BEING: Gerenal JS -->
 <script src="../assets/js/scripts.js"></script>
 </body>

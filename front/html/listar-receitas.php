@@ -117,20 +117,17 @@
                                                                 <table class="table table-striped table-bordered dataTable" id="DataTableOs">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th class="sorting_asc">ID da O.S.</th>
+                                                                            <th class="sorting_asc">ID da nota</th>
                                                                             <th class="sorting_asc">Valor(R$)</th>
-                                                                            <th class="sorting_asc">Nome do cliente</th>
+                                                                            <th class="sorting_asc">Desconto(R$)</th>
+                                                                            <th class="sorting_asc">Tipo</th>
+                                                                            <th class="sorting_asc">Nome do item</th>
                                                                             <th class="sorting_asc">Data</th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody>
+                                                                    <tbody id="treceitas">
                                                                         <tr>
-                                                                            <td class="big-item-table id-os">
-                                                                                <a href="#">#123456</a>
-                                                                            </td>
-                                                                            <td class="big-item-table">800,00</td>
-                                                                            <td class="big-item-table">Cliente teste</td>
-                                                                            <td class="big-item-table">15/03/2022</td>
+                                                              
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>

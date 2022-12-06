@@ -12,9 +12,12 @@ class FluxoCaixaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getAll($id)
     {
         //
+        return response()->json(
+            fluxo_caixa::where('user_id',$id)->get()
+        , 200);
     }
 
     /**
@@ -37,11 +40,14 @@ class FluxoCaixaController extends Controller
     {
         //
         $post = $request->all();
+        $post['valor'] = str_replace(",", ".",   $post['valor'] );
+        $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
+ 
         fluxo_caixa::create( $post);
         return response()->json(
             [
                 "erro" => false,
-                "mensagem" => "Ordem de Servicos com  sucesso!"
+                "mensagem" => "Sucesso!"
             ]
         , 200);
        

@@ -41,7 +41,7 @@ Route::delete('os/destroy{os}', [OrdemServicosController::class, 'destroy']);
 
 Route::get('fluxo_caixa/getall/{id}', [FluxoCaixaController::class, 'getall']);
 Route::get('fluxo_caixa/show/{fluxo_caixa}', [FluxoCaixaController::class, 'show']);
-Route::pfluxo_caixat('fluxo_caixa/insert', [FluxoCaixaController::class, 'store']);
+Route::post('fluxo_caixa/insert', [FluxoCaixaController::class, 'store']);
 Route::put('fluxo_caixa/update/{fluxo_caixa}',[FluxoCaixaController::class, 'update']);
 Route::delete('fluxo_caixa/destroy{fluxo_caixa}', [FluxoCaixaController::class, 'destroy']);
 

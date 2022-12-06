@@ -21,6 +21,8 @@
     <link rel="stylesheet" type="text/css" href="../app-assets/fonts/meteocons/style.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/charts/morris.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/vendors.min.css">
+    <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/animate/animate.css">
+    <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/extensions/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/calendars/fullcalendar.min.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/calendars/daygrid.min.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/calendars/timegrid.min.css">

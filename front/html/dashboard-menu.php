@@ -115,7 +115,8 @@
                     <div class="collapse" id="collapseFinanceiro">
                         <div class="card card-body sub-menu">
                             <ul class="sub-menu-list">
-                                <li class="item-list-menu"><a href="listar-receitas.php"> <span>Receitas</span></a></li>
+                                <li class="item-list-menu"><a href="listar-receitas.php"> <span>Fluxo de caixa</span></a></li>
+                                <li class="item-list-menu"><a href="add_fluxo_caixa.php"> <span>Lançar</span></a></li>
                             </ul>
                         </div>
                     </div>

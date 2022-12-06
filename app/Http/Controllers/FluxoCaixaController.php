@@ -36,6 +36,15 @@ class FluxoCaixaController extends Controller
     public function store(Request $request)
     {
         //
+        $post = $request->all();
+        fluxo_caixa::create( $post);
+        return response()->json(
+            [
+                "erro" => false,
+                "mensagem" => "Ordem de Servicos com  sucesso!"
+            ]
+        , 200);
+       
     }
 
     /**
@@ -47,6 +56,11 @@ class FluxoCaixaController extends Controller
     public function show(fluxo_caixa $fluxo_caixa)
     {
         //
+
+        $registro = fluxo_caixa::find($fluxo_caixa);
+        return response()->json(
+            $registro
+        , 200);
     }
 
     /**
@@ -70,6 +84,13 @@ class FluxoCaixaController extends Controller
     public function update(Request $request, fluxo_caixa $fluxo_caixa)
     {
         //
+        fluxo_caixa::find($fluxo_caixa)->first()->fill($request->all())->save();
+        return response()->json(
+             [
+                "erro" => false,
+                "mensagem" => "Editado com  sucesso!"
+            ]
+        , 200);
     }
 
     /**

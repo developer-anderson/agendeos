@@ -64,11 +64,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js" integrity="sha512-0XDfGxFliYJPFrideYOoxdgNIvrwGTLnmK20xZbCAvPfLGQMzHUsaqZK8ZoH+luXGRxTrS46+Aq400nCnAT0/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="../app-assets/js/scripts/pages/app-invoice.js"></script>
 <!-- END: Library JS-->
-
+<script src="../app-assets/vendors/js/forms/select/select2.full.min.js"></script>
 <!-- BEING: Bootstrap JS -->
 <script src="../assets/js/bootstrap.bundle.js"></script>
 <!-- END: Bootstrap JS -->
-
+<script src="../app-assets/js/scripts/forms/select/form-select2.js"></script>
 <!-- BEING: Gerenal JS -->
 <script src="../assets/js/scripts.js"></script>
 </body>

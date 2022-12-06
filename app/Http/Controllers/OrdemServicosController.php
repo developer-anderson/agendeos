@@ -106,7 +106,7 @@ class OrdemServicosController extends Controller
             $data['pagamento_id'] = 0;
         }
         $data['data'] = date("Y-m-d");
-       
+       $data['tipo_id'] = 1;
         fluxo_caixa::create($data);
     }
     /**

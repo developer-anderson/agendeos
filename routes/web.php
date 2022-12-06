@@ -17,6 +17,7 @@ use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\VeiculosController;
 use App\Http\Controllers\ServicosController;
 use App\Http\Controllers\OrdemServicosController;
+use App\Http\Controllers\FluxoCaixaController;
 Route::get('/token', function (Request $request) {
     $token = $request->session()->token();
  
@@ -36,6 +37,13 @@ Route::get('os/show/{os}', [OrdemServicosController::class, 'show']);
 Route::post('os/insert', [OrdemServicosController::class, 'store']);
 Route::put('os/update/{os}',[OrdemServicosController::class, 'update']);
 Route::delete('os/destroy{os}', [OrdemServicosController::class, 'destroy']);
+
+
+Route::get('fluxo_caixa/getall/{id}', [FluxoCaixaController::class, 'getall']);
+Route::get('fluxo_caixa/show/{fluxo_caixa}', [FluxoCaixaController::class, 'show']);
+Route::pfluxo_caixat('fluxo_caixa/insert', [FluxoCaixaController::class, 'store']);
+Route::put('fluxo_caixa/update/{fluxo_caixa}',[FluxoCaixaController::class, 'update']);
+Route::delete('fluxo_caixa/destroy{fluxo_caixa}', [FluxoCaixaController::class, 'destroy']);
 
 Route::get('veiculos/getall/{id}', [VeiculosController::class, 'getall']);
 Route::get('veiculos/cliente/{id}', [VeiculosController::class, 'getallCliente']);

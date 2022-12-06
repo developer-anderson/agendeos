@@ -49,7 +49,7 @@
                                                     <div class="col-xxl-3 col-sm-4">
                                                         <fieldset class="form-group">
                                                             <label for="donoVeiculo">Dono do Veículo:</label>
-                                                            <select class="custom-select block" name="id_cliente" id="donoVeiculo">
+                                                            <select class="custom-select block select2-placeholder" name="id_cliente" id="donoVeiculo">
                                                                 <option selected="">...</option>
                                                             </select>
                                                         </fieldset>

@@ -18,6 +18,7 @@ $(document).ready(function(){
   $('.ie').mask('000.000.000.000');
   $('.cpf').mask('000.000.000-00');
   $('.cep').mask('00.000-000');
+
   $(".cnpj").blur(function() {
     
     var cnpj = $(this).val().replace(/[^0-9]/g, '');
@@ -380,13 +381,13 @@ if(window.location.pathname  == "/html/listar-clientes.php"){
 if(window.location.pathname  == "/html/listar-veiculo.php"){
   getAllCar() 
 }
-if(window.location.pathname  == "/html/ordem-de-servico.php"){
+if(window.location.pathname  == "/html/ordem-de-servico.php" || window.location.pathname  == "/html/add_fluxo_caixa.php" ){
   getAllOs() 
 }
 if(window.location.pathname  == "/html/listar-servico.php"){
   getAllServicos()
 }
-if(window.location.pathname  == "/html/adicionar-veiculo.php"){
+if(window.location.pathname  == "/html/adicionar-veiculo.php" ||window.location.pathname  == "/html/add_fluxo_caixa.php" ){
   getAllclientByType('PF', true)
   getAllclientByType('PJ', true)
   var urlParams = new URLSearchParams(window.location.search);
@@ -547,7 +548,7 @@ function getDataClient(id){
   });
 }
 function getAllclientByType(type = 'PF', select = false){
- 
+  options = ''
   $.ajax({
     url: 'http://127.0.0.1:8001/clientes/getAllclientByType/'+type+'/'+localStorage.getItem('id'),
     type: 'get',
@@ -614,7 +615,7 @@ function getAllclientByType(type = 'PF', select = false){
   });
 }
 function getAllOs(){
- 
+  options += '<option value="0">Selecione a ordem de serviço</option>'
   $.ajax({
     url: 'http://127.0.0.1:8001/os/getall/'+localStorage.getItem('id'),
     type: 'get',
@@ -634,6 +635,7 @@ function getAllOs(){
         html += '<td class="big-item-table">'+response[key].valor+ '</td>'
         if(response[key].nome_f){
           html += '<td class="big-item-table">'+response[key].nome_f+ '</td>'
+         
         }
         else{
           html += '<td class="big-item-table">'+response[key].razao_social+ '</td>'
@@ -673,12 +675,13 @@ function getAllOs(){
         html += '<td class="big-item-table action-buttons"><button onclick="getOs('+key+')"class="see-table-item" id="seeTableItem"><i class="fa fa-pencil"></i></button><a href="pdf_os.php?os_id='+response[key].id+'"> <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></a></td>'
         
         html += '</tr>'
-        
+        options += '<option value="'+response[key].id +'">'+response[key].nome+' - R$ '+response[key].valor+ ' - '+data_formadata_inicio +'</option>'
 
       });
 
       $("#tos").html(html)
-
+      $("#responsive_single").html(options)
+      options = ''
      
         
     },

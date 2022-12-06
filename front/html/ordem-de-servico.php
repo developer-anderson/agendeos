@@ -201,7 +201,7 @@
                                                                 <div class="col-xxl-6 col-sm-6">
                                                                     <fieldset class="form-group">
                                                                         <label for="clienteOs">Nome do cliente:</label>
-                                                                        <select  name="id_cliente" onchange="getAllCarByCliente(this.value)" class="custom-select block" id="donoVeiculo">
+                                                                        <select  name="id_cliente" onchange="getAllCarByCliente(this.value)" class="custom-select block select2-placeholder" id="donoVeiculo">
                                                                           
                                                                         </select>
                                                                     </fieldset>
@@ -210,7 +210,7 @@
                                                                     <div class="form-group">
                                                                         <label>Veículo</label>
                                                                         <div class="input-group date">
-                                                                            <select name="id_veiculo" class="custom-select block" id="id_veiculo">
+                                                                            <select name="id_veiculo" class="custom-select block select2-placeholder" id="id_veiculo">
                                                                                 <option selected="">...</option>
                                                                             </select>
                                                                         </div>

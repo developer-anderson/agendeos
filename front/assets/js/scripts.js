@@ -7,9 +7,7 @@ var id_veiculo = 0
 var id_servico = 0;
 var os_id = 0;
 var os = {};
-var total_receita = 0;
-var totalDespesa = 0;
-var total_geral = 0;
+
 var previsao_os_time = ''
 if (!localStorage.getItem('id')) {
   window.location.href = 'login.html';
@@ -883,7 +881,7 @@ function getAllclientByType(type = 'PF', select = false) {
   });
 }
 function getAllOs() {
-  options = '<option value="0">Selecione a ordem de serviço</option>'
+  options += '<option value="0">Selecione a ordem de serviço</option>'
   $.ajax({
     url: 'http://127.0.0.1:8001/os/getall/' + localStorage.getItem('id'),
     type: 'get',
@@ -966,9 +964,11 @@ function getAllOs() {
   });
 }
 function getAllFluxo() {
-
+  let total_receita = 0;
+  let totalDespesa = 0;
+  let total_geral = 0;
   $.ajax({
-    url: 'http://127.0.0.1:8001/fluxo_caixa/getall/' + localStorage.getItem('id'),
+    url: 'http://127.0.0.1:8001/fluxo_caixa/getall/' + localStorage.getItem('id')+'/'+$("#inicio").val()+'/'+$("#fim").val(),
     type: 'get',
     dataType: 'json',
     success: function (response) {
@@ -1018,6 +1018,8 @@ function getAllFluxo() {
       $(".total_servicos").text(response.length);
       $(".total_Despesas").text(totalDespesa.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}));
       $("#treceitas").html(html)
+      html= ''
+    
 
     },
     error: function (xhr, ajaxOptions, thrownError) {

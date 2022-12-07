@@ -12,11 +12,12 @@ class FluxoCaixaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll($id)
+    public function getAll($id, $incio, $fim)
     {
         //
+       
         return response()->json(
-            fluxo_caixa::where('user_id',$id)->get()
+            fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->get()
         , 200);
     }
 

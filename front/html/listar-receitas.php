@@ -13,12 +13,18 @@
                 <main>
                     <div class="container-fluid">
                         <div class="row" style="margin-bottom: 30px;">
-                            <div class="col-6">
-                                <input type="date"  class="form-control showdropdowns">
+                            <div class="col-4">
+                                <label>Periodo Inicial</label>
+                                <input type="date" value="<?php echo(date("Y-m-d"));?>" id="inicio"  class="form-control showdropdowns">
                                
                             </div>
-                            <div class="col-6">
-                                <input type="date"  class="form-control showdropdowns">
+                            <div class="col-4">
+                            <label>Periodo Fim</label>
+                                <input type="date" value="<?php echo(date("Y-m-d"));?>" id="fim"  class="form-control showdropdowns">
+                               
+                            </div>
+                            <div class="col-4">
+                            <button type="button" onclick="getAllFluxo()" class="btn btn-primary" style="margin-top: 26px;" id="btnAddServico">  <i class="fa fa-check-square-o"></i> Buscar registros</button>
                                
                             </div>
                         </div>

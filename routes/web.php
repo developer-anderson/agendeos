@@ -39,7 +39,7 @@ Route::put('os/update/{os}',[OrdemServicosController::class, 'update']);
 Route::delete('os/destroy{os}', [OrdemServicosController::class, 'destroy']);
 
 
-Route::get('fluxo_caixa/getall/{id}', [FluxoCaixaController::class, 'getall']);
+Route::get('fluxo_caixa/getall/{id}/{inicio}/{fim}', [FluxoCaixaController::class, 'getall']);
 Route::get('fluxo_caixa/show/{fluxo_caixa}', [FluxoCaixaController::class, 'show']);
 Route::post('fluxo_caixa/insert', [FluxoCaixaController::class, 'store']);
 Route::put('fluxo_caixa/update/{fluxo_caixa}',[FluxoCaixaController::class, 'update']);

@@ -7,6 +7,9 @@ var id_veiculo = 0
 var id_servico = 0;
 var os_id = 0;
 var os = {};
+var total_receita = 0;
+var totalDespesa = 0;
+var total_geral = 0;
 var previsao_os_time = ''
 if (!localStorage.getItem('id')) {
   window.location.href = 'login.html';
@@ -18,7 +21,13 @@ $(document).ready(function () {
   $('.ie').mask('000.000.000.000');
   $('.cpf').mask('000.000.000-00');
   $('.cep').mask('00.000-000');
-
+  $(".input-serch-data-table").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".pesquisar tr").filter(function() {
+        $(this).toggle($(this).text()
+        .toLowerCase().indexOf(value) > -1)
+    });
+});
   $(".cnpj").blur(function () {
 
     var cnpj = $(this).val().replace(/[^0-9]/g, '');
@@ -193,8 +202,10 @@ function addFluxo(formid) {
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
-    
-        window.location.href = 'listar-receitas.php';
+        setTimeout(function () {
+          window.location.href = 'listar-receitas.php';
+        }, 2000)
+       
       }
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -228,7 +239,10 @@ function addCliente(formid) {
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
-        window.location.href = 'adicionar-veiculo.php?id_cliente=' + id_cliente;
+        setTimeout(function () {
+          window.location.href = 'adicionar-veiculo.php?id_cliente=' + id_cliente;
+        }, 2000)
+
       }
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -262,7 +276,10 @@ function addOs(formid) {
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
-        window.location.href = 'ordem-de-servico.php';
+        setTimeout(function () {
+          window.location.href = 'ordem-de-servico.php';
+        }, 2000)
+     
       }
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -296,7 +313,10 @@ function addServico(formid) {
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
-        window.location.href = 'listar-servico.php?';
+        setTimeout(function () {
+          window.location.href = 'listar-servico.php?';
+        }, 2000)
+  
       }
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -329,7 +349,10 @@ function addVeiculo(formid) {
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
-        window.location.href = 'listar-veiculo.php';
+        setTimeout(function () {
+          window.location.href = 'listar-veiculo.php';
+        }, 2000)
+
       }
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -398,7 +421,10 @@ function login(formid) {
         confirmButtonClass: "btn btn-success",
         buttonsStyling: false
       });
-      window.location.href = 'index.php';
+      setTimeout(function () {
+        window.location.href = 'index.php';
+      }, 2000)
+
 
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -431,7 +457,10 @@ function editarVeiculo(formid) {
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
-        window.location.href = 'listar-veiculo.php';
+        setTimeout(function () {
+          window.location.href = 'listar-veiculo.php';
+        }, 2000)
+ 
       }
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -464,7 +493,10 @@ function editaros(formid) {
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
-        window.location.href = 'ordem-de-servico.php';
+        setTimeout(function () {
+          window.location.href = 'ordem-de-servico.php';
+        }, 2000)
+    
       }
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -497,7 +529,10 @@ function editarServico(formid) {
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
-        window.location.href = 'listar-servico.php';
+        setTimeout(function () {
+          window.location.href = 'listar-servico.php';
+        }, 2000)
+ 
       }
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -530,7 +565,10 @@ function editarCliente(formid) {
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
-        window.location.href = 'listar-clientes.php';
+        setTimeout(function () {
+          window.location.href = 'listar-clientes.php';
+        }, 2000)
+     
       }
     })
     .fail(function (jqXHR, textStatus, msg) {
@@ -593,7 +631,10 @@ if (window.location.pathname == "/html/editar-veiculo.php") {
       confirmButtonClass: "btn btn-danger",
       buttonsStyling: false
     });
-    window.location.href = 'listar-veiculo.php';
+    setTimeout(function () {
+      window.location.href = 'listar-veiculo.php';
+    }, 2000)
+
   }
 
 }
@@ -612,8 +653,10 @@ if (window.location.pathname == "/html/editar-servico.php") {
       confirmButtonClass: "btn btn-danger",
       buttonsStyling: false
     });
+    setTimeout(function () {
+      window.location.href = 'listar-servico.php';
+    }, 2000)
    
-    window.location.href = 'listar-servico.php';
   }
 
 }
@@ -639,7 +682,10 @@ if (window.location.pathname == "/html/editar-cliente.php") {
       confirmButtonClass: "btn btn-success",
       buttonsStyling: false
     });
-    window.location.href = 'listar-clientes.php';
+    setTimeout(function () {
+      window.location.href = 'listar-clientes.php';
+    }, 2000)
+    
   }
 
 
@@ -931,11 +977,17 @@ function getAllFluxo() {
 
         let inicio_data = response[key].data.split("-")
         let data_formadata_inicio = inicio_data[2] + '/' + inicio_data[1] + '/' + inicio_data[0]
-
+        total_geral += response[key].valor
         html += '<tr>'
         html += '<td class="big-item-table">#' + response[key].id + '</td>'
         if (response[key].valor) {
           html += '<td class="big-item-table">' + response[key].valor.toLocaleString('pt-br', { minimumFractionDigits: 2 }) + '</td>'
+          if (response[key].tipo_id){
+            total_receita +=response[key].valor
+          }
+          else{
+            totalDespesa +=response[key].valor
+          }
         }
         else {
           html += '<td class="big-item-table">' + (0.00).toLocaleString('pt-br', { minimumFractionDigits: 2 }) + '</td>'
@@ -962,7 +1014,9 @@ function getAllFluxo() {
 
 
       });
-
+      $(".total_receita").text(total_receita.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}))
+      $(".total_servicos").text(response.length);
+      $(".total_Despesas").text(totalDespesa.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}));
       $("#treceitas").html(html)
 
     },

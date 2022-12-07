@@ -159,7 +159,7 @@
                                                                        
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody id="listaPJ">
+                                                                <tbody id="listaPJ" class="pesquisar">
                                                                     <tr>
                                                                         <td class="big-item-table">Cliente Teste 2</td>
                                                                         <td class="big-item-table">000.111.222-77</td>

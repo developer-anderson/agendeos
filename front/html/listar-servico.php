@@ -57,7 +57,7 @@
                                                                             <th class="sorting_asc">Ações</th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody id="lservicos">
+                                                                    <tbody id="lservicos" class="pesquisar">
                                                                         <tr>
                                                                             <td class="big-item-table">Serviço Teste 1</td>
                                                                             <td class="big-item-table">200,00</td>

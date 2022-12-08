@@ -38,18 +38,7 @@
                                             <div class="card-body card-dashboard">
                                                 <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap4">
                                                     <div class="row">
-                                                        <div class="col-sm-12 col-md-6">
-                                                            <div class="dataTables_length" id="DataTables_Table_0_length">
-                                                                <label>
-                                                                    <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm">
-                                                                        <option value="1">1</option>
-                                                                        <option value="2">2</option>
-                                                                        <option value="3">3</option>
-                                                                        <option value="4">4</option>
-                                                                    </select> Páginas
-                                                                </label>
-                                                            </div>
-                                                        </div>
+                                                
                                                         <div class="col-sm-12 col-md-6">
                                                             <div id="DataTables_Table_0_filter" class="dataTables_filter">
                                                                 <label class="label-data-table-search">
@@ -76,100 +65,14 @@
                                                                         <th class="sorting_asc">Ações</th>
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody id="tos">
-                                                                    <tr>
-                                                                        <td class="big-item-table id-os">
-                                                                            <a href="#">#123456</a>
-                                                                        </td>
-                                                                        <td class="big-item-table">800,00</td>
-                                                                        <td class="big-item-table">Cliente teste</td>
-                                                                        <td class="big-item-table">Serviço teste</td>
-                                                                        <td class="big-item-table">123ABC</td>
-                                                                        <td class="big-item-table">15/02/2022 às 15:30</td>
-                                                                        <td class="big-item-table">15/03/2022</td>
-                                                                        
-                                                                        <td>
-                                                                            <div class="badge badge-success">
-                                                                                Em aberto
-                                                                            </div>
-                                                                        </td>
-                                                                        <td class="big-item-table action-buttons">
-                                                                            <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button>
-
-                                                                            <button class="edit-table-item" id="editTableItem"><i class="fa fa-pencil"></i></button>
-
-                                                                            <button class="remove-table-item" id="removeTableItem"><i class="fa fa-trash-o"></i></button>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td class="big-item-table id-os">
-                                                                            <a href="#">#123456</a>
-                                                                        </td>
-                                                                        <td class="big-item-table">800,00</td>
-                                                                        <td class="big-item-table">Cliente teste</td>
-                                                                        <td class="big-item-table">Serviço teste</td>
-                                                                        <td class="big-item-table">123ABC</td>
-                                                                        <td class="big-item-table">15/02/2022 às 15:30</td>
-                                                                        <td class="big-item-table">15/03/2022</td>
-                                                                        
-                                                                        <td>
-                                                                            <div class="badge badge-warning">
-                                                                                Em atraso
-                                                                            </div>
-                                                                        </td>
-                                                                        <td class="big-item-table action-buttons">
-                                                                            <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button>
-
-                                                                            <button class="edit-table-item" id="editTableItem"><i class="fa fa-pencil"></i></button>
-
-                                                                            <button class="remove-table-item" id="removeTableItem"><i class="fa fa-trash-o"></i></button>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td class="big-item-table id-os">
-                                                                            <a href="#">#123456</a>
-                                                                        </td>
-                                                                        <td class="big-item-table">800,00</td>
-                                                                        <td class="big-item-table">Cliente teste</td>
-                                                                        <td class="big-item-table">Serviço teste</td>
-                                                                        <td class="big-item-table">123ABC</td>
-                                                                        <td class="big-item-table">15/02/2022 às 15:30</td>
-                                                                        <td class="big-item-table">15/03/2022</td>
-                                                                        
-                                                                        <td>
-                                                                            <div class="badge badge-danger">
-                                                                                Cancelado
-                                                                            </div>
-                                                                        </td>
-                                                                        <td class="big-item-table action-buttons">
-                                                                            <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button>
-
-                                                                            <button class="edit-table-item" id="editTableItem"><i class="fa fa-pencil"></i></button>
-
-                                                                            <button class="remove-table-item" id="removeTableItem"><i class="fa fa-trash-o"></i></button>
-                                                                        </td>
-                                                                    </tr>
+                                                                <tbody id="tos" class="pesquisar">
+                                                             
                                                                 </tbody>
                                                             </table>
                                                         </div>
                                                     </div>
 
-                                                    <div class="row">
-                                                        <div class="col-sm-12 col-md-5">
-                                                            <p>Página 1 de 3</p>
-                                                        </div>
-                                                        <div class="col-sm-12 col-md-7">
-                                                            <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
-                                                                <ul class="pagination">
-                                                                    <li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous"><a href="#" data-dt-idx="0" class="page-link">Anterior</a></li>
-                                                                    <li class="paginate_button page-item active"><a href="#" data-dt-idx="1" class="page-link">1</a></li>
-                                                                    <li class="paginate_button page-item "><a href="#" data-dt-idx="2" class="page-link">2</a></li>
-                                                                    <li class="paginate_button page-item "><a href="#" data-dt-idx="3" class="page-link">3</a></li>
-                                                                    <li class="paginate_button page-item next" id="DataTables_Table_0_next"><a href="#" class="page-link">Próximo</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                          
                                                 </div>
                                             </div>
                                         </div>

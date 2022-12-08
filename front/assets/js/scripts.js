@@ -6,6 +6,7 @@ var id_cliente = 0
 var id_veiculo = 0
 var id_servico = 0;
 var os_id = 0;
+var id_fluxo =0;
 var os = {};
 
 var previsao_os_time = ''
@@ -194,7 +195,7 @@ function addFluxo(formid) {
       if (!response.erro) {
         id_cliente = response.id
         Swal.fire({
-          title: "Erro",
+          title: "Concluido",
           text: "Cadastrado com Sucesso!",
           type: "success",
           confirmButtonClass: "btn btn-success",
@@ -211,7 +212,44 @@ function addFluxo(formid) {
         title: "Erro",
         text: "Não foi possivel concluir o cadastro!",
         type: "error",
-        confirmButtonClass: "btn btn-success",
+        confirmButtonClass: "btn btn-danger",
+        buttonsStyling: false
+      });
+    });
+}
+function editarFluxo(formid) {
+  var dados = $("#" + formid).serialize()
+
+  $.ajax({
+    url: 'http://127.0.0.1:8001/fluxo_caixa/update/'+id_fluxo,
+
+    type: 'put',
+    dataType: 'json',
+    data: $("#" + formid).serialize()
+  })
+    .done(function (response) {
+      console.log(response)
+      if (!response.erro) {
+        id_cliente = response.id
+        Swal.fire({
+          title: "Concluido",
+          text: "Cadastrado com Sucesso!",
+          type: "success",
+          confirmButtonClass: "btn btn-success",
+          buttonsStyling: false
+        });
+        setTimeout(function () {
+          window.location.href = 'listar-receitas.php';
+        }, 2000)
+       
+      }
+    })
+    .fail(function (jqXHR, textStatus, msg) {
+      Swal.fire({
+        title: "Erro",
+        text: "Não foi possivel concluir o cadastro!",
+        type: "error",
+        confirmButtonClass: "btn btn-danger",
         buttonsStyling: false
       });
     });
@@ -589,13 +627,13 @@ if (window.location.pathname == "/html/listar-veiculo.php") {
 if (window.location.pathname == "/html/listar-receitas.php") {
   getAllFluxo()
 }
-if (window.location.pathname == "/html/ordem-de-servico.php" || window.location.pathname == "/html/add_fluxo_caixa.php") {
+if (window.location.pathname == "/html/ordem-de-servico.php" || window.location.pathname == "/html/add_fluxo_caixa.php" || window.location.pathname == "/html/editar_fluxo_caixa.php") {
   getAllOs()
 }
 if (window.location.pathname == "/html/listar-servico.php") {
   getAllServicos()
 }
-if (window.location.pathname == "/html/adicionar-veiculo.php" || window.location.pathname == "/html/add_fluxo_caixa.php") {
+if (window.location.pathname == "/html/adicionar-veiculo.php" || window.location.pathname == "/html/add_fluxo_caixa.php" || window.location.pathname == "/html/editar_fluxo_caixa.php") {
   getAllclientByType('PF', true)
   getAllclientByType('PJ', true)
   var urlParams = new URLSearchParams(window.location.search);
@@ -658,6 +696,28 @@ if (window.location.pathname == "/html/editar-servico.php") {
   }
 
 }
+if (window.location.pathname == "/html/editar_fluxo_caixa.php") {
+  var urlParams = new URLSearchParams(window.location.search);
+  id_fluxo = urlParams.get("id_fluxo")
+
+  if (id_fluxo) {
+    getItemFluxoCaixa(id_fluxo)
+  }
+  else {
+    Swal.fire({
+      title: "Erro",
+      text: "Erro ao encontrar o item  informado",
+      type: "error",
+      confirmButtonClass: "btn btn-danger",
+      buttonsStyling: false
+    });
+    setTimeout(function () {
+      window.location.href = 'listar-receitas.php';
+    }, 2000)
+   
+  }
+
+}
 if (window.location.pathname == "/html/editar-cliente.php") {
   var urlParams = new URLSearchParams(window.location.search);
   id_cliente = urlParams.get("id_cliente")
@@ -673,13 +733,7 @@ if (window.location.pathname == "/html/editar-cliente.php") {
       confirmButtonClass: "btn btn-danger",
       buttonsStyling: false
     });
-    Swal.fire({
-      title: "Erro",
-      text: "Não foi possivel concluir a solicitação!",
-      type: "error",
-      confirmButtonClass: "btn btn-success",
-      buttonsStyling: false
-    });
+
     setTimeout(function () {
       window.location.href = 'listar-clientes.php';
     }, 2000)
@@ -687,6 +741,35 @@ if (window.location.pathname == "/html/editar-cliente.php") {
   }
 
 
+}
+function getItemFluxoCaixa(id) {
+
+  $.ajax({
+    url: 'http://127.0.0.1:8001/fluxo_caixa/show/' + id,
+    type: 'get',
+    dataType: 'json',
+    success: function (response) {
+      $("#nome").val(response.nome)
+      $("#data").val(response.data)
+      $("#valor").val(response.valor)
+      $("#desconto").val(response.desconto)
+      $("#tipo_id").val(response.tipo_id).change()
+      $("#cliente_id").val(response.cliente_id).change()
+      $("#os_id").val(response.os_id).change()
+      $("#pagamento_id").val(response.os_id).change()
+  
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+
+      Swal.fire({
+        title: "Erro",
+        text: "Não foi possivel concluir a solicitação!",
+        type: "error",
+        confirmButtonClass: "btn btn-danger",
+        buttonsStyling: false
+      });
+    }
+  });
 }
 function getDataServico(id) {
 
@@ -1008,7 +1091,7 @@ function getAllFluxo() {
         html += '<td class="big-item-table">' + response[key].nome + '</td>'
         html += '<td class="big-item-table">' + data_formadata_inicio + '</td>'
 
-        html += '<td class="big-item-table action-buttons"><button onclick="getOs(' + key + ')"class="see-table-item" id="seeTableItem"><i class="fa fa-pencil"></i></button><a href="pdf_os.php?os_id=' + response[key].id + '"> <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></a></td>'
+        html += '<td class="big-item-table action-buttons"><a href="editar_fluxo_caixa.php?id_fluxo='+response[key].id+'"><button class="see-table-item" id="seeTableItem"><i class="fa fa-pencil"></i></button></a><a href="pdf_os.php?os_id=' + response[key].id + '"> <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></a></td>'
 
         html += '</tr>'
 

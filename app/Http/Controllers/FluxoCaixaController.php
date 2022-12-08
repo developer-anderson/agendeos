@@ -60,7 +60,7 @@ class FluxoCaixaController extends Controller
      * @param  \App\Models\fluxo_caixa  $fluxo_caixa
      * @return \Illuminate\Http\Response
      */
-    public function show(fluxo_caixa $fluxo_caixa)
+    public function show($fluxo_caixa)
     {
         //
 

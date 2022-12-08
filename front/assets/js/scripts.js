@@ -10,7 +10,7 @@ var id_fluxo =0;
 var os = {};
 
 var previsao_os_time = ''
-if (!localStorage.getItem('id')) {
+if (!localStorage.getItem('id') && window.location.pathname != "/html/login.html") {
   window.location.href = 'login.html';
 }
 $(document).ready(function () {

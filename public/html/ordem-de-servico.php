@@ -95,7 +95,7 @@
                                                                 <div class="col-xxl-6 col-sm-6">
                                                                     <fieldset class="form-group">
                                                                         <label for="servicoOs">Serviço:</label>
-                                                                        <select name="id_servico" onchange="getTerminoPrevisao()" class="custom-select block" id="lservicos">
+                                                                        <select name="id_servico" onchange="getTerminoPrevisao()" class="custom-select block select2 select2-placeholder" multiple id="lservicos">
                                                                             <option selected="">...</option>
                                                                         </select>
                                                                     </fieldset>

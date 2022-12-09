@@ -12,6 +12,7 @@
                     Menu
                 </li>
                 <li class="item-list-menu"><a href="index.php"><i class="feather icon-home"></i> Dashboard</a></li>
+                <!--
                 <li class="item-list-menu">
                     <button type="button" data-bs-toggle="collapse" data-bs-target="#collapseEmpresa" aria-expanded="false" aria-controls="collapseExample">
                         <i class="feather icon-briefcase"></i> Empresas <i class="feather icon-chevron-right"></i>
@@ -38,6 +39,7 @@
                         </div>
                     </div>
                 </li>
+                -->
                 <li class="item-list-menu">
                     <button type="button" data-bs-toggle="collapse" data-bs-target="#collapseClientes" aria-expanded="false" aria-controls="collapseExample">
                         <i class="feather icon-users"></i> Clientes <i class="feather icon-chevron-right"></i>
@@ -95,6 +97,7 @@
                         </div>
                     </div>
                 </li>
+                <!--
                 <li class="item-list-menu">
                     <button type="button" data-bs-toggle="collapse" data-bs-target="#collapseGarantia" aria-expanded="false" aria-controls="collapseExample">
                         <i class="fa fa-check-circle-o"></i> Garantia <i class="feather icon-chevron-right"></i>
@@ -108,6 +111,7 @@
                         </div>
                     </div>
                 </li>
+                -->
                 <li class="item-list-menu">
                     <button type="button" data-bs-toggle="collapse" data-bs-target="#collapseFinanceiro" aria-expanded="false" aria-controls="collapseExample">
                         <i class="fa fa-money"></i> Financeiro <i class="feather icon-chevron-right"></i>
@@ -121,10 +125,12 @@
                         </div>
                     </div>
                 </li>
+                <!--
                 <li class="sub-title-dashboard mt-1">
                     Configurações
                 </li>
                 <li class="item-list-menu"><a href="#"><i class="fa fa-cog"></i> Config. Geral</a></li>
+                -->
             </ul>
         </div>
     </div>

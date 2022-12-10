@@ -25,16 +25,7 @@
                                                 <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap4">
                                                     <div class="row">
                                                         <div class="col-sm-12 col-md-6">
-                                                            <div class="dataTables_length" id="DataTables_Table_0_length">
-                                                                <label>
-                                                                    <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm">
-                                                                        <option value="1">1</option>
-                                                                        <option value="2">2</option>
-                                                                        <option value="3">3</option>
-                                                                        <option value="4">4</option>
-                                                                    </select> Páginas
-                                                                </label>
-                                                            </div>
+                                                         
                                                         </div>
                                                         <div class="col-sm-12 col-md-6">
                                                             <div id="DataTables_Table_0_filter" class="dataTables_filter">
@@ -75,22 +66,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-sm-12 col-md-5">
-                                                            <p>Página 1 de 3</p>
-                                                        </div>
-                                                        <div class="col-sm-12 col-md-7">
-                                                            <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
-                                                                <ul class="pagination">
-                                                                    <li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous"><a href="#" data-dt-idx="0" class="page-link">Anterior</a></li>
-                                                                    <li class="paginate_button page-item active"><a href="#" data-dt-idx="1" class="page-link">1</a></li>
-                                                                    <li class="paginate_button page-item "><a href="#" data-dt-idx="2" class="page-link">2</a></li>
-                                                                    <li class="paginate_button page-item "><a href="#" data-dt-idx="3" class="page-link">3</a></li>
-                                                                    <li class="paginate_button page-item next" id="DataTables_Table_0_next"><a href="#" class="page-link">Próximo</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                             
                                                 </div>
                                             </div>
                                         </div>

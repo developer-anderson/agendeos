@@ -20,6 +20,10 @@ var previsao_os_time = ''
 if (!localStorage.getItem('id') && window.location.pathname != "/login.html") {
   window.location.href = 'login.html';
 }
+function sair(){
+  localStorage.removeItem('id');
+  window.location.href = 'login.html';
+}
 $(document).ready(function () {
   $('.celular').mask('(00) 0.0000-0000');
   $('.telefone').mask('(00) 0000-0000');
@@ -171,8 +175,7 @@ const activeSearchs = () => {
   }
 };
 
-const btnHeaderKeyboard = document.getElementById('btnHeaderKeyboard');
-btnHeaderKeyboard.addEventListener('click', activeSearchs);
+
 // END
 
 
@@ -465,7 +468,7 @@ function login(formid) {
         buttonsStyling: false
       });
       setTimeout(function () {
-        window.location.href = 'index.php';
+        window.location.href = 'principal.php';
       }, 2000)
 
 

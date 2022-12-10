@@ -144,7 +144,7 @@
                                                     </div>
                                                 </form>
                                                 <button type="button" onclick="editarCliente('clientePfForm')" class="btn btn-primary" id="btnAddClientePf">
-                                                    <i class="fa fa-check-square-o"></i> Adicionar
+                                                    <i class="fa fa-check-square-o"></i> Atualizar Cadastro
                                                 </button>
 
                                                 <form class="row d-none" id="clientePjForm">
@@ -271,7 +271,7 @@
                                                 </form>
 
                                                 <button type="button" onclick="editarCliente('clientePjForm')" class="btn btn-primary d-none" id="btnAddClientePj">
-                                                    <i class="fa fa-check-square-o"></i> Adicionar
+                                                    <i class="fa fa-check-square-o"></i> Atualizar Cadastro
                                                 </button>
                                             </div>
                                         </div>

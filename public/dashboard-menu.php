@@ -1,7 +1,7 @@
 <asside class="dashboard-menu">
-    <a href="index.php" class="box-logo">
+    <a href="index.php" class="">
         <figure class="logo">
-            <img src="assets/img/agendos-logo.png" alt="">
+            <img src="assets/img/agendos-logo.png" style="margin-left: 50px;" alt="">
         </figure>
     </a>
 
@@ -84,6 +84,7 @@
                         <i class="feather icon-calendar"></i> Ordem de Serviço
                     </a>
                 </li>
+                <!--
                 <li class="item-list-menu">
                     <button type="button" data-bs-toggle="collapse" data-bs-target="#collapseProdutos" aria-expanded="false" aria-controls="collapseExample">
                         <i class="feather icon-shopping-cart"></i> Produtos <i class="feather icon-chevron-right"></i>
@@ -97,7 +98,7 @@
                         </div>
                     </div>
                 </li>
-                <!--
+                
                 <li class="item-list-menu">
                     <button type="button" data-bs-toggle="collapse" data-bs-target="#collapseGarantia" aria-expanded="false" aria-controls="collapseExample">
                         <i class="fa fa-check-circle-o"></i> Garantia <i class="feather icon-chevron-right"></i>

@@ -25,7 +25,7 @@ Route::get('/token', function (Request $request) {
  
     // ...
 });
-Route::get('/', function () { return redirect('/html/login.html'); });
+Route::get('/', function () { return redirect('/login.html'); });
 Route::get('clientes/getall{id}', [ClientesController::class, 'getall']);
 Route::get('clientes/getAllclientByType/{type}/{id}', [ClientesController::class, 'getAllclientByType']);
 Route::get('clientes/show/{clientes}', [ClientesController::class, 'show']);

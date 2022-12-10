@@ -13,11 +13,11 @@ if(window.location.hostname == 'agendos.com.br'){
   endpoint = 'https://agendos.com.br'
 }
 else{
-  endpoint = 'http://127.0.0.1:8001'
+  endpoint = 'http://127.0.0.1:8002'
 }
 
 var previsao_os_time = ''
-if (!localStorage.getItem('id') && window.location.pathname != "/html/login.html") {
+if (!localStorage.getItem('id') && window.location.pathname != "/login.html") {
   window.location.href = 'login.html';
 }
 $(document).ready(function () {
@@ -624,23 +624,23 @@ function editarCliente(formid) {
       });
     });
 }
-if (window.location.pathname == "/html/listar-clientes.php") {
+if (window.location.pathname == "/listar-clientes.php") {
   getAllclientByType('PF')
   getAllclientByType('PJ')
 }
-if (window.location.pathname == "/html/listar-veiculo.php") {
+if (window.location.pathname == "/listar-veiculo.php") {
   getAllCar()
 }
-if (window.location.pathname == "/html/listar-receitas.php") {
+if (window.location.pathname == "/listar-receitas.php") {
   getAllFluxo()
 }
-if (window.location.pathname == "/html/ordem-de-servico.php" || window.location.pathname == "/html/add_fluxo_caixa.php" || window.location.pathname == "/html/editar_fluxo_caixa.php") {
+if (window.location.pathname == "/ordem-de-servico.php" || window.location.pathname == "/add_fluxo_caixa.php" || window.location.pathname == "/editar_fluxo_caixa.php") {
   getAllOs()
 }
-if (window.location.pathname == "/html/listar-servico.php") {
+if (window.location.pathname == "/listar-servico.php") {
   getAllServicos()
 }
-if (window.location.pathname == "/html/adicionar-veiculo.php" || window.location.pathname == "/html/add_fluxo_caixa.php" || window.location.pathname == "/html/editar_fluxo_caixa.php") {
+if (window.location.pathname == "/adicionar-veiculo.php" || window.location.pathname == "/add_fluxo_caixa.php" || window.location.pathname == "/editar_fluxo_caixa.php") {
   getAllclientByType('PF', true)
   getAllclientByType('PJ', true)
   var urlParams = new URLSearchParams(window.location.search);
@@ -653,13 +653,13 @@ if (window.location.pathname == "/html/adicionar-veiculo.php" || window.location
 
   }
 }
-if (window.location.pathname == "/html/ordem-de-servico.php") {
+if (window.location.pathname == "/ordem-de-servico.php") {
   getAllclientByType('PF', true)
   getAllclientByType('PJ', true)
   getAllServicos(true)
 
 }
-if (window.location.pathname == "/html/editar-veiculo.php") {
+if (window.location.pathname == "/editar-veiculo.php") {
   var urlParams = new URLSearchParams(window.location.search);
   id_veiculo = urlParams.get("id_veiculo")
 
@@ -681,7 +681,7 @@ if (window.location.pathname == "/html/editar-veiculo.php") {
   }
 
 }
-if (window.location.pathname == "/html/editar-servico.php") {
+if (window.location.pathname == "/editar-servico.php") {
   var urlParams = new URLSearchParams(window.location.search);
   id_servico = urlParams.get("id_servico")
 
@@ -703,7 +703,7 @@ if (window.location.pathname == "/html/editar-servico.php") {
   }
 
 }
-if (window.location.pathname == "/html/editar_fluxo_caixa.php") {
+if (window.location.pathname == "/editar_fluxo_caixa.php") {
   var urlParams = new URLSearchParams(window.location.search);
   id_fluxo = urlParams.get("id_fluxo")
 
@@ -725,7 +725,7 @@ if (window.location.pathname == "/html/editar_fluxo_caixa.php") {
   }
 
 }
-if (window.location.pathname == "/html/editar-cliente.php") {
+if (window.location.pathname == "/editar-cliente.php") {
   var urlParams = new URLSearchParams(window.location.search);
   id_cliente = urlParams.get("id_cliente")
 

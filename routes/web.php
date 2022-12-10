@@ -35,6 +35,7 @@ Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy
 
 Route::get('os/getall/{id}', [OrdemServicosController::class, 'getall']);
 Route::get('os/show/{os}', [OrdemServicosController::class, 'show']);
+Route::get('os/getServicosOs/{os}', [OrdemServicosController::class, 'getServicosOs']);
 Route::post('os/insert', [OrdemServicosController::class, 'store']);
 Route::put('os/update/{os}',[OrdemServicosController::class, 'update']);
 Route::delete('os/destroy{os}', [OrdemServicosController::class, 'destroy']);

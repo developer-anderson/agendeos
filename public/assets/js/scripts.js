@@ -281,7 +281,7 @@ function addCliente(formid) {
         Swal.fire({
           title: "Feito",
           text: "Solicitação realizada com sucesso!",
-          type: "error",
+          type: "success",
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
@@ -318,7 +318,7 @@ function addOs(formid) {
         Swal.fire({
           title: "Feito",
           text: "Solicitação realizada com sucesso!",
-          type: "error",
+          type: "success",
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
@@ -333,7 +333,7 @@ function addOs(formid) {
         title: "Erro",
         text: "Não foi possivel concluir o cadastro!",
         type: "error",
-        confirmButtonClass: "btn btn-success",
+        confirmButtonClass: "btn btn-danger",
         buttonsStyling: false
       });
     });
@@ -355,7 +355,7 @@ function addServico(formid) {
         Swal.fire({
           title: "Feito",
           text: "Solicitação realizada com sucesso!",
-          type: "error",
+          type: "success",
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
@@ -370,7 +370,7 @@ function addServico(formid) {
         title: "Erro",
         text: "Não foi possivel concluir o cadastro!",
         type: "error",
-        confirmButtonClass: "btn btn-success",
+        confirmButtonClass: "btn btn-danger",
         buttonsStyling: false
       });
     });
@@ -391,7 +391,7 @@ function addVeiculo(formid) {
         Swal.fire({
           title: "Feito",
           text: "Solicitação realizada com sucesso!",
-          type: "error",
+          type: "success",
           confirmButtonClass: "btn btn-success",
           buttonsStyling: false
         });
@@ -406,7 +406,7 @@ function addVeiculo(formid) {
         title: "Erro",
         text: "Não foi possivel concluir o cadastro!",
         type: "error",
-        confirmButtonClass: "btn btn-success",
+        confirmButtonClass: "btn btn-danger",
         buttonsStyling: false
       });
     });
@@ -514,7 +514,7 @@ function editarVeiculo(formid) {
         title: "Erro",
         text: "Não foi possivel concluir o cadastro!",
         type: "error",
-        confirmButtonClass: "btn btn-success",
+        confirmButtonClass: "btn btn-danger",
         buttonsStyling: false
       });
     });
@@ -550,7 +550,7 @@ function editaros(formid) {
         title: "Erro",
         text: "Não foi possivel concluir o cadastro!",
         type: "error",
-        confirmButtonClass: "btn btn-success",
+        confirmButtonClass: "btn btn-danger",
         buttonsStyling: false
       });
     });
@@ -586,7 +586,7 @@ function editarServico(formid) {
         title: "Erro",
         text: "Não foi possivel concluir o cadastro!",
         type: "error",
-        confirmButtonClass: "btn btn-success",
+        confirmButtonClass: "btn btn-danger",
         buttonsStyling: false
       });
     });
@@ -622,7 +622,7 @@ function editarCliente(formid) {
         title: "Erro",
         text: "Não foi possivel concluir o cadastro!",
         type: "error",
-        confirmButtonClass: "btn btn-success",
+        confirmButtonClass: "btn btn-danger",
         buttonsStyling: false
       });
     });
@@ -763,10 +763,13 @@ function getItemFluxoCaixa(id) {
       $("#data").val(response.data)
       $("#valor").val(response.valor)
       $("#desconto").val(response.desconto)
-      $("#tipo_id").val(response.tipo_id).change()
-      $("#cliente_id").val(response.cliente_id).change()
-      $("#os_id").val(response.os_id).change()
-      $("#pagamento_id").val(response.os_id).change()
+      setTimeout(function () {
+        $("#tipo_id").val(response.tipo_id).change()
+        $("#cliente_id").val(response.cliente_id).change()
+        $("#os_id").val(response.os_id).change()
+        $("#pagamento_id").val(response.os_id).change()
+      }, 5000)
+
   
     },
     error: function (xhr, ajaxOptions, thrownError) {
@@ -1129,7 +1132,7 @@ function getAllFluxo() {
 }
 function getOs(chave) {
   $("#btnAddOs").trigger("click");
-  $("#lservicos").val(os[chave].id_servico).change();
+  
   $("#donoVeiculo").val(os[chave].id_cliente).change();
   setTimeout(function () {
     $("#id_veiculo").val(os[chave].id_veiculo).change();
@@ -1147,6 +1150,21 @@ function getOs(chave) {
   $("#btnAddServico").text("Editar");
   $("#btnAddServico").attr('onclick', "editaros('OrdemDeServicoForm')")
   os_id = os[chave].id
+  let vetor = new Array();
+  $.ajax({
+    url: endpoint+'/os/getServicosOs/' + os_id,
+    type: 'get',
+    dataType: 'json',
+    success: function (response) {
+      Object.keys(response).forEach(function (key, index) {
+        vetor[key] = response[key].id_servico;
+       
+      });
+      console.log(vetor)
+      $("#lservicos").val(vetor).change();
+    }
+  });
+ 
 }
 function limparForm() {
   $("input").val('');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\OrdemServicos;
+use App\Models\ordem_servico_servico;
 use App\Models\fluxo_caixa;
 use Illuminate\Http\Request;
 use App\Models\Servicos;
@@ -24,10 +25,13 @@ class OrdemServicosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function getServicosOs($os_id){
+        return response()->json( ordem_servico_servico::where('os_id', $os_id)->get() , 200);
+    }
     public function getAll($id)
     {
         //
-        $os = DB::table('ordem_servicos')->join('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->join('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->join('servicos', 'servicos.id', '=', 'ordem_servicos.id_servico')->where('ordem_servicos.user_id',$id)
+        $os = DB::table('ordem_servicos')->join('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->join('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->join('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->join('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.user_id',$id)
         ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social' , 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor')->get();
         return response()->json( $os , 200);
     }
@@ -42,12 +46,22 @@ class OrdemServicosController extends Controller
     {
         //
         $post = $request->all();
+        $os_servicos = $post['id_servico'];
+        $post['id_servico'] = 0;
         $post['inicio_os'] = $post['inicio_os'] ." ".$post['inicio_os_time'];
         $post['previsao_os'] = $post['previsao_os'] ." ".$post['previsao_os_time'];
-   
-       $os=  OrdemServicos::create( $post);
-       $post['os_id'] = $os->id;
-       $this->addReceita($post);
+        $os=  OrdemServicos::create( $post);
+        $post['os_id'] = $os->id;
+        foreach($os_servicos as $id_servico)
+        {
+            $data = array(
+                "os_id"      => $os->id,
+                "id_servico" => $id_servico
+            );
+            ordem_servico_servico::create($data);
+        }
+        $post['id_servico'] = $os_servicos;
+        $this->addReceita($post);
         if($post['remarketing'])
         {
             $this->remarketing($post);
@@ -65,8 +79,17 @@ class OrdemServicosController extends Controller
         $post['remarketing'] = null;
         $post['previsao_os'] = date('Y-m-d H:i:s', strtotime("+$remarketing days",strtotime($post['inicio_os'])));
         $post['inicio_os'] = date('Y-m-d H:i:s', strtotime("+$remarketing days",strtotime($post['inicio_os'])));
-        
-        OrdemServicos::create($post);
+        $os_servicos = $post['id_servico'];
+        $post['id_servico'] = 0;
+        $os = OrdemServicos::create($post);
+        foreach($os_servicos as $id_servico)
+        {
+            $data = array(
+                "os_id"      => $os->id,
+                "id_servico" => $id_servico
+            );
+            ordem_servico_servico::create($data);
+        }
     }
     public function getServico($id)
     {
@@ -91,9 +114,13 @@ class OrdemServicosController extends Controller
     {
         $data['cliente_id'] = $data['id_cliente'];
         $data['os_id'] = $data['os_id'];
-        $servico = $this->getServico($data['id_servico']);
-        $data['valor'] = $servico->valor;
-        $data['nome'] = $servico->nome;
+        $data['valor'] =0;
+        foreach($data['id_servico'] as $id_servico)
+        {
+            $servico = $this->getServico($id_servico);
+            $data['valor'] += $servico->valor;
+        }
+        $data['nome'] = "Ordem de Serviço #".$data['os_id'];
         $data['produto_id'] = null;
         if($data['situacao'] >= 2 and $data['situacao'] <= 4)
         {
@@ -106,8 +133,9 @@ class OrdemServicosController extends Controller
             $data['pagamento_id'] = 0;
         }
         $data['data'] = date("Y-m-d");
-       $data['tipo_id'] = 1;
+        $data['tipo_id'] = 1;
         fluxo_caixa::create($data);
+ 
     }
     /**
      * Show the form for editing the specified resource.
@@ -131,8 +159,24 @@ class OrdemServicosController extends Controller
     {
         //
         $dados = $request->all();
-        //dd($ordemServicos);
-        OrdemServicos::find($ordemServicos)->first()->fill($request->all())->save();
+        $os_servicos = $dados['id_servico'];
+        $dados['id_servico'] = 0;
+        ordem_servico_servico::where('os_id', $ordemServicos)->delete();
+        OrdemServicos::find($ordemServicos)->first()->fill($dados)->save();
+        $valor_total = 0;
+        foreach($os_servicos as $id_servico)
+        {
+            $servico = $this->getServico($id_servico);
+            $valor_total += $servico->valor;
+            $data = array(
+                "os_id"      => $ordemServicos,
+                "id_servico" => $id_servico
+            );
+            ordem_servico_servico::create($data);
+        }
+        $caixa = fluxo_caixa::where('os_id', $ordemServicos)->first();
+        $caixa->valor = $valor_total;
+        $caixa->save();
         return response()->json(
              [
                 "erro" => false,

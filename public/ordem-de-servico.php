@@ -11,10 +11,29 @@
                 <?php include 'header.php'; ?>
 
                 <main>
+                <div class="container-fluid">
+                        <div class="row" style="margin-bottom: 30px;">
+                            <div class="col-4">
+                                <label>Periodo Inicial</label>
+                                <input type="date" value="<?php echo(date("Y-m-d"));?>" id="inicio"  class="form-control showdropdowns">
+                               
+                            </div>
+                            <div class="col-4">
+                            <label>Periodo Fim</label>
+                                <input type="date" value="<?php echo(date("Y-m-d"));?>" id="fim"  class="form-control showdropdowns">
+                               
+                            </div>
+                            <div class="col-4">
+                            <button type="button" onclick="getAllOs()" class="btn btn-primary" style="margin-top: 26px;" id="btnAddServico">  <i class="fa fa-check-square-o"></i> Buscar registros</button>
+                               
+                            </div>
+                        </div>
+                    </div>
                     <section>
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-12 col-mobile">
+
                                     <button type="button" class="btn btn-outline-primary btn-add-os" id="btnAddOs"><i class="fa fa-plus"></i> Lançar Os</button>
                                 </div>
 

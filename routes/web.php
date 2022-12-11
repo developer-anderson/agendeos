@@ -33,7 +33,7 @@ Route::post('clientes/insert', [ClientesController::class, 'store']);
 Route::put('clientes/update/{clientes}',[ClientesController::class, 'update']);
 Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy']);
 
-Route::get('os/getall/{id}', [OrdemServicosController::class, 'getall']);
+Route::get('os/getall/{id}/{inicio}/{fim}', [OrdemServicosController::class, 'getall']);
 Route::get('os/show/{os}', [OrdemServicosController::class, 'show']);
 Route::get('os/getServicosOs/{os}', [OrdemServicosController::class, 'getServicosOs']);
 Route::post('os/insert', [OrdemServicosController::class, 'store']);

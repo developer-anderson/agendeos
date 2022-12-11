@@ -28,11 +28,11 @@ class OrdemServicosController extends Controller
     public function getServicosOs($os_id){
         return response()->json( ordem_servico_servico::where('os_id', $os_id)->get() , 200);
     }
-    public function getAll($id)
+    public function getAll($id, $incio, $fim)
     {
         //
         $os = DB::table('ordem_servicos')->join('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->join('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->join('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->join('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.user_id',$id)
-        ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social' , 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor')->get();
+        ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social' , 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor')->where('inicio_os', '>=',$incio." 00:00:00")->where('inicio_os', '<=',$fim." 23:59:59")->get();
         return response()->json( $os , 200);
     }
 

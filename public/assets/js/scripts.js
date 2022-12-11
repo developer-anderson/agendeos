@@ -977,9 +977,10 @@ function getAllclientByType(type = 'PF', select = false) {
   });
 }
 function getAllOs() {
+  html = ''
   options += '<option value="0">Selecione a ordem de serviço</option>'
   $.ajax({
-    url: endpoint+'/os/getall/' + localStorage.getItem('id'),
+    url: endpoint+'/os/getall/' + localStorage.getItem('id')+'/'+$("#inicio").val()+'/'+$("#fim").val(),
     type: 'get',
     dataType: 'json',
     success: function (response) {

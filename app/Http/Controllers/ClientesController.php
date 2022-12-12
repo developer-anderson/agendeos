@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clientes;
+use App\Models\whatsapp;
+use App\Models\token;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,9 +40,26 @@ class ClientesController extends Controller
     {
         //
         $user = Auth::user();
-       
+ 
         $post = $request->all();
-      
+        if($post['celular_f']){
+            $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_f']);
+        }
+        elseif($post['celular_rj']){
+            $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_rj']);
+        }
+        $vetor = array(
+            "messaging_product" => "whatsapp",
+            "to" => $telefone,
+            "type" => 'template',
+            "template" => array(
+                "name" => "bem_vindo",
+                "language" => array(
+                    "code" => "pt_BR"
+                )
+            )
+        );
+        whatsapp::sendMessage($vetor, token::token());
         $clientes = Clientes::create( $post);
         return response()->json([
             "erro" => false,

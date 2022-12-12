@@ -1085,7 +1085,7 @@ function getAllclientByType(type = 'PF', select = false) {
   });
 }
 function getAllOs() {
-  html = ''
+  let td_os = ''
   options += '<option value="0">Selecione a ordem de serviço</option>'
   $.ajax({
     url: endpoint+'/os/getall/' + localStorage.getItem('id')+'/'+$("#inicio").val()+'/'+$("#fim").val(),
@@ -1101,56 +1101,56 @@ function getAllOs() {
         let previsao_os = response[key].previsao_os.split(" ")
         let previsao_data = inicio_os[0].split("-")
         let data_formadata_previsao = previsao_data[2] + '/' + previsao_data[1] + '/' + previsao_data[0]
-        html += '<tr>'
-        html += '<td class="big-item-table">#' + response[key].id + '</td>'
-        html += '<td class="big-item-table">' + response[key].valor + '</td>'
+        td_os += '<tr>'
+        td_os += '<td class="big-item-table">#' + response[key].id + '</td>'
+        td_os += '<td class="big-item-table">' + response[key].valor + '</td>'
         if (response[key].nome_f) {
-          html += '<td class="big-item-table">' + response[key].nome_f + '</td>'
+          td_os += '<td class="big-item-table">' + response[key].nome_f + '</td>'
 
         }
         else {
-          html += '<td class="big-item-table">' + response[key].razao_social + '</td>'
+          td_os += '<td class="big-item-table">' + response[key].razao_social + '</td>'
         }
-        html += '<td class="big-item-table">' + response[key].nome + '</td>'
-        html += '<td class="big-item-table">' + response[key].placa + ' - ' + response[key].modelo + '</td>'
-        html += '<td class="big-item-table">' + data_formadata_inicio + ' ' + inicio_os[1] + '</td>'
-        html += '<td class="big-item-table">' + data_formadata_previsao + ' ' + previsao_os[1] + '</td>'
+        td_os += '<td class="big-item-table">' + response[key].nome + '</td>'
+        td_os += '<td class="big-item-table">' + response[key].placa + ' - ' + response[key].modelo + '</td>'
+        td_os += '<td class="big-item-table">' + data_formadata_inicio + ' ' + inicio_os[1] + '</td>'
+        td_os += '<td class="big-item-table">' + data_formadata_previsao + ' ' + previsao_os[1] + '</td>'
         if (!response[key].situacao) {
-          html += '<td > <div class="badge badge-warning">Aguardando Pagamento</div></td>'
+          td_os += '<td > <div class="badge badge-warning">Aguardando Pagamento</div></td>'
         }
         else if (response[key].situacao == 1) {
 
-          html += '<td > <div class="badge badge-success">Pago</div></td>'
+          td_os += '<td > <div class="badge badge-success">Pago</div></td>'
         }
         else if (response[key].situacao == 2) {
 
-          html += '<td > <div class="badge badge-success">Pago - serviço iniciado</div></td>'
+          td_os += '<td > <div class="badge badge-success">Pago - serviço iniciado</div></td>'
         }
         else if (response[key].situacao == 3) {
 
-          html += '<td > <div class="badge badge-success">Pago - Aguardando retirada do Cliente</div></td>'
+          td_os += '<td > <div class="badge badge-success">Pago - Aguardando retirada do Cliente</div></td>'
         }
         else if (response[key].situacao == 4) {
 
-          html += '<td > <div class="badge badge-success">Pago - Remarketing</div></td>'
+          td_os += '<td > <div class="badge badge-success">Pago - Remarketing</div></td>'
         }
         else if (response[key].situacao == 5) {
 
-          html += '<td > <div class="badge badge-warning">Remarketing</div></td>'
+          td_os += '<td > <div class="badge badge-warning">Remarketing</div></td>'
         }
         else if (response[key].situacao == 6) {
 
-          html += '<td > <div class="badge badge-danger">Cancelado</div></td>'
+          td_os += '<td > <div class="badge badge-danger">Cancelado</div></td>'
         }
 
-        html += '<td class="big-item-table action-buttons"><button onclick="getOs(' + key + ')"class="see-table-item" id="seeTableItem"><i class="fa fa-pencil"></i></button><a href="pdf_os.php?os_id=' + response[key].id + '"> <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></a></td>'
+        td_os += '<td class="big-item-table action-buttons"><button onclick="getOs(' + key + ')"class="see-table-item" id="seeTableItem"><i class="fa fa-pencil"></i></button><a href="pdf_os.php?os_id=' + response[key].id + '"> <button class="see-table-item" id="seeTableItem"><i class="fa fa-eye"></i></button></a></td>'
 
-        html += '</tr>'
+        td_os += '</tr>'
         options += '<option value="' + response[key].id + '">' + response[key].nome + ' - R$ ' + response[key].valor + ' - ' + data_formadata_inicio + '</option>'
 
       });
 
-      $("#tos").html(html)
+      $("#tos").html(td_os)
       $("#responsive_single").html(options)
       options = ''
 

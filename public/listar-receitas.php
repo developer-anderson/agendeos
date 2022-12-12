@@ -15,7 +15,7 @@
                         <div class="row" style="margin-bottom: 30px;">
                             <div class="col-4">
                                 <label>Periodo Inicial</label>
-                                <input type="date" value="<?php echo(date("Y-m-d"));?>" id="inicio"  class="form-control showdropdowns">
+                                <input type="date" value="<?php echo(date("Y-m-01"));?>" id="inicio"  class="form-control showdropdowns">
                                
                             </div>
                             <div class="col-4">

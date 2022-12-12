@@ -41,9 +41,21 @@ class FluxoCaixaController extends Controller
     {
         //
         $post = $request->all();
-        $post['valor'] = str_replace(",", ".",   $post['valor'] );
-        $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
- 
+        if (strlen($post['valor']) >= 7) {
+            $post['valor'] = str_replace(".", "",   $post['valor'] );
+            $post['valor'] = str_replace(",", ".",   $post['valor'] );
+        }
+        else{
+            $post['valor'] = str_replace(",", ".",   $post['valor'] );
+        }
+        if (strlen($post['desconto']) >= 7) {
+            $post['desconto'] = str_replace(".", "",   $post['desconto'] );
+            $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
+        }
+        else{
+            $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
+        }
+       
         fluxo_caixa::create( $post);
         return response()->json(
             [
@@ -91,7 +103,23 @@ class FluxoCaixaController extends Controller
     public function update(Request $request, fluxo_caixa $fluxo_caixa)
     {
         //
-        fluxo_caixa::find($fluxo_caixa)->first()->fill($request->all())->save();
+        $post = $request->all();
+        if (strlen($post['valor']) >= 7) {
+            $post['valor'] = str_replace(".", "",   $post['valor'] );
+            $post['valor'] = str_replace(",", ".",   $post['valor'] );
+        }
+        else{
+            $post['valor'] = str_replace(",", ".",   $post['valor'] );
+        }
+        if (strlen($post['desconto']) >= 7) {
+            $post['desconto'] = str_replace(".", "",   $post['desconto'] );
+            $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
+        }
+        else{
+            $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
+        }
+        //dd($post);
+        fluxo_caixa::find($fluxo_caixa)->first()->fill($post)->save();
         return response()->json(
              [
                 "erro" => false,

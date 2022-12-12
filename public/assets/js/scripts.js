@@ -13,7 +13,7 @@ if(window.location.hostname == 'agendos.com.br'){
   endpoint = 'https://agendos.com.br'
 }
 else{
-  endpoint = 'http://127.0.0.1:8002'
+  endpoint = 'http://127.0.0.1:8001'
 }
 
 var previsao_os_time = ''
@@ -684,6 +684,28 @@ if (window.location.pathname == "/editar-veiculo.php") {
   }
 
 }
+if (window.location.pathname == "/pdf_os.php") {
+  var urlParams = new URLSearchParams(window.location.search);
+  os_id = urlParams.get("os_id")
+
+  if (os_id) {
+    getPdfOs(os_id)
+  }
+  else {
+    Swal.fire({
+      title: "Erro",
+      text: "Erro ao encontrar a OS informado",
+      type: "error",
+      confirmButtonClass: "btn btn-danger",
+      buttonsStyling: false
+    });
+    setTimeout(function () {
+      window.location.href = 'ordem-de-servico.php';
+    }, 2000)
+
+  }
+
+}
 if (window.location.pathname == "/editar-servico.php") {
   var urlParams = new URLSearchParams(window.location.search);
   id_servico = urlParams.get("id_servico")
@@ -751,6 +773,92 @@ if (window.location.pathname == "/editar-cliente.php") {
   }
 
 
+}
+
+function getPdfOs(id) {
+  let items = ''
+ 
+  let subtotal = 0
+  let desconto = 0;
+  $.ajax({
+    url: endpoint+'/os/pdf/'+localStorage.getItem('id')+ '/' + id,
+    type: 'get',
+    dataType: 'json',
+    success: function (response) {
+      Object.keys(response).forEach(function (key, index) {
+        let created_at = response[key].created_at.split(" ")
+        let created_at_data = created_at[0].split("-")
+        let data_formadata = created_at_data[2] + '/' + created_at_data[1] + '/' + created_at_data[0]
+        $("#data_lancamento").text(data_formadata);
+        if(response[key].nome_f){
+          $("#nome_cliente").text(response[key].nome_f);
+        }
+        else if(response[key].razao_social){
+          $("#nome_cliente").text(response[key].razao_social);
+        }
+        $("#nome_loja").text(response[key].nome_fantasia);
+        subtotal +=response[key].valor
+        items += '<tr>'
+        items += '<td>'+response[key].nome+'</td>'
+        items += '<td class="font-weight-bold"> R$ '+response[key].valor.toLocaleString('pt-br', { minimumFractionDigits: 2 }) +'</td>'
+        items += '</tr>'
+
+        if (!response[key].situacao) {
+      
+          $("#status_os").text('Aguardando Pagamento');
+        }
+        else if (response[key].situacao == 1) {
+
+          $("#status_os").text('Pago');
+        }
+        else if (response[key].situacao == 2) {
+
+          $("#status_os").text('Pago - serviço iniciado');
+        }
+        else if (response[key].situacao == 3) {
+
+          $("#status_os").text('Pago - Aguardando retirada do Cliente');
+        }
+        else if (response[key].situacao == 4) {
+          $("#status_os").text('Pago - Remarketing');
+         
+        }
+        else if (response[key].situacao == 5) {
+          $("#status_os").text('Remarketing');
+       
+        }
+        else if (response[key].situacao == 6) {
+          $("#status_os").text('Cancelado');
+        
+        }
+        $("#cepcli").text(response[key].cep_cli)
+        $("#cep_loja").text(response[key].ceploja)
+  
+        $("#endceli").text(response[key].cep_cli)
+        $("#endloja").text(response[key].ceploja)
+  
+        $("#endloja").text(response[key].logradouro_loja + ',' + response[key].numero_loja + ' - ' + response[key].complemento_loja + ' ' + response[key].bairro_loja + ' - ' + response[key].cidade_loja +'/'+response[key].estado_loja)
+        $("#endceli").text(response[key].logradouro_cli + ',' + response[key].numero_cli + ' - ' + response[key].complemento_cli + ' ' + response[key].bairro_cli + ' - ' + response[key].cidade_cli +'/'+response[key].estado_cli)
+       
+      });
+      $("#subtotal").text('R$ ' +subtotal.toLocaleString('pt-br', { minimumFractionDigits: 2 }));
+      $("#valor_desconto").text('R$ ' +desconto.toLocaleString('pt-br', { minimumFractionDigits: 2 }));
+      $("#total").text('R$ ' +(subtotal - desconto).toLocaleString('pt-br', { minimumFractionDigits: 2 }));
+      $("#items_servicos").html(items);
+  
+  
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+
+      Swal.fire({
+        title: "Erro",
+        text: "Não foi possivel concluir a solicitação!",
+        type: "error",
+        confirmButtonClass: "btn btn-danger",
+        buttonsStyling: false
+      });
+    }
+  });
 }
 function getItemFluxoCaixa(id) {
 

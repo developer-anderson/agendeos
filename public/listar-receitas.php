@@ -20,7 +20,7 @@
                             </div>
                             <div class="col-4">
                             <label>Periodo Fim</label>
-                                <input type="date" value="<?php echo(date("Y-m-d"));?>" id="fim"  class="form-control showdropdowns">
+                                <input type="date" value="<?php echo(date("Y-m-31"));?>" id="fim"  class="form-control showdropdowns">
                                
                             </div>
                             <div class="col-4">

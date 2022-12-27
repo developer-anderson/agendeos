@@ -24,7 +24,7 @@
                                
                             </div>
                             <div class="col-4">
-                            <button type="button" onclick="getAllOs()" class="btn btn-primary" style="margin-top: 26px;" id="btnAddServico">  <i class="fa fa-check-square-o"></i> Buscar registros</button>
+                            <button type="button" onclick="getAllOs()" class="btn btn-primary" style="margin-top: 26px;" id="">  <i class="fa fa-check-square-o"></i> Buscar registros</button>
                                
                             </div>
                         </div>

@@ -178,10 +178,9 @@ class OrdemServicosController extends Controller
         $data = array();
         $nomes = "";
         $total = 0;
-        foreach ($dados as $item)
-        {
-            
-            $nomes .= " ".$item->nome;
+        foreach ($dados as $item) {
+
+            $nomes .= " " . $item->nome;
             $total += $item->valor;
         }
         return array("nomes" => $nomes, "total" => $total);
@@ -190,16 +189,15 @@ class OrdemServicosController extends Controller
     {
         $dados = $this->getModeloMensagem($ordemServicos);
         $extras = $this->getServicosNotifyClint($dados);
-        
-       $situacao = "";
+
+        $situacao = "";
         $values = array();
-        foreach ($dados as $item)
-        {
+        foreach ($dados as $item) {
             $cliente = Clientes::find($item->id_cliente);
             if ($cliente->celular_f) {
                 $nome_cliente = $cliente->nome_f;
                 $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $cliente->celular_f);
-            } elseif ( $cliente->celular_rj) {
+            } elseif ($cliente->celular_rj) {
                 $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $cliente->celular_rj);
                 $nome_cliente = $cliente->razao_social;
             }
@@ -233,36 +231,28 @@ class OrdemServicosController extends Controller
             );
             $values[7] = array(
                 "type" => "text",
-                "text" => number_format($extras['total'],2,".", ",")
+                "text" => number_format($extras['total'], 2, ".", ",")
             );
-            if ($item->situacao){
-      
-                $situacao ='Aguardando Pagamento';
-              }
-              elseif ($item->situacao == 1) {
-      
-                $situacao ='Pago';
-              }
-              elseif ($item->situacao == 2) {
-      
-                 $situacao ='Pago - serviço iniciado';
-              }
-              elseif ($item->situacao == 3) {
-      
-                 $situacao ='Pago - Aguardando retirada do Cliente';
-              }
-              elseif ($item->situacao == 4) {
-                 $situacao ='Pago - Remarketing';
-               
-              }
-              elseif ($item->situacao == 5) {
-                 $situacao ='Remarketing';
-             
-              }
-              elseif ($item->situacao == 6) {
-                 $situacao ='Cancelado';
-              }
-              $values[8] = array(
+            if ($item->situacao) {
+
+                $situacao = 'Aguardando Pagamento';
+            } elseif ($item->situacao == 1) {
+
+                $situacao = 'Pago';
+            } elseif ($item->situacao == 2) {
+
+                $situacao = 'Pago - serviço iniciado';
+            } elseif ($item->situacao == 3) {
+
+                $situacao = 'Pago - Aguardando retirada do Cliente';
+            } elseif ($item->situacao == 4) {
+                $situacao = 'Pago - Remarketing';
+            } elseif ($item->situacao == 5) {
+                $situacao = 'Remarketing';
+            } elseif ($item->situacao == 6) {
+                $situacao = 'Cancelado';
+            }
+            $values[8] = array(
                 "type" => "text",
                 "text" => $situacao
             );
@@ -274,16 +264,21 @@ class OrdemServicosController extends Controller
             "template"     => array(
                 "name"     => "situacao_os",
                 "language" => array(
-                    "code" => "pt_BR"
+                    "code" => "pt_BR",
+                    "policy" => "deterministic"
+                ),
+                "components"     =>
+                array(
+                    array(
+                        "type"       => "body",
+                        "parameters" => $values
+                    )
                 )
             ),
-            "components"     => array(
-                "type"       => "body",
-                "parameters" => $values
-            )
+
 
         );
-        
+       
         whatsapp::sendMessage($vetor, token::token());
     }
     /**

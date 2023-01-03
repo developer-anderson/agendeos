@@ -94,7 +94,8 @@ class ClientesController extends Controller
     public function update(Request $request, Clientes $clientes)
     {
         $dados = $request->all();
-        Clientes::find($clientes)->first()->fill($request->all())->save();
+        //dd($dados);
+        Clientes::find($clientes)->first()->fill($dados)->save();
         return [
             "erro" => false,
             "mensagem" => "Cliente editado com  sucesso!"

@@ -31,7 +31,9 @@ class LoginController extends Controller
 
             return response()->json(Auth::id(), 200);
         }
-
+        else{
+            return response()->json(["error" => "true", "msg" => "Dados inválidos"],404);
+        }
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);

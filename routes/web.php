@@ -18,16 +18,7 @@ use App\Http\Controllers\VeiculosController;
 use App\Http\Controllers\ServicosController;
 use App\Http\Controllers\OrdemServicosController;
 use App\Http\Controllers\FluxoCaixaController;
-Route::get('/token', function (Request $request) {
-    $token = $request->session()->token();
- 
-    return  response()->json(csrf_token());;
- 
-    // ...
-});
-Route::get('/', function () { return redirect('/login.html'); });
-Route::get('ordem-de-servico.php', function () { return redirect('/ordem-de-servico.php'); });
-Route::get('listar-receitas.php', function () { return redirect('/listar-receitas.php'); });
+
 Route::get('clientes/getall{id}', [ClientesController::class, 'getall']);
 Route::get('clientes/getAllclientByType/{type}/{id}', [ClientesController::class, 'getAllclientByType']);
 Route::get('clientes/show/{clientes}', [ClientesController::class, 'show']);
@@ -65,8 +56,11 @@ Route::put('servicos/update/{servicos}',[ServicosController::class, 'update']);
 Route::delete('servicos/destroy{servicos}', [ServicosController::class, 'destroy']);
 
 Route::post('/login', [App\Http\Controllers\LoginController::class, 'login'])->name('login');
-Route::get('/register', [App\Http\Controllers\RegisterController::class, 'show'])->name('register');
-Route::get('/reset-password', [App\Http\Controllers\ResetPassword::class, 'show'])->name('reset-password');
+Route::post('/cadastrar', [App\Http\Controllers\RegisterController::class, 'store'])->name('cadastrar');
+Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_recuperar_Senha');
+Route::post('/password/reset', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('password.reset.resetPassword');
+
+Route::post('/reset-password', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('trocar_senha');
 Route::post('logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
 

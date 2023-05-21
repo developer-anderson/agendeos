@@ -29,8 +29,8 @@ class LoginController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
-            $vetor  = User::find(Auth::id());
-            //$vetor['receita'] = fluxo_caixa::getAllMoney(Auth::id());
+            $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->find(Auth::id());
+            $vetor['receita'] = fluxo_caixa::getAllMoney(Auth::id());
             return response()->json($vetor, 200);
         }
         else{

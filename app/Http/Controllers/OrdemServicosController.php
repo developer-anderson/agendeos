@@ -36,8 +36,9 @@ class OrdemServicosController extends Controller
     public function getAll($id, $incio, $fim)
     {
         //
-        $os = DB::table('ordem_servicos')->join('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->join('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->join('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->join('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.user_id', $id)
-            ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor')->where('inicio_os', '>=', $incio . " 00:00:00")->where('inicio_os', '<=', $fim . " 23:59:59")->get();
+        $os = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.user_id', $id)
+            ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor')->where('inicio_os', '>=', $incio . " 00:00:00")->where('previsao_os', '<=', $fim . " 23:59:59")->get();
+
         return response()->json($os, 200);
     }
     public function getModeloMensagem($os_id)
@@ -145,11 +146,13 @@ class OrdemServicosController extends Controller
     public function show(OrdemServicos $ordemServicos)
     {
         //
-        $registro = OrdemServicos::find($ordemServicos);
-        return response()->json(
-            $registro,
-            200
-        );
+        $os = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')
+        ->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')
+        ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor')
+        ->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.id', $ordemServicos)
+        ->get();
+
+         return response()->json($os, 200);
     }
     public function addReceita($data)
     {
@@ -278,7 +281,7 @@ class OrdemServicosController extends Controller
 
 
         );
-       
+
         whatsapp::sendMessage($vetor, token::token());
     }
     /**

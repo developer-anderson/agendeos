@@ -16,3 +16,4 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/usuarios', 'App\Http\Controllers\Usuarios@index');
+Route::get('/register', [App\Http\Controllers\RegisterController::class, 'show'])->name('register');

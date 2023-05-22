@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 
 use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\FuncionariosController;
 use App\Http\Controllers\VeiculosController;
 use App\Http\Controllers\ServicosController;
 use App\Http\Controllers\OrdemServicosController;
@@ -25,6 +26,14 @@ Route::get('clientes/show/{clientes}', [ClientesController::class, 'show']);
 Route::post('clientes/insert', [ClientesController::class, 'store']);
 Route::put('clientes/update/{clientes}',[ClientesController::class, 'update']);
 Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy']);
+
+
+Route::get('funcionarios/getall/{id}', [FuncionariosController::class, 'getall']);
+
+Route::get('funcionarios/show/{funcionario}', [FuncionariosController::class, 'show']);
+Route::post('funcionarios/insert', [FuncionariosController::class, 'store']);
+Route::put('funcionarios/update/{funcionario}',[FuncionariosController::class, 'update']);
+Route::delete('funcionarios/destroy{funcionario}', [FuncionariosController::class, 'destroy']);
 
 Route::get('os/getall/{id}/{inicio}/{fim}', [OrdemServicosController::class, 'getall']);
 Route::get('os/pdf/{id}/{os}', [OrdemServicosController::class, 'pdf']);

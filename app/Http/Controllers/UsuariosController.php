@@ -36,7 +36,7 @@ class UsuariosController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function atualizarPerfil(Request $request, $id)
     {
         $dados = $request->all();
         Usuarios::find($id)->update($dados);

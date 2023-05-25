@@ -33,7 +33,7 @@ class OrdemServicosController extends Controller
     {
         return response()->json(ordem_servico_servico::where('os_id', $os_id)->get(), 200);
     }
-    public function getAll($id, $incio, $fim)
+    public function getAll($id, $incio, $fim, $filter = null)
     {
         //
         $os = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.user_id', $id)

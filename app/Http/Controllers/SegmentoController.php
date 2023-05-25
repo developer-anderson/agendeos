@@ -14,13 +14,24 @@ class SegmentoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll()
+    public function getAll($filter = null)
     {
         //
         $user = Auth::user();
-        return response()->json([
-            Segmento::where('situacao',1)->get()
-        ], 200);
+
+        $query = Segmento::where('situacao', 1);
+
+        if ($filter) {
+            $query->where(function ($q) use ($filter) {
+                $q->where('segmento', 'like', '%'.$filter.'%')
+                    ->orWhere('id', 'like', '%'.$filter.'%')
+                    ->orWhere('situacao', 'like', '%'.$filter.'%');
+            });
+        }
+
+        $result = $query->get();
+
+        return response()->json($result, 200);
 
     }
 

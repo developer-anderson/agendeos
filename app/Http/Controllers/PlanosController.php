@@ -14,14 +14,24 @@ class PlanosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll()
+    public function getAll($filter=null)
     {
         //
         $user = Auth::user();
-        return response()->json([
-            Planos::where('situacao',1)->get()
-        ], 200);
 
+        $query = Planos::where('situacao', 1);
+
+        if ($filter) {
+            $query->where(function ($q) use ($filter) {
+                $q->where('plano', 'like', '%'.$filter.'%')
+                    ->orWhere('valor', 'like', '%'.$filter.'%')
+                    ->orWhere('descricao', 'like', '%'.$filter.'%');
+            });
+        }
+
+        $result = $query->get();
+
+        return response()->json($result, 200);
     }
 
     public function store(Request $request)

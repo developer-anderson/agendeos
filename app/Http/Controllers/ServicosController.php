@@ -22,13 +22,22 @@ class ServicosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll($id)
+    public function getAll($id, $filter = null)
     {
-        //
 
-        return response()->json(
-            Servicos::where('user_id',$id)->get()
-        , 200);
+        $query =   Servicos::where('user_id',$id);
+
+        if ($filter) {
+            $query->where(function ($q) use ($filter) {
+                $q->where('segmento', 'like', '%'.$filter.'%')
+                    ->orWhere('id', 'like', '%'.$filter.'%')
+                    ->orWhere('situacao', 'like', '%'.$filter.'%');
+            });
+        }
+
+        $result = $query->get();
+
+        return response()->json($result, 200);
 
     }
     public function terminoPrevisao($horario, $id)

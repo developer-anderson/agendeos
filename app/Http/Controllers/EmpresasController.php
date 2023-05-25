@@ -14,13 +14,23 @@ class EmpresasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll()
+    public function getAll($filter = null)
     {
         //
         $user = Auth::user();
-        return response()->json([
-            Empresas::where('situacao',1)->get()
-        ], 200);
+        $query = Empresas::where('situacao', 1);
+
+        if ($filter) {
+            $query->where(function ($q) use ($filter) {
+                $q->where('cnpj', 'like', '%'.$filter.'%')
+                    ->orWhere('razao_social', 'like', '%'.$filter.'%')
+                    ->orWhere('telefone', 'like', '%'.$filter.'%');
+            });
+        }
+
+        $result = $query->get();
+
+        return response()->json($result, 200);
 
     }
 
@@ -65,11 +75,21 @@ class EmpresasController extends Controller
     public function update(Request $request, $Empresas)
     {
         $dados = $request->all();
-        //dd($dados);
-        Empresas::find($Empresas)->first()->fill($dados)->save();
+        $Empresas = Empresas::find($Empresas);
+
+        if (!$Empresas) {
+            return [
+                "erro" => true,
+                "mensagem" => "Empresas não encontrado!"
+            ];
+        }
+
+        $Empresas->fill($dados);
+        $Empresas->save();
+
         return [
             "erro" => false,
-            "mensagem" => "Empresa editada com  sucesso!"
+            "mensagem" => "Empresas editado com sucesso!"
         ];
     }
 

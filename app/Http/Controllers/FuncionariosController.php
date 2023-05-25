@@ -17,13 +17,23 @@ class FuncionariosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll($id)
+    public function getAll($id, $filter = null)
     {
         //
         $user = Auth::user();
-        return response()->json([
-            funcionarios::where('user_id',$id)->get()
-        ], 200);
+        $query = funcionarios::where('user_id', $id);
+
+        if ($filter) {
+            $query->where(function ($q) use ($filter) {
+                $q->where('nome', 'like', '%'.$filter.'%')
+                    ->orWhere('cpf', 'like', '%'.$filter.'%')
+                    ->orWhere('telefone', 'like', '%'.$filter.'%');
+            });
+        }
+
+        $result = $query->get();
+
+        return response()->json($result, 200);
 
     }
 
@@ -108,15 +118,23 @@ class FuncionariosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
         $dados = $request->all();
-        $funcionario = funcionarios::find($id)->first()->update($dados);
-        return response()->json(
-            [
-                "erro" => false,
-                "mensagem" => "Funcionário editado com  sucesso!"
-            ]
-        , 200);
+        $funcionarios = funcionarios::find($id);
+
+        if (!$funcionarios) {
+            return [
+                "erro" => true,
+                "mensagem" => "funcionarios não encontrado!"
+            ];
+        }
+
+        $funcionarios->fill($dados);
+        $funcionarios->save();
+
+        return [
+            "erro" => false,
+            "mensagem" => "funcionarios editado com sucesso!"
+        ];
 
     }
 

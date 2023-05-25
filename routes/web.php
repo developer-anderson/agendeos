@@ -31,7 +31,7 @@ Route::post('clientes/insert', [ClientesController::class, 'store']);
 Route::put('clientes/update/{id}',[ClientesController::class, 'update']);
 Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy']);
 
-Route::get('empresas/getall', [EmpresasController::class, 'getall']);
+Route::get('empresas/getall/{filter?}', [EmpresasController::class, 'getall']);
 Route::get('empresas/show/{empresas}', [EmpresasController::class, 'show']);
 Route::post('empresas/insert', [EmpresasController::class, 'store']);
 Route::put('empresas/update/{empresas}',[EmpresasController::class, 'update']);
@@ -39,20 +39,20 @@ Route::delete('empresas/destroy{empresas}', [EmpresasController::class, 'destroy
 
 
 
-Route::get('segmento/getall', [SegmentoController::class, 'getall']);
+Route::get('segmento/getall/{filter?}', [SegmentoController::class, 'getall']);
 Route::get('segmento/show/{segmento}', [SegmentoController::class, 'show']);
 
-Route::get('planos/getall', [PlanosController::class, 'getall']);
+Route::get('planos/getall/{filter?}', [PlanosController::class, 'getall']);
 Route::get('planos/show/{planos}', [PlanosController::class, 'show']);
 
-Route::get('funcionarios/getall/{id}', [FuncionariosController::class, 'getall']);
+Route::get('funcionarios/getall/{id}/{filter?}', [FuncionariosController::class, 'getall']);
 
 Route::get('funcionarios/show/{funcionario}', [FuncionariosController::class, 'show']);
 Route::post('funcionarios/insert', [FuncionariosController::class, 'store']);
 Route::put('funcionarios/update/{funcionario}',[FuncionariosController::class, 'update']);
 Route::delete('funcionarios/destroy{funcionario}', [FuncionariosController::class, 'destroy']);
 
-Route::get('os/getall/{id}/{inicio}/{fim}', [OrdemServicosController::class, 'getall']);
+Route::get('os/getall/{id}/{inicio}/{fim}/{filter?}', [OrdemServicosController::class, 'getall']);
 Route::get('os/pdf/{id}/{os}', [OrdemServicosController::class, 'pdf']);
 Route::get('os/show/{os}', [OrdemServicosController::class, 'show']);
 Route::get('os/getServicosOs/{os}', [OrdemServicosController::class, 'getServicosOs']);
@@ -61,20 +61,20 @@ Route::put('os/update/{os}',[OrdemServicosController::class, 'update']);
 Route::delete('os/destroy{os}', [OrdemServicosController::class, 'destroy']);
 
 
-Route::get('fluxo_caixa/getall/{id}/{inicio}/{fim}', [FluxoCaixaController::class, 'getall']);
+Route::get('fluxo_caixa/getall/{id}/{inicio}/{fim}/{filter?}', [FluxoCaixaController::class, 'getall']);
 Route::get('fluxo_caixa/show/{fluxo_caixa}', [FluxoCaixaController::class, 'show']);
 Route::post('fluxo_caixa/insert', [FluxoCaixaController::class, 'store']);
 Route::put('fluxo_caixa/update/{fluxo_caixa}',[FluxoCaixaController::class, 'update']);
 Route::delete('fluxo_caixa/destroy{fluxo_caixa}', [FluxoCaixaController::class, 'destroy']);
 
-Route::get('veiculos/getall/{id}', [VeiculosController::class, 'getall']);
+Route::get('veiculos/getall/{id}/{filter?}', [VeiculosController::class, 'getall']);
 Route::get('veiculos/cliente/{id}', [VeiculosController::class, 'getallCliente']);
 Route::get('veiculos/show/{veiculos}', [VeiculosController::class, 'show']);
 Route::post('veiculos/insert', [VeiculosController::class, 'store']);
 Route::put('veiculos/update/{veiculos}',[VeiculosController::class, 'update']);
 Route::delete('veiculos/destroy{veiculos}', [VeiculosController::class, 'destroy']);
 
-Route::get('servicos/getall/{id}', [ServicosController::class, 'getall']);
+Route::get('servicos/getall/{id}/{filter?}', [ServicosController::class, 'getall']);
 Route::get('servicos/show/{servicos}', [ServicosController::class, 'show']);
 Route::get('servicos/terminoPrevisao/{horario}/{servicos}', [ServicosController::class, 'terminoPrevisao']);
 Route::post('servicos/insert', [ServicosController::class, 'store']);

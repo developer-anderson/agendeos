@@ -150,7 +150,7 @@ class OrdemServicosController extends Controller
         ->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')
         ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor')
         ->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.id', $ordemServicos)
-        ->get();
+        ->first();
 
          return response()->json($os, 200);
     }

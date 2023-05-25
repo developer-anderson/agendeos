@@ -24,11 +24,11 @@ use App\Http\Controllers\ServicosController;
 use App\Http\Controllers\OrdemServicosController;
 use App\Http\Controllers\FluxoCaixaController;
 
-Route::get('clientes/getall{id}', [ClientesController::class, 'getall']);
-Route::get('clientes/getAllclientByType/{type}/{id}', [ClientesController::class, 'getAllclientByType']);
-Route::get('clientes/show/{clientes}', [ClientesController::class, 'show']);
+Route::get('clientes/getall{id}/{filter?}', [ClientesController::class, 'getall']);
+Route::get('clientes/getAllclientByType/{type}/{id}/{filter?}', [ClientesController::class, 'getAllclientByType']);
+Route::get('clientes/show/{id}', [ClientesController::class, 'exibirCliente'])->name('exibirCliente');
 Route::post('clientes/insert', [ClientesController::class, 'store']);
-Route::put('clientes/update/{clientes}',[ClientesController::class, 'update']);
+Route::put('clientes/update/{id}',[ClientesController::class, 'update']);
 Route::delete('clientes/destroy{clientes}', [ClientesController::class, 'destroy']);
 
 Route::get('empresas/getall', [EmpresasController::class, 'getall']);

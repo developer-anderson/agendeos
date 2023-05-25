@@ -49,9 +49,9 @@ class EmpresasController extends Controller
     public function show(Empresas $Empresas)
     {
         //
-        $registro = Empresas::where('empresas.id',$Empresas)->join('segmento', 'segmento.id', '=', 'empresas.segmento_id')->join('planos', 'planos.id', '=', 'empresas.plano_id')->select(['empresas.*', 'planos.plano', 'segmento.segmento'])->get();
+        $registro = Empresas::where('empresas.id',$Empresas)->join('segmento', 'segmento.id', '=', 'empresas.segmento_id')->join('planos', 'planos.id', '=', 'empresas.plano_id')->select(['empresas.*', 'planos.plano', 'segmento.segmento'])->first();
         return response()->json(
-            $registro
+            $Empresas
         , 200);
     }
 

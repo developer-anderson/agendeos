@@ -15,7 +15,7 @@ class FluxoCaixaController extends Controller
     public function getAll($id, $incio, $fim)
     {
         //
-       
+
         return response()->json(
             fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->get()
         , 200);
@@ -55,7 +55,7 @@ class FluxoCaixaController extends Controller
         else{
             $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
         }
-       
+
         fluxo_caixa::create( $post);
         return response()->json(
             [
@@ -63,7 +63,7 @@ class FluxoCaixaController extends Controller
                 "mensagem" => "Sucesso!"
             ]
         , 200);
-       
+
     }
 
     /**
@@ -76,7 +76,7 @@ class FluxoCaixaController extends Controller
     {
         //
 
-        $registro = fluxo_caixa::find($fluxo_caixa);
+        $registro = fluxo_caixa::find($fluxo_caixa)->first();
         return response()->json(
             $registro
         , 200);

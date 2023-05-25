@@ -24,7 +24,7 @@ class VeiculosController extends Controller
         //
         $veiculos = DB::table('veiculos')->join('clientes', 'clientes.id', '=', 'veiculos.id_cliente')->where('user_id',$id)->select('veiculos.*', 'clientes.nome_f', 'clientes.razao_social')->get();
         return response()->json( $veiculos , 200);
-       
+
     }
 
     public function getallCliente($id)
@@ -32,7 +32,7 @@ class VeiculosController extends Controller
         //
         $veiculos = DB::table('veiculos')->join('clientes', 'clientes.id', '=', 'veiculos.id_cliente')->where('id_cliente',$id)->select('veiculos.*', 'clientes.nome_f', 'clientes.razao_social')->get();
         return response()->json( $veiculos , 200);
-       
+
     }
     /**
      * Store a newly created resource in storage.
@@ -60,9 +60,9 @@ class VeiculosController extends Controller
     public function show(Veiculos $veiculos)
     {
         //
-        $registro = Veiculos::find($veiculos);
+        $registro = Veiculos::find($veiculos)->first();
         return response()->json(
-            $registro
+            $veiculos
         , 200);
     }
 

@@ -22,20 +22,21 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $token = $user->createToken('API Token')->accessToken;
             $request->session()->regenerate();
             $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->find(Auth::id());
             $vetor['receita'] = fluxo_caixa::getAllMoney(Auth::id());
+            $vetor['token'] =  $token;
             return response()->json($vetor, 200);
+        } else {
+            return response()->json(["error" => "true", "msg" => "Dados inválidos"],401);
         }
-        else{
-            return response()->json(["error" => "true", "msg" => "Dados inválidos"],404);
-        }
+
+
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',

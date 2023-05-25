@@ -49,9 +49,9 @@ class PlanosController extends Controller
     public function show(Planos $Planos)
     {
         //
-        $registro = Planos::where('id',$Planos)->get();
+        $registro = Planos::where('id',$Planos)->first();
         return response()->json(
-            $registro
+            $Planos
         , 200);
     }
 

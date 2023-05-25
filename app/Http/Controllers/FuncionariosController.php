@@ -82,9 +82,9 @@ class FuncionariosController extends Controller
     public function show(funcionarios $funcionarios)
     {
         //
-        $registro = funcionarios::find($funcionarios);
+        $registro = funcionarios::find($funcionarios)->first();
         return response()->json(
-            $registro
+            $funcionarios
         , 200);
     }
 

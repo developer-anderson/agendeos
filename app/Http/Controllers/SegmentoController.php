@@ -49,9 +49,9 @@ class SegmentoController extends Controller
     public function show(Segmento $Segmento)
     {
         //
-        $registro = Segmento::where('id',$Segmento)->get();
+        $registro = Segmento::where('id',$Segmento)->first();
         return response()->json(
-            $registro
+            $Segmento
         , 200);
     }
 

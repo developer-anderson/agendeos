@@ -16,21 +16,45 @@ class ClientesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll($id)
+    public function getAll($id, $filter = null)
     {
-        //
         $user = Auth::user();
-        return response()->json([
-            Clientes::where('user_id',$id)->get()
-        ], 200);
-       
+        $query = Clientes::where('user_id', $id);
+
+        if ($filter) {
+            $query->where(function ($q) use ($filter) {
+                $q->where('email', 'like', '%'.$filter.'%')
+                    ->orWhere('cpf', 'like', '%'.$filter.'%')
+                    ->orWhere('name', 'like', '%'.$filter.'%');
+            });
+        }
+
+        $result = $query->get();
+
+        return response()->json($result, 200);
     }
-    public function getAllclientByType($type = "PF", $id)
+
+    public function getAllclientByType($type = "PF", $id, $filter = null)
     {
-        
-        return response()->json(
-            Clientes::where('tipo_cliente',$type)->where('user_id',$id)->get()
-        , 200);
+
+
+        $query = Clientes::where('tipo_cliente',$type)->where('user_id',$id);
+
+        if ($filter) {
+            $query->where(function ($q) use ($filter) {
+                $q->where('email_f', 'like', '%'.$filter.'%')
+                    ->orWhere('cpf', 'like', '%'.$filter.'%')
+                    ->orWhere('email_j', 'like', '%'.$filter.'%')
+                    ->orWhere('nome_j', 'like', '%'.$filter.'%')
+                    ->orWhere('telefone_j', 'like', '%'.$filter.'%')
+                    ->orWhere('telefone_f', 'like', '%'.$filter.'%')
+                    ->orWhere('nome_f', 'like', '%'.$filter.'%');
+            });
+        }
+
+        $result = $query->get();
+
+        return response()->json($result, 200);
     }
     public function viewToken()
     {
@@ -40,7 +64,7 @@ class ClientesController extends Controller
     {
         //
         $user = Auth::user();
- 
+
         $post = $request->all();
         if($post['celular_f']){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_f']);
@@ -66,7 +90,7 @@ class ClientesController extends Controller
             "mensagem" => "Cliente cadastrado com  sucesso!",
             'id' => $clientes->id
         ], 200);
-     
+
     }
 
     /**
@@ -75,12 +99,12 @@ class ClientesController extends Controller
      * @param  \App\Models\Clientes  $clientes
      * @return \Illuminate\Http\Response
      */
-    public function show(Clientes $clientes)
+    public function exibirCliente(Clientes $id)
     {
-        //
-        $registro = Clientes::find($clientes);
+
+        //$registro = Clientes::find($id)->first();
         return response()->json(
-            $registro
+            $id
         , 200);
     }
 
@@ -91,15 +115,30 @@ class ClientesController extends Controller
      * @param  \App\Models\Clientes  $clientes
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Clientes $clientes)
+    public function update(Request $request, Clientes $id)
     {
         $dados = $request->all();
         //dd($dados);
-        Clientes::find($clientes)->first()->fill($dados)->save();
+        $clientes = Clientes::find($id); // Procura os clientes com base no ID fornecido
+
+        if ($clientes->isEmpty()) {
+            return [
+                "erro" => true,
+                'id' => $id,
+                "mensagem" => "Clientes não encontrados!"
+            ];
+        }
+
+        foreach ($clientes as $cliente) {
+            $cliente->fill($dados)->save(); // Atualiza os dados do cliente
+        }
+
         return [
             "erro" => false,
-            "mensagem" => "Cliente editado com  sucesso!"
+            "mensagem" => "Clientes editados com sucesso!"
         ];
+
+
     }
 
     /**

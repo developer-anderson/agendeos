@@ -115,31 +115,28 @@ class ClientesController extends Controller
      * @param  \App\Models\Clientes  $clientes
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Clientes $id)
+    public function update(Request $request, $id)
     {
         $dados = $request->all();
-        //dd($dados);
-        $clientes = Clientes::find($id); // Procura os clientes com base no ID fornecido
 
-        if ($clientes->isEmpty()) {
+        $cliente = Clientes::find($id);
+
+        if (!$cliente) {
             return [
                 "erro" => true,
-                'id' => $id,
-                "mensagem" => "Clientes não encontrados!"
+                "mensagem" => "Cliente não encontrado!"
             ];
         }
 
-        foreach ($clientes as $cliente) {
-            $cliente->fill($dados)->save(); // Atualiza os dados do cliente
-        }
+        $cliente->fill($dados);
+        $cliente->save();
 
         return [
             "erro" => false,
-            "mensagem" => "Clientes editados com sucesso!"
+            "mensagem" => "Cliente editado com sucesso!"
         ];
-
-
     }
+
 
     /**
      * Remove the specified resource from storage.

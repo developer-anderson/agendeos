@@ -62,7 +62,7 @@ class EmpresasController extends Controller
      * @param  \App\Models\Empresas  $Empresas
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Empresas $Empresas)
+    public function update(Request $request, $Empresas)
     {
         $dados = $request->all();
         //dd($dados);

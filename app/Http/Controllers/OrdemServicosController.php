@@ -143,7 +143,7 @@ class OrdemServicosController extends Controller
      * @param  \App\Models\OrdemServicos  $ordemServicos
      * @return \Illuminate\Http\Response
      */
-    public function show(OrdemServicos $ordemServicos)
+    public function show($ordemServicos)
     {
         //
         $os = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')

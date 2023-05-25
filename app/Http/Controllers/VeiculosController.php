@@ -84,7 +84,7 @@ class VeiculosController extends Controller
      * @param  \App\Models\Veiculos  $veiculos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Veiculos $veiculos)
+    public function update(Request $request, $veiculos)
     {
         //
         $dados = $request->all();

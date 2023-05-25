@@ -100,7 +100,7 @@ class FluxoCaixaController extends Controller
      * @param  \App\Models\fluxo_caixa  $fluxo_caixa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, fluxo_caixa $fluxo_caixa)
+    public function update(Request $request, $fluxo_caixa)
     {
         //
         $post = $request->all();

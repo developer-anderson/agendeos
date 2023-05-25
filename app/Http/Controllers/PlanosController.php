@@ -62,7 +62,7 @@ class PlanosController extends Controller
      * @param  \App\Models\Planos  $Planos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Planos $Planos)
+    public function update(Request $request, $Planos)
     {
         $dados = $request->all();
         //dd($dados);

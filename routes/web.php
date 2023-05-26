@@ -52,7 +52,8 @@ Route::post('funcionarios/insert', [FuncionariosController::class, 'store']);
 Route::put('funcionarios/update/{funcionario}',[FuncionariosController::class, 'update']);
 Route::delete('funcionarios/destroy{funcionario}', [FuncionariosController::class, 'destroy']);
 
-Route::get('os/getall/{id}/{inicio}/{fim}/{filter?}', [OrdemServicosController::class, 'getall']);
+Route::get('os/getall/{id}/{inicio}/{fim?}/{filter?}', [OrdemServicosController::class, 'getall']);
+Route::get('relatorio/{id}/{inicio?}/{fim?}', [OrdemServicosController::class, 'relatorio']);
 Route::get('/cron', [OrdemServicosController::class, 'cron']);
 Route::get('os/pdf/{id}/{os}', [OrdemServicosController::class, 'pdf']);
 Route::get('os/show/{os}', [OrdemServicosController::class, 'show']);

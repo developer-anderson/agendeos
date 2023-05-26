@@ -42,11 +42,19 @@ class OrdemServicosController extends Controller
     {
         return response()->json(ordem_servico_servico::where('os_id', $os_id)->get(), 200);
     }
-    public function getAll($id, $incio, $fim, $filter = null)
+    public function getAll($id, $incio, $fim = null, $filter = null)
     {
         //
-        $os = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.user_id', $id)
-            ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor')->where('inicio_os', '>=', $incio . " 00:00:00")->where('previsao_os', '<=', $fim . " 23:59:59")->get();
+        $query = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')
+        ->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')
+        ->where('ordem_servicos.user_id', $id)->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor');
+        if($fim){
+            $query->where('inicio_os', '>=', $incio . " 00:00:00")->where('inicio_os', '<=', $incio . " 23:59:59")->orWhere('previsao_os', '>=', $incio . " 00:00:00")->where('previsao_os', '>=', $incio . " 23:59:59");
+        }
+        else{
+            $query->whereDate('inicio_os', '=', $incio . " 00:00:00")->whereDate('previsao_os', '=', $incio . " 23:59:59");
+        }
+        $os = $query->get();
 
         return response()->json($os, 200);
     }
@@ -316,6 +324,31 @@ class OrdemServicosController extends Controller
         //
     }
 
+    public function relatorio($id, $inicio = null, $fim = null)
+    {
+        $data = [];
+        if(!$inicio and !$fim){
+            $inicio  = date("Y-m-01");
+            $fim     = date("Y-m-31");
+        }
+
+        $quantidade_os_funcionario = DB::table('funcionarios')->select('funcionarios.nome', DB::raw('count(ordem_servicos.id) as total_os'))
+        ->join('ordem_servicos', 'funcionarios.id', '=', 'ordem_servicos.id_funcionario')->where('ordem_servicos.user_id', $id)
+        ->whereBetween('ordem_servicos.created_at', [$inicio, $fim])->groupBy('funcionarios.nome')->get();
+
+        $receita_funcionario = DB::table('funcionarios')->select('funcionarios.nome', DB::raw('SUM(servicos.valor) as total_valor'))->join('ordem_servicos', 'funcionarios.id', '=', 'ordem_servicos.id_funcionario')
+        ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')->where('ordem_servicos.user_id', $id)
+        ->whereBetween('ordem_servicos.created_at', [$inicio, $fim])->groupBy('funcionarios.nome')->get();
+
+        $receita_cliente = DB::table('clientes')->select('clientes.nome_f', DB::raw('SUM(servicos.valor) as total_valor'))->join('ordem_servicos', 'clientes.id', '=', 'ordem_servicos.id_cliente')
+        ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')->where('ordem_servicos.user_id', $id)
+        ->whereBetween('ordem_servicos.created_at', [$inicio, $fim])->groupBy('clientes.nome_f')->get();
+
+        $data['receita_por_funcionario'] = $receita_funcionario;
+        $data['quantidade_os_funcionario'] = $quantidade_os_funcionario;
+        $data['receita_por_cliente'] = $receita_cliente;
+        return response()->json($data, 200);
+    }
     /**
      * Update the specified resource in storage.
      *

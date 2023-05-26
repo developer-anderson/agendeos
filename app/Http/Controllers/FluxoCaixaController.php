@@ -12,7 +12,7 @@ class FluxoCaixaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll($id, $incio, $fim)
+    public function getAll($id, $incio, $fim, $filter = null)
     {
         //
 
@@ -72,13 +72,19 @@ class FluxoCaixaController extends Controller
      * @param  \App\Models\fluxo_caixa  $fluxo_caixa
      * @return \Illuminate\Http\Response
      */
-    public function show($fluxo_caixa)
+    public function show( fluxo_caixa $fluxo_caixa)
     {
         //
-
-        $registro = fluxo_caixa::find($fluxo_caixa)->first();
+        if(!$fluxo_caixa){
+            return response()->json(
+                [
+                   "erro" => true,
+                   "mensagem" => "Transação não encontrada"
+               ]
+           , 404);
+        }
         return response()->json(
-            $registro
+            $fluxo_caixa
         , 200);
     }
 
@@ -118,14 +124,23 @@ class FluxoCaixaController extends Controller
         else{
             $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
         }
-        //dd($post);
-        fluxo_caixa::find($fluxo_caixa)->first()->fill($post)->save();
-        return response()->json(
-             [
-                "erro" => false,
-                "mensagem" => "Editado com  sucesso!"
-            ]
-        , 200);
+
+
+        $fluxo_caixa = fluxo_caixa::find($fluxo_caixa);
+
+        if (!$fluxo_caixa) {
+            return [
+                "erro" => true,
+                "mensagem" => "Editado não encontrado!"
+            ];
+        }
+
+        $fluxo_caixa->fill($post);
+        $fluxo_caixa->save();
+        return [
+            "erro" => false,
+            "mensagem" => "Transação editada com  sucesso!"
+        ];
     }
 
     /**

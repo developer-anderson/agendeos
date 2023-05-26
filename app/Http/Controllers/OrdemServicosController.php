@@ -11,6 +11,8 @@ use App\Models\Clientes;
 use App\Models\whatsapp;
 use App\Models\token;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class OrdemServicosController extends Controller
 {
@@ -19,9 +21,16 @@ class OrdemServicosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function cron()
     {
         //
+        $os = OrdemServicos::where('inicio_os', '>=', date("Y-m-d") . ' 00:00:00')->where('inicio_os', '<=',   date("Y-m-d") . ' 23:59:59')->where('remarketing', 0)->get();
+
+        foreach($os as $key => $value)
+        {
+            Log::info($this->notifyClient($value['id'],'remarketing'));
+        }
+
     }
 
     /**
@@ -120,7 +129,7 @@ class OrdemServicosController extends Controller
         //
         $post['situacao'] = 5;
         $remarketing = $post['remarketing'];
-        $post['remarketing'] = null;
+        $post['remarketing'] = 0;
         $post['previsao_os'] = date('Y-m-d H:i:s', strtotime("+$remarketing days", strtotime($post['inicio_os'])));
         $post['inicio_os'] = date('Y-m-d H:i:s', strtotime("+$remarketing days", strtotime($post['inicio_os'])));
         $os_servicos = $post['id_servico'];
@@ -190,7 +199,7 @@ class OrdemServicosController extends Controller
         }
         return array("nomes" => $nomes, "total" => $total);
     }
-    public function notifyClient($ordemServicos)
+    public function notifyClient($ordemServicos, $tipo = "nova_ordem_servico")
     {
         $dados = $this->getModeloMensagem($ordemServicos);
         $extras = $this->getServicosNotifyClint($dados);
@@ -225,32 +234,50 @@ class OrdemServicosController extends Controller
             } elseif ($item->situacao == 6) {
                 $situacao = 'Cancelado';
             }
-            $values = [
-                "0" => [
-                    "type" => "text",
-                    "text" => $nome_cliente
-                ],
-                "1" => [
-                    "type" => "text",
-                    "text" => $ordemServicos
-                ],
-                "2" => [
-                    "type" => "text",
-                    "text" => $extras['nomes']
-                ],
-                "3" => [
-                    "type" => "text",
-                    "text" => number_format($extras['total'], 2, ".", ",")
-                ],
-                "5" => [
-                    "type" => "text",
-                    "text" => $situacao
-                ],
-                "6" => [
-                    "type" => "text",
-                    "text" => "Pagamento na loja"
-                ]
-            ];
+            if($tipo == 'nova_ordem_servico'){
+                $values = [
+                    "0" => [
+                        "type" => "text",
+                        "text" => $nome_cliente
+                    ],
+                    "1" => [
+                        "type" => "text",
+                        "text" => $ordemServicos
+                    ],
+                    "2" => [
+                        "type" => "text",
+                        "text" => $extras['nomes']
+                    ],
+                    "3" => [
+                        "type" => "text",
+                        "text" => number_format($extras['total'], 2, ".", ",")
+                    ],
+                    "5" => [
+                        "type" => "text",
+                        "text" => $situacao
+                    ],
+                    "6" => [
+                        "type" => "text",
+                        "text" => "Pagamento na loja"
+                    ]
+                ];
+            }
+            elseif($tipo == 'remarketing'){
+                $id_origem = ($ordemServicos-1);
+                $dias_remarketing = OrdemServicos::where('id',$id_origem)->first();
+
+                $values = [
+                    "0" => [
+                        "type" => "text",
+                        "text" => $nome_cliente
+                    ],
+                    "1" => [
+                        "type" => "text",
+                        "text" => $dias_remarketing->remarketing
+                    ]
+                ];
+            }
+
 
         }
         $vetor = array(
@@ -258,7 +285,7 @@ class OrdemServicosController extends Controller
             "to"           => $telefone,
             "type"         => 'template',
             "template"     => array(
-                "name"     => "nova_ordem_servico",
+                "name"     => $tipo,
                 "language" => array(
                     "code" => "pt_BR",
                     "policy" => "deterministic"
@@ -304,7 +331,7 @@ class OrdemServicosController extends Controller
         $os_servicos = $dados['id_servico'];
         $dados['id_servico'] = 0;
         ordem_servico_servico::where('os_id', $ordemServicos)->delete();
-        OrdemServicos::find($ordemServicos)->first()->fill($dados)->save();
+        //OrdemServicos::find($ordemServicos)->first()->fill($dados)->save();
         $OrdemServicos = OrdemServicos::find($ordemServicos);
 
         $OrdemServicos->fill($dados);
@@ -320,12 +347,15 @@ class OrdemServicosController extends Controller
             ordem_servico_servico::create($data);
         }
         $caixa = fluxo_caixa::where('os_id', $ordemServicos)->first();
-        $caixa->valor = $valor_total;
-        $caixa->save();
+        if($caixa){
+            $caixa->valor = $valor_total;
+            $caixa->save();
+        }
+
 
         return response()->json(
             [
-                'zap' => $this->notifyClient($ordemServicos),
+                'zap' => $this->notifyClient($ordemServicos, "nova_ordem_servico"),
                 "erro" => false,
                 "mensagem" => "Ordem de Servicos editado com  sucesso!"
             ],

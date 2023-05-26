@@ -11,6 +11,6 @@ class token extends Model
 
     public static function token()
     {
-        return "EAAHBer97PyEBADwYH7JD5ucNeYmsNJrkYtvQi6gF877ezWgiEqKDu5TPHKeczoyTgAVavuRpncNZAc5ZBOq1MygZC4a6mG7toGaerRQIdR3ZAzvoDq2M84ukv5hWMMm5eXm2ZA88aunUdwhas4sxNW8Agz6Ohn1QPdTRjsmDXPnQfpZC1e1bRfo1dtK3KZCpFiZBZB5ZA3C4WcWwZDZD";
+        return "EAAHBer97PyEBAIrUrcMfZCN6pdmoC0MoCQxfUBKyOTZB81DI3YzKiSHNmlyMb0YVwW6Vtj0D0GE4nnhpf5AzCfinT4585Dczv0i73bBaPjTgZBW9cn7sQHMZBUCRO1g6soJAS9NQWgB13RFhPZBLsN7hKZBc9y4UZCDt14CmZCxzZBsuZBHBBG5Y7ZCksUwfjZA6StbMagcqpykEOgZDZD";
     }
 }

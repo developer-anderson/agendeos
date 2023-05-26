@@ -73,14 +73,23 @@ class SegmentoController extends Controller
      * @param  \App\Models\Segmento  $Segmento
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Segmento $Segmento)
+    public function update(Request $request, $Segmento)
     {
         $dados = $request->all();
-        //dd($dados);
-        Segmento::find($Segmento)->first()->fill($dados)->save();
+        $fluxo_caixa = Segmento::find($Segmento);
+
+        if (!$fluxo_caixa) {
+            return [
+                "erro" => true,
+                "mensagem" => "Segmento não encontrado!"
+            ];
+        }
+
+        $fluxo_caixa->fill($dados);
+        $fluxo_caixa->save();
         return [
             "erro" => false,
-            "mensagem" => "Empresa editada com  sucesso!"
+            "mensagem" => "Segmento editada com  sucesso!"
         ];
     }
 

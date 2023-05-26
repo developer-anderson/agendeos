@@ -53,6 +53,7 @@ Route::put('funcionarios/update/{funcionario}',[FuncionariosController::class, '
 Route::delete('funcionarios/destroy{funcionario}', [FuncionariosController::class, 'destroy']);
 
 Route::get('os/getall/{id}/{inicio}/{fim}/{filter?}', [OrdemServicosController::class, 'getall']);
+Route::get('/cron', [OrdemServicosController::class, 'cron']);
 Route::get('os/pdf/{id}/{os}', [OrdemServicosController::class, 'pdf']);
 Route::get('os/show/{os}', [OrdemServicosController::class, 'show']);
 Route::get('os/getServicosOs/{os}', [OrdemServicosController::class, 'getServicosOs']);

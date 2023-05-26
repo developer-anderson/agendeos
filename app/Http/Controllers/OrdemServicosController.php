@@ -103,11 +103,13 @@ class OrdemServicosController extends Controller
             );
             ordem_servico_servico::create($data);
         }
+        $this->notifyClient($os->id);
         $post['id_servico'] = $os_servicos;
         $this->addReceita($post);
         if ($post['remarketing']) {
             $this->remarketing($post);
         }
+
         return [
             "erro" => false,
             "mensagem" => "Ordem de Servicos com  sucesso!"
@@ -204,38 +206,6 @@ class OrdemServicosController extends Controller
                 $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $cliente->celular_rj);
                 $nome_cliente = $cliente->razao_social;
             }
-            $values[0] = array(
-                "type" => "text",
-                "text" => $nome_cliente
-            );
-            $values[1] = array(
-                "type" => "text",
-                "text" => $item->loja
-            );
-            $values[2] = array(
-                "type" => "text",
-                "text" => $ordemServicos
-            );
-            $values[3] = array(
-                "type" => "text",
-                "text" => date("d/m/Y H:i", strtotime($item->created_at))
-            );
-            $values[4] = array(
-                "type" => "text",
-                "text" => $item->modelo
-            );
-            $values[5] = array(
-                "type" => "text",
-                "text" => $item->placa
-            );
-            $values[6] = array(
-                "type" => "text",
-                "text" => $extras['nomes']
-            );
-            $values[7] = array(
-                "type" => "text",
-                "text" => number_format($extras['total'], 2, ".", ",")
-            );
             if ($item->situacao) {
 
                 $situacao = 'Aguardando Pagamento';
@@ -255,17 +225,40 @@ class OrdemServicosController extends Controller
             } elseif ($item->situacao == 6) {
                 $situacao = 'Cancelado';
             }
-            $values[8] = array(
-                "type" => "text",
-                "text" => $situacao
-            );
+            $values = [
+                "0" => [
+                    "type" => "text",
+                    "text" => $nome_cliente
+                ],
+                "1" => [
+                    "type" => "text",
+                    "text" => $ordemServicos
+                ],
+                "2" => [
+                    "type" => "text",
+                    "text" => $extras['nomes']
+                ],
+                "3" => [
+                    "type" => "text",
+                    "text" => number_format($extras['total'], 2, ".", ",")
+                ],
+                "5" => [
+                    "type" => "text",
+                    "text" => $situacao
+                ],
+                "6" => [
+                    "type" => "text",
+                    "text" => "Pagamento na loja"
+                ]
+            ];
+
         }
         $vetor = array(
             "messaging_product" => "whatsapp",
             "to"           => $telefone,
             "type"         => 'template',
             "template"     => array(
-                "name"     => "situacao_os",
+                "name"     => "nova_ordem_servico",
                 "language" => array(
                     "code" => "pt_BR",
                     "policy" => "deterministic"
@@ -282,7 +275,8 @@ class OrdemServicosController extends Controller
 
         );
 
-        whatsapp::sendMessage($vetor, token::token());
+       $zap =  whatsapp::sendMessage($vetor, token::token());
+        return [$vetor,$zap];
     }
     /**
      * Show the form for editing the specified resource.
@@ -311,6 +305,10 @@ class OrdemServicosController extends Controller
         $dados['id_servico'] = 0;
         ordem_servico_servico::where('os_id', $ordemServicos)->delete();
         OrdemServicos::find($ordemServicos)->first()->fill($dados)->save();
+        $OrdemServicos = OrdemServicos::find($ordemServicos);
+
+        $OrdemServicos->fill($dados);
+        $OrdemServicos->save();
         $valor_total = 0;
         foreach ($os_servicos as $id_servico) {
             $servico = $this->getServico($id_servico);
@@ -324,9 +322,10 @@ class OrdemServicosController extends Controller
         $caixa = fluxo_caixa::where('os_id', $ordemServicos)->first();
         $caixa->valor = $valor_total;
         $caixa->save();
-        $this->notifyClient($ordemServicos);
+
         return response()->json(
             [
+                'zap' => $this->notifyClient($ordemServicos),
                 "erro" => false,
                 "mensagem" => "Ordem de Servicos editado com  sucesso!"
             ],

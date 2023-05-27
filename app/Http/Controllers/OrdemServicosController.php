@@ -8,10 +8,12 @@ use App\Models\fluxo_caixa;
 use Illuminate\Http\Request;
 use App\Models\Servicos;
 use App\Models\Clientes;
+use App\Models\funcionarios;
 use App\Models\whatsapp;
 use App\Models\token;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Veiculos;
 use Illuminate\Support\Facades\Log;
 
 class OrdemServicosController extends Controller
@@ -49,10 +51,10 @@ class OrdemServicosController extends Controller
         ->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')
         ->where('ordem_servicos.user_id', $id)->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor');
         if($fim){
-            $query->where('inicio_os', '>=', $incio . " 00:00:00")->where('inicio_os', '<=', $incio . " 23:59:59")->orWhere('previsao_os', '>=', $incio . " 00:00:00")->where('previsao_os', '>=', $incio . " 23:59:59");
+            $query->where('inicio_os', '>=', $incio . " 00:00:00")->where('inicio_os', '<=', $incio . " 23:59:59")->orWhere('previsao_os', '>=', $incio . " 00:00:00")->where('previsao_os', '>=', $incio . " 23:59:59")->where('ordem_servicos.user_id', $id);
         }
         else{
-            $query->whereDate('inicio_os', '=', $incio . " 00:00:00")->whereDate('previsao_os', '=', $incio . " 23:59:59");
+            $query->whereDate('inicio_os', '=', $incio . " 00:00:00")->whereDate('previsao_os', '=', $incio . " 23:59:59")->where('ordem_servicos.user_id', $id);
         }
         $os = $query->get();
 
@@ -180,7 +182,33 @@ class OrdemServicosController extends Controller
             $servicos[]= Servicos::find($id['id_servico'])->first();
         }
         $os['servicos'] =  $servicos ;
-         return response()->json($os, 200);
+        $os['cliente'] = Clientes::where('id', $os->id_cliente)->get();
+        if($os->id_funcionario){
+            $os['funcionario'] = funcionarios::where('id', $os->id_funcionario)->get();
+        }
+        if($os->id_veiculo){
+            $os['veiculo'] = Veiculos::where('id', $os->id_veiculo)->get();
+        }
+        if (!$os->situacao) {
+
+           $os['nome_situacao']  = 'Aguardando Pagamento';
+        } elseif ($os->situacao == 1) {
+
+            $os['nome_situacao'] = 'Pago';
+        } elseif ($os->situacao == 2) {
+
+            $os['nome_situacao'] = 'Pago - serviço iniciado';
+        } elseif ($os->situacao == 3) {
+
+            $os['nome_situacao'] = 'Pago - Aguardando retirada do Cliente';
+        } elseif ($os->situacao == 4) {
+            $os['nome_situacao'] = 'Pago - Remarketing';
+        } elseif ($os->situacao == 5) {
+            $os['nome_situacao'] = 'Remarketing';
+        } elseif ($os->situacao == 6) {
+            $os['nome_situacao'] = 'Cancelado';
+        }
+        return response()->json($os, 200);
     }
     public function addReceita($data)
     {

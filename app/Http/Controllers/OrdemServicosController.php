@@ -30,6 +30,7 @@ class OrdemServicosController extends Controller
 
         foreach($os as $key => $value)
         {
+
             Log::info($this->notifyClient($value['id'],'remarketing'));
         }
 
@@ -52,7 +53,7 @@ class OrdemServicosController extends Controller
         ->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')
         ->where('ordem_servicos.user_id', $id)->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor');
         if($fim){
-            $query->where('inicio_os', '>=', $incio . " 00:00:00")->where('inicio_os', '<=', $incio . " 23:59:59")->orWhere('previsao_os', '>=', $incio . " 00:00:00")->where('previsao_os', '>=', $incio . " 23:59:59")->where('ordem_servicos.user_id', $id);
+            $query->where('inicio_os', '>=', $incio . " 00:00:00")->where('inicio_os', '<=', $incio . " 23:59:59")->orWhere('previsao_os', '>=', $incio . " 00:00:00")->where('previsao_os', '<=', $incio . " 23:59:59")->where('ordem_servicos.user_id', $id);
         }
         else{
             $query->whereDate('inicio_os', '=', $incio . " 00:00:00")->whereDate('previsao_os', '=', $incio . " 23:59:59")->where('ordem_servicos.user_id', $id);
@@ -69,7 +70,7 @@ class OrdemServicosController extends Controller
             $servicos = [];
             foreach($ids_servicos as  $id){
 
-                $servicos[]= Servicos::find($id['id_servico'])->first();
+                $servicos[]= Servicos::where('id',$id['id_servico'])->first();
             }
             $data[$key]['servicos'] =  $servicos ;
             $data[$key]['cliente'] = Clientes::where('id', $value['id_cliente'])->first();
@@ -219,7 +220,7 @@ class OrdemServicosController extends Controller
         $servicos = [];
         foreach($ids_servicos as  $id){
 
-            $servicos[]= Servicos::find($id['id_servico'])->first();
+            $servicos[]= Servicos::where('id',$id['id_servico'])->first();
         }
         $os['servicos'] =  $servicos ;
         $os['cliente'] = Clientes::where('id', $os->id_cliente)->get();
@@ -300,7 +301,7 @@ class OrdemServicosController extends Controller
                 $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $cliente->celular_rj);
                 $nome_cliente = $cliente->razao_social;
             }
-            if ($item->situacao) {
+            if (!$item->situacao) {
 
                 $situacao = 'Aguardando Pagamento';
             } elseif ($item->situacao == 1) {
@@ -344,6 +345,25 @@ class OrdemServicosController extends Controller
                     "6" => [
                         "type" => "text",
                         "text" => "Pagamento na loja"
+                    ]
+                ];
+            }
+            elseif($tipo == 'atualizacao_ordem_servico'){
+                $id_origem = ($ordemServicos-1);
+                $dias_remarketing = OrdemServicos::where('id',$id_origem)->first();
+
+                $values = [
+                    "0" => [
+                        "type" => "text",
+                        "text" => $ordemServicos
+                    ],
+                    "1" => [
+                        "type" => "text",
+                        "text" => $nome_cliente
+                    ],
+                    "2" => [
+                        "type" => "text",
+                        "text" => $situacao
                     ]
                 ];
             }
@@ -465,7 +485,7 @@ class OrdemServicosController extends Controller
 
         return response()->json(
             [
-                'zap' => $this->notifyClient($ordemServicos, "nova_ordem_servico"),
+                'zap' => $this->notifyClient($ordemServicos, "atualizacao_ordem_servico"),
                 "erro" => false,
                 "mensagem" => "Ordem de Servicos editado com  sucesso!"
             ],

@@ -164,13 +164,22 @@ class OrdemServicosController extends Controller
      */
     public function show($ordemServicos)
     {
-        //
+        /*
         $os = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')
         ->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')
         ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome as nome_servico', 'servicos.valor as valor_servicos', 'ordem_servico_servicos.id_servico as id_servico')
         ->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.id', $ordemServicos)
-        ->get();
+        ->get();*/
 
+        $os = OrdemServicos::where('id',$ordemServicos)->first();
+        $ids_servicos = ordem_servico_servico::where('os_id', $ordemServicos)->select('id_servico')->get();
+        $os['ids_servicos'] =  $ids_servicos ;
+        $servicos = [];
+        foreach($ids_servicos as  $id){
+
+            $servicos[]= Servicos::find($id['id_servico'])->first();
+        }
+        $os['servicos'] =  $servicos ;
          return response()->json($os, 200);
     }
     public function addReceita($data)

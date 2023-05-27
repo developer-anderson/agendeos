@@ -46,6 +46,7 @@ class OrdemServicosController extends Controller
     }
     public function getAll($id, $incio, $fim = null, $filter = null)
     {
+        $data = array();
         //
         $query = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')
         ->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')
@@ -58,7 +59,51 @@ class OrdemServicosController extends Controller
         }
         $os = $query->get();
 
-        return response()->json($os, 200);
+        foreach($os as $key => $value)
+        {
+            $value = get_object_vars($value);
+           // dd($value);
+            $data[$key] = $value;
+            $ids_servicos = ordem_servico_servico::where('os_id', $value['id'])->select('id_servico')->get();
+            $data[$key]['ids_servicos'] =  $ids_servicos ;
+            $servicos = [];
+            foreach($ids_servicos as  $id){
+
+                $servicos[]= Servicos::find($id['id_servico'])->first();
+            }
+            $data[$key]['servicos'] =  $servicos ;
+            $data[$key]['cliente'] = Clientes::where('id', $value['id_cliente'])->first();
+
+            if($value['id_funcionario']){
+                $data[$key]['funcionario'] = funcionarios::where('id', $value['id_funcionario'])->first();
+            }
+            if($value['id_veiculo']){
+                $data[$key]['veiculo'] = Veiculos::where('id', $value['id_veiculo'])->first();
+            }
+            if (!$value['situacao']) {
+
+               $data[$key]['nome_situacao']  = 'Aguardando Pagamento';
+            } elseif ($value['situacao'] == 1) {
+
+                $data[$key]['nome_situacao'] = 'Pago';
+            } elseif ($value['situacao'] == 2) {
+
+                $data[$key]['nome_situacao'] = 'Pago - serviço iniciado';
+            } elseif ($value['situacao'] == 3) {
+
+                $data[$key]['nome_situacao'] = 'Pago - Aguardando retirada do Cliente';
+            } elseif ($value['situacao'] == 4) {
+                $data[$key]['nome_situacao'] = 'Pago - Remarketing';
+            } elseif ($value['situacao'] == 5) {
+                $data[$key]['nome_situacao'] = 'Remarketing';
+            } elseif ($value['situacao'] == 6) {
+                $data[$key]['nome_situacao'] = 'Cancelado';
+            }
+
+        }
+
+        return response()->json($data, 200);
+
     }
     public function getModeloMensagem($os_id)
     {
@@ -166,12 +211,7 @@ class OrdemServicosController extends Controller
      */
     public function show($ordemServicos)
     {
-        /*
-        $os = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')
-        ->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')
-        ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome as nome_servico', 'servicos.valor as valor_servicos', 'ordem_servico_servicos.id_servico as id_servico')
-        ->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->where('ordem_servicos.id', $ordemServicos)
-        ->get();*/
+
 
         $os = OrdemServicos::where('id',$ordemServicos)->first();
         $ids_servicos = ordem_servico_servico::where('os_id', $ordemServicos)->select('id_servico')->get();

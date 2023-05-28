@@ -27,7 +27,7 @@ class OrdemServicosController extends Controller
     {
         //
         $os = OrdemServicos::where('inicio_os', '>=', date("Y-m-d") . ' 00:00:00')->where('inicio_os', '<=',   date("Y-m-d") . ' 23:59:59')->where('remarketing', 0)->get();
-
+        //dd($os);
         foreach($os as $key => $value)
         {
 
@@ -49,11 +49,9 @@ class OrdemServicosController extends Controller
     {
         $data = array();
         //
-        $query = DB::table('ordem_servicos')->leftJoin('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->leftJoin('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')
-        ->leftJoin('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->leftJoin('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')
-        ->where('ordem_servicos.user_id', $id)->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor');
+        $query = DB::table('ordem_servicos')->where('ordem_servicos.user_id', $id);
         if($fim){
-            $query->where('inicio_os', '>=', $incio . " 00:00:00")->where('inicio_os', '<=', $incio . " 23:59:59")->orWhere('previsao_os', '>=', $incio . " 00:00:00")->where('previsao_os', '<=', $incio . " 23:59:59")->where('ordem_servicos.user_id', $id);
+            $query->where('inicio_os', '>=', $incio . " 00:00:00")->where('inicio_os', '<=', $fim . " 23:59:59")->orWhere('previsao_os', '>=', $incio . " 00:00:00")->where('previsao_os', '<=', $fim . " 23:59:59")->where('ordem_servicos.user_id', $id);
         }
         else{
             $query->whereDate('inicio_os', '=', $incio . " 00:00:00")->whereDate('previsao_os', '=', $incio . " 23:59:59")->where('ordem_servicos.user_id', $id);

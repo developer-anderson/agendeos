@@ -99,6 +99,26 @@ class OrdemServicosController extends Controller
                 $data[$key]['nome_situacao'] = 'Cancelado';
             }
 
+            if($value['id_forma_pagamento'] == 1){
+                $data[$key]['forma_pagamento'] = "Pix";
+            }
+            elseif($value['id_forma_pagamento'] == 2)
+            {
+                $data[$key]['forma_pagamento'] = "Cartão de Débito";
+            }
+            elseif($value['id_forma_pagamento'] == 3)
+            {
+                $data[$key]['forma_pagamento'] = "Cartão de Crédito";
+            }
+            elseif($value['id_forma_pagamento'] == 4)
+            {
+                $data[$key]['forma_pagamento'] = "Boleto";
+            }
+            elseif($value['id_forma_pagamento'] == 5)
+            {
+                $data[$key]['forma_pagamento'] = "Dinheiro";
+            }
+
         }
 
         return response()->json($data, 200);
@@ -246,6 +266,25 @@ class OrdemServicosController extends Controller
             $os['nome_situacao'] = 'Remarketing';
         } elseif ($os->situacao == 6) {
             $os['nome_situacao'] = 'Cancelado';
+        }
+        if($os->id_forma_pagamento == 1){
+            $os['forma_pagamento'] = "Pix";
+        }
+        elseif($os->id_forma_pagamento == 2)
+        {
+            $os['forma_pagamento'] = "Cartão de Débito";
+        }
+        elseif($os->id_forma_pagamento == 3)
+        {
+            $os['forma_pagamento'] = "Cartão de Crédito";
+        }
+        elseif($os->id_forma_pagamento == 4)
+        {
+            $os['forma_pagamento'] = "Boleto";
+        }
+        elseif($os->id_forma_pagamento == 5)
+        {
+            $os['forma_pagamento'] = "Dinheiro";
         }
         return response()->json($os, 200);
     }

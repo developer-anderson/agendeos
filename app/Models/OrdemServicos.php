@@ -10,5 +10,5 @@ class OrdemServicos extends Model
     use HasFactory;
 
     protected $fillable =
-    ['id_cliente', 'id_servico', 'id_veiculo', 'remarketing','id_funcionario' , 'situacao', 'inicio_os', 'previsao_os' , 'observacoes', 'user_id'];
+    ['id_cliente', 'id_servico', 'id_veiculo', 'remarketing','id_funcionario' , 'id_forma_pagamento' ,'situacao', 'inicio_os', 'previsao_os' , 'observacoes', 'user_id'];
 }

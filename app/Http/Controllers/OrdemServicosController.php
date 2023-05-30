@@ -104,6 +104,12 @@ class OrdemServicosController extends Controller
             if($value['id_forma_pagamento']){
                 $data[$key]['forma_pagamento'] = FormaPagamento::where('id', $value['id_forma_pagamento'])->first()->nome;
             }
+            $inicio_os = explode(" ",  $value["inicio_os"]);
+            $previsao_os = explode(" ",  $value["previsao_os"]);
+            $data[$key]["inicio_os"] = $inicio_os[0];
+            $data[$key]["inicio_os_time"] =$inicio_os[1];
+            $data[$key]["previsao_os"] =$previsao_os[0];
+            $data[$key]["previsao_os_time"] =$previsao_os[1];
 
 
         }
@@ -196,10 +202,17 @@ class OrdemServicosController extends Controller
         $ids_servicos = ordem_servico_servico::where('os_id', $ordemServicos)->select('id_servico')->get();
         $os['ids_servicos'] =  $ids_servicos ;
         $servicos = [];
+        $inicio_os = explode(" ",  $os["inicio_os"]);
+        $previsao_os = explode(" ",  $os["previsao_os"]);
+        $os["inicio_os"] = $inicio_os[0];
+        $os["inicio_os_time"] =$inicio_os[1];
+        $os["previsao_os"] =$previsao_os[0];
+        $os["previsao_os_time"] =$previsao_os[1];
         foreach($ids_servicos as  $id){
 
             $servicos[]= Servicos::where('id',$id['id_servico'])->first();
         }
+
         $os['servicos'] =  $servicos ;
         $os['cliente'] = Clientes::where('id', $os->id_cliente)->get();
         if($os->id_funcionario){

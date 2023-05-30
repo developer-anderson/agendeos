@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Veiculos;
 use Illuminate\Support\Facades\Log;
-
+use PagSeguro\Configuration\Configure;
+use PagSeguro\Domains\Requests\DirectPayment\OnlineDebit;
+use PagSeguro\Domains\Requests\DirectPayment\CreditCard;
 class OrdemServicosController extends Controller
 {
     /**
@@ -112,9 +114,9 @@ class OrdemServicosController extends Controller
     public function getModeloMensagem($os_id)
     {
         //
-        $os = DB::table('ordem_servicos')->join('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->join('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->join('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')
+        $os = DB::table('ordem_servicos')->join('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->join('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')
             ->join('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->join('users', 'users.id', '=', 'ordem_servicos.user_id')->where('ordem_servicos.id', $os_id)
-            ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor', 'users.name as loja')->get();
+            ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social',  'servicos.nome', 'servicos.valor', 'users.name as loja')->get();
         return  $os;
     }
 
@@ -129,6 +131,7 @@ class OrdemServicosController extends Controller
         //
         $post = $request->all();
         $os_servicos = $post['id_servico'];
+
         $post['id_servico'] = 0;
         $post['inicio_os'] = $post['inicio_os'] . " " . $post['inicio_os_time'];
         $post['previsao_os'] = $post['previsao_os'] . " " . $post['previsao_os_time'];
@@ -141,15 +144,17 @@ class OrdemServicosController extends Controller
             );
             ordem_servico_servico::create($data);
         }
-        $this->notifyClient($os->id);
+
         $post['id_servico'] = $os_servicos;
         $this->addReceita($post);
         if ($post['remarketing']) {
             $this->remarketing($post);
         }
-
+        //$this->notifyClient($os->id);
         return [
             "erro" => false,
+            'id' =>$os->id,
+            'zap' => $this->notifyClient($os->id),
             "mensagem" => "Ordem de Servicos com  sucesso!"
         ];
     }
@@ -183,7 +188,7 @@ class OrdemServicosController extends Controller
      * @param  \App\Models\OrdemServicos  $ordemServicos
      * @return \Illuminate\Http\Response
      */
-    public function show($ordemServicos)
+    public function show($ordemServicos, $tipo = false)
     {
 
 
@@ -225,7 +230,9 @@ class OrdemServicosController extends Controller
         if($os->id_forma_pagamento){
             $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first()->nome;
         }
-
+        if($tipo){
+            return $os;
+        }
         return response()->json($os, 200);
     }
     public function addReceita($data)
@@ -257,110 +264,105 @@ class OrdemServicosController extends Controller
         $total = 0;
         foreach ($dados as $item) {
 
-            $nomes .= " " . $item->nome;
-            $total += $item->valor;
+            $nomes .= " | " . $item->nome;
+            $total += ($item->valor/100);
         }
         return array("nomes" => $nomes, "total" => $total);
     }
     public function notifyClient($ordemServicos, $tipo = "nova_ordem_servico")
     {
-        $dados = $this->getModeloMensagem($ordemServicos);
-        $extras = $this->getServicosNotifyClint($dados);
-
         $situacao = "";
         $values = array();
-        foreach ($dados as $item) {
-            $cliente = Clientes::find($item->id_cliente);
-            if ($cliente->celular_f) {
-                $nome_cliente = $cliente->nome_f;
-                $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $cliente->celular_f);
-            } elseif ($cliente->celular_rj) {
-                $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $cliente->celular_rj);
-                $nome_cliente = $cliente->razao_social;
-            }
-            if (!$item->situacao) {
+        $data = $this->show($ordemServicos, true);
+        $extras = $this->getServicosNotifyClint($data['servicos']);
+        $cliente = $data['cliente'][0];
 
-                $situacao = 'Aguardando Pagamento';
-            } elseif ($item->situacao == 1) {
+        if ($cliente['celular_f']) {
+            $nome_cliente = $cliente['nome_f'];
+            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $cliente['celular_f']);
+        } elseif ( $cliente['celular_rj']) {
+            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $cliente['celular_rj']);
+            $nome_cliente = $cliente['razao_social'];
+        }
+        if (!$data['situacao']) {
+            $situacao = 'Aguardando Pagamento';
+        } elseif ($data['situacao'] == 1) {
 
-                $situacao = 'Pago';
-            } elseif ($item->situacao == 2) {
+            $situacao = 'Pago';
+        } elseif ($data['situacao'] == 2) {
 
-                $situacao = 'Pago - serviço iniciado';
-            } elseif ($item->situacao == 3) {
+            $situacao = 'Pago - serviço iniciado';
+        } elseif ($data['situacao'] == 3) {
 
-                $situacao = 'Pago - Aguardando retirada do Cliente';
-            } elseif ($item->situacao == 4) {
-                $situacao = 'Pago - Remarketing';
-            } elseif ($item->situacao == 5) {
-                $situacao = 'Remarketing';
-            } elseif ($item->situacao == 6) {
-                $situacao = 'Cancelado';
-            }
-            if($tipo == 'nova_ordem_servico'){
-                $values = [
-                    "0" => [
-                        "type" => "text",
-                        "text" => $nome_cliente
-                    ],
-                    "1" => [
-                        "type" => "text",
-                        "text" => $ordemServicos
-                    ],
-                    "2" => [
-                        "type" => "text",
-                        "text" => $extras['nomes']
-                    ],
-                    "3" => [
-                        "type" => "text",
-                        "text" => number_format($extras['total'], 2, ".", ",")
-                    ],
-                    "5" => [
-                        "type" => "text",
-                        "text" => $situacao
-                    ],
-                    "6" => [
-                        "type" => "text",
-                        "text" => "Pagamento na loja"
-                    ]
-                ];
-            }
-            elseif($tipo == 'atualizacao_ordem_servico'){
-                $id_origem = ($ordemServicos-1);
-                $dias_remarketing = OrdemServicos::where('id',$id_origem)->first();
+            $situacao = 'Pago - Aguardando retirada do Cliente';
+        } elseif ($data['situacao'] == 4) {
+            $situacao = 'Pago - Remarketing';
+        } elseif ($data['situacao'] == 5) {
+            $situacao = 'Remarketing';
+        } elseif ($data['situacao'] == 6) {
+            $situacao = 'Cancelado';
+        }
+        if($tipo == 'nova_ordem_servico'){
+            $values = [
+                "0" => [
+                    "type" => "text",
+                    "text" => $nome_cliente
+                ],
+                "1" => [
+                    "type" => "text",
+                    "text" => $ordemServicos
+                ],
+                "2" => [
+                    "type" => "text",
+                    "text" => $extras['nomes']
+                ],
+                "3" => [
+                    "type" => "text",
+                    "text" => number_format($extras['total'], 2, ".", ",")
+                ],
+                "5" => [
+                    "type" => "text",
+                    "text" => $situacao
+                ],
+                "6" => [
+                    "type" => "text",
+                    "text" =>  FormaPagamento::where('id', $data['id_forma_pagamento'])->first()->nome
+                ]
+            ];
+        }
+        elseif($tipo == 'atualizacao_ordem_servico'){
+            $id_origem = ($ordemServicos-1);
+            $dias_remarketing = OrdemServicos::where('id',$id_origem)->first();
 
-                $values = [
-                    "0" => [
-                        "type" => "text",
-                        "text" => $ordemServicos
-                    ],
-                    "1" => [
-                        "type" => "text",
-                        "text" => $nome_cliente
-                    ],
-                    "2" => [
-                        "type" => "text",
-                        "text" => $situacao
-                    ]
-                ];
-            }
-            elseif($tipo == 'remarketing'){
-                $id_origem = ($ordemServicos-1);
-                $dias_remarketing = OrdemServicos::where('id',$id_origem)->first();
+            $values = [
+                "0" => [
+                    "type" => "text",
+                    "text" => $ordemServicos
+                ],
+                "1" => [
+                    "type" => "text",
+                    "text" => $nome_cliente
+                ],
+                "2" => [
+                    "type" => "text",
+                    "text" => $situacao
+                ]
+            ];
+        }
+        elseif($tipo == 'remarketing'){
+            $id_origem = ($ordemServicos-1);
+            $dias_remarketing = OrdemServicos::where('id',$id_origem)->first();
 
-                $values = [
-                    "0" => [
-                        "type" => "text",
-                        "text" => $nome_cliente
-                    ],
-                    "1" => [
-                        "type" => "text",
-                        "text" => $dias_remarketing->remarketing
-                    ]
-                ];
-            }
-
-
+            $values = [
+                "0" => [
+                    "type" => "text",
+                    "text" => $nome_cliente
+                ],
+                "1" => [
+                    "type" => "text",
+                    "text" => $dias_remarketing->remarketing
+                ]
+            ];
         }
         $vetor = array(
             "messaging_product" => "whatsapp",

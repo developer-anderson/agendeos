@@ -8,6 +8,7 @@ use App\Models\fluxo_caixa;
 use Illuminate\Http\Request;
 use App\Models\Servicos;
 use App\Models\Clientes;
+use App\Models\FormaPagamento;
 use App\Models\funcionarios;
 use App\Models\whatsapp;
 use App\Models\token;
@@ -98,26 +99,10 @@ class OrdemServicosController extends Controller
             } elseif ($value['situacao'] == 6) {
                 $data[$key]['nome_situacao'] = 'Cancelado';
             }
+            if($value['id_forma_pagamento']){
+                $data[$key]['forma_pagamento'] = FormaPagamento::where('id', $value['id_forma_pagamento'])->first()->nome;
+            }
 
-            if($value['id_forma_pagamento'] == 1){
-                $data[$key]['forma_pagamento'] = "Pix";
-            }
-            elseif($value['id_forma_pagamento'] == 2)
-            {
-                $data[$key]['forma_pagamento'] = "Cartão de Débito";
-            }
-            elseif($value['id_forma_pagamento'] == 3)
-            {
-                $data[$key]['forma_pagamento'] = "Cartão de Crédito";
-            }
-            elseif($value['id_forma_pagamento'] == 4)
-            {
-                $data[$key]['forma_pagamento'] = "Boleto";
-            }
-            elseif($value['id_forma_pagamento'] == 5)
-            {
-                $data[$key]['forma_pagamento'] = "Dinheiro";
-            }
 
         }
 
@@ -131,36 +116,6 @@ class OrdemServicosController extends Controller
             ->join('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->join('users', 'users.id', '=', 'ordem_servicos.user_id')->where('ordem_servicos.id', $os_id)
             ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social', 'veiculos.placa', 'veiculos.modelo', 'servicos.nome', 'servicos.valor', 'users.name as loja')->get();
         return  $os;
-    }
-    public function pdf($id, $os_id)
-    {
-        //
-        $os = DB::table('ordem_servicos')->join('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->join('veiculos', 'veiculos.id', '=', 'ordem_servicos.id_veiculo')->join('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')->join('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->join('users', 'users.id', '=', 'ordem_servicos.user_id')->where('ordem_servicos.user_id', $id)
-            ->select(
-                'ordem_servicos.*',
-                'clientes.nome_f',
-                'clientes.razao_social',
-                'veiculos.placa',
-                'veiculos.modelo',
-                'servicos.nome',
-                'servicos.valor',
-                'users.nome_fantasia',
-                'users.logradouro as logradouro_loja',
-                'users.numero as numero_loja',
-                'users.complemento as complemento_loja',
-                'users.bairro as bairro_loja',
-                'users.estado as estado_loja',
-                'users.cidade as cidade_loja',
-                'users.cep as cep_loja',
-                'clientes.logradouro as logradouro_cli',
-                'clientes.numero as numero_cli',
-                'clientes.complemento as complemento_cli',
-                'clientes.bairro as bairro_cli',
-                'clientes.estado as estado_cli',
-                'clientes.cidade as cidade_cli',
-                'clientes.cep as cep_cli'
-            )->where('ordem_servicos.id', '=', $os_id)->get();
-        return response()->json($os, 200);
     }
 
     /**
@@ -267,25 +222,10 @@ class OrdemServicosController extends Controller
         } elseif ($os->situacao == 6) {
             $os['nome_situacao'] = 'Cancelado';
         }
-        if($os->id_forma_pagamento == 1){
-            $os['forma_pagamento'] = "Pix";
+        if($os->id_forma_pagamento){
+            $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first()->nome;
         }
-        elseif($os->id_forma_pagamento == 2)
-        {
-            $os['forma_pagamento'] = "Cartão de Débito";
-        }
-        elseif($os->id_forma_pagamento == 3)
-        {
-            $os['forma_pagamento'] = "Cartão de Crédito";
-        }
-        elseif($os->id_forma_pagamento == 4)
-        {
-            $os['forma_pagamento'] = "Boleto";
-        }
-        elseif($os->id_forma_pagamento == 5)
-        {
-            $os['forma_pagamento'] = "Dinheiro";
-        }
+
         return response()->json($os, 200);
     }
     public function addReceita($data)

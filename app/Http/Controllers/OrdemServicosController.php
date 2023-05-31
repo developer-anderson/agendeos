@@ -29,7 +29,7 @@ class OrdemServicosController extends Controller
     public function cron()
     {
         //
-        $os = OrdemServicos::where('inicio_os', '>=', date("Y-m-d") . ' 00:00:00')->where('inicio_os', '<=',   date("Y-m-d") . ' 23:59:59')->where('remarketing', 0)->get();
+        $os = OrdemServicos::where('inicio_os', '>=', date("Y-m-d") . ' 00:00:00')->where('inicio_os', '<=',   date("Y-m-d") . ' 23:59:59')->where('remarketing', 0)->orderBy('id', 'desc')->get();
         //dd($os);
         foreach($os as $key => $value)
         {
@@ -59,7 +59,7 @@ class OrdemServicosController extends Controller
         else{
             $query->whereDate('inicio_os', '=', $incio . " 00:00:00")->whereDate('previsao_os', '=', $incio . " 23:59:59")->where('ordem_servicos.user_id', $id);
         }
-        $os = $query->get();
+        $os = $query->orderBy('id', 'desc')->get();
 
         foreach($os as $key => $value)
         {
@@ -452,6 +452,9 @@ class OrdemServicosController extends Controller
         $dados = $request->all();
         $os_servicos = $dados['id_servico'];
         $dados['id_servico'] = 0;
+        $dados['inicio_os'] = $dados['inicio_os']." ".$dados['inicio_os_time'];
+        $dados['previsao_os'] =$dados['previsao_os']." ".$dados['previsao_os_time'];
+        //dd($dados);
         ordem_servico_servico::where('os_id', $ordemServicos)->delete();
         //OrdemServicos::find($ordemServicos)->first()->fill($dados)->save();
         $OrdemServicos = OrdemServicos::find($ordemServicos);

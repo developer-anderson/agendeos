@@ -31,7 +31,7 @@ class FuncionariosController extends Controller
             });
         }
 
-        $result = $query->get();
+        $result = $query->orderBy('id', 'desc')->get();
 
         return response()->json($result, 200);
 

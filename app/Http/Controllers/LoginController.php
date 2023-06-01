@@ -28,7 +28,7 @@ class LoginController extends Controller
             $user = Auth::user();
             $token = $user->createToken('API Token')->accessToken;
             $request->session()->regenerate();
-            $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->find(Auth::id());
+            $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id'])->first();
             $vetor['receita'] = fluxo_caixa::getAllMoney(Auth::id());
             $vetor['token'] =  $token;
             return response()->json($vetor, 200);

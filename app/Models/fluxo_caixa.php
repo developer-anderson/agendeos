@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 class fluxo_caixa extends Model
 {
     use HasFactory;
@@ -15,6 +16,6 @@ class fluxo_caixa extends Model
     {
         $startOfDay = Carbon::parse(date("Y-m-d"))->startOfDay();
         $endOfDay = Carbon::parse(date("Y-m-d"))->endOfDay();
-        return fluxo_caixa::where('tipo_id', 1)->whereBetween('created_at', [$startOfDay, $endOfDay])->sum('valor');
+        return fluxo_caixa::where('tipo_id', 1)->where('user_id', Auth::id())->whereBetween('created_at', [$startOfDay, $endOfDay])->sum('valor');
     }
 }

@@ -41,7 +41,7 @@ class Response implements ResponseInterface
         401 => 'Unauthorized',
         402 => 'Payment Required',
         403 => 'Forbidden',
-        404 => 'Not Found',
+        404 => 'Estabel',
         405 => 'Method Not Allowed',
         406 => 'Not Acceptable',
         407 => 'Proxy Authentication Required',

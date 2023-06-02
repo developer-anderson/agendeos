@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrdemServicos;
 use App\Models\ordem_servico_servico;
+use App\Models\Empresas;
 use App\Models\fluxo_caixa;
 use Illuminate\Http\Request;
 use App\Models\Servicos;
@@ -12,11 +13,14 @@ use App\Models\FormaPagamento;
 use App\Models\funcionarios;
 use App\Models\whatsapp;
 use App\Models\token;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Usuarios;
 use App\Models\Veiculos;
 use Illuminate\Support\Facades\Log;
 use PagSeguro\Configuration\Configure;
+use App\Models\funcionarios;
 use PagSeguro\Domains\Requests\DirectPayment\OnlineDebit;
 use PagSeguro\Domains\Requests\DirectPayment\CreditCard;
 class OrdemServicosController extends Controller
@@ -38,7 +42,18 @@ class OrdemServicosController extends Controller
         }
 
     }
+    public function getEstabelecimento($slug){
+        $estabelecimento  =  Empresas::where('situacao', 1)->where('razao_social', $slug)->first();
+        if(empty($slug) or  !$estabelecimento)
+        {
+            return response()->json(['error' => true, 'message' => "Estabelecimento Não encontrado"], 404);
+        }
+        $administrador  = User::where('empresa_id', $estabelecimento->id)->first();
+        $data['funcionarios']   = funcionarios::where('user_id', $administrador->id)->get();
+        $data['servicos']       = Servicos::where('user_id', $administrador->id)->get();
+        $data['estabelecimento']       = $estabelecimento;
 
+    }
     /**
      * Show the form for creating a new resource.
      *

@@ -24,7 +24,12 @@ use App\Http\Controllers\ServicosController;
 use App\Http\Controllers\OrdemServicosController;
 use App\Http\Controllers\FluxoCaixaController;
 
+Route::get('agendamento/getEstabelecimento/{slug}', [OrdemServicosController::class, 'getEstabelecimento'])->name('getEstabelecimento');
+Route::get('/', [HomeController::class, 'index']);
+
+
 Route::get('clientes/getall{id}/{filter?}', [ClientesController::class, 'getall']);
+
 Route::get('clientes/getAllclientByType/{type}/{id}/{filter?}', [ClientesController::class, 'getAllclientByType']);
 Route::get('clientes/show/{id}', [ClientesController::class, 'exibirCliente'])->name('exibirCliente');
 Route::post('clientes/insert', [ClientesController::class, 'store']);

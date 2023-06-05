@@ -200,7 +200,7 @@ class OrdemServicosController extends Controller
     }
     public function getServico($id)
     {
-        $registro = Servicos::find($id);
+        $registro = Servicos::where('id',$id)->first();
         return  $registro;
     }
     /**

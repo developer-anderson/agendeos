@@ -20,7 +20,7 @@ use App\Models\Usuarios;
 use App\Models\Veiculos;
 use Illuminate\Support\Facades\Log;
 use PagSeguro\Configuration\Configure;
-use App\Models\funcionarios;
+
 use PagSeguro\Domains\Requests\DirectPayment\OnlineDebit;
 use PagSeguro\Domains\Requests\DirectPayment\CreditCard;
 class OrdemServicosController extends Controller

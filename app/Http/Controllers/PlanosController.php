@@ -34,6 +34,7 @@ class PlanosController extends Controller
         $data = [];
         foreach($result as $key => $item){
             $data[$key] = $item;
+            $data[$key]['recursos'] = json_decode($item->recursos, true);
             $data[$key]['descricao_items'] = PlanosDescricao::where('plano_id', $item->id)->get();
         }
         return response()->json($data, 200);

@@ -67,6 +67,9 @@ Route::post('os/insert', [OrdemServicosController::class, 'store']);
 Route::put('os/update/{os}',[OrdemServicosController::class, 'update']);
 Route::delete('os/destroy{os}', [OrdemServicosController::class, 'destroy']);
 
+Route::get('/politica-de-privacidade', function () {
+    return view('politica-privacidade');
+});
 
 Route::get('fluxo_caixa/getall/{id}/{inicio}/{fim}/{filter?}', [FluxoCaixaController::class, 'getall']);
 Route::get('fluxo_caixa/show/{fluxo_caixa}', [FluxoCaixaController::class, 'show']);

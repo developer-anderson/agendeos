@@ -29,10 +29,15 @@ class LoginController extends Controller
             $user = Auth::user();
             //$token = $user->createToken('API Token')->accessToken;
             //$request->session()->regenerate();
-            $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id'])->first();
-            $vetor['receita'] = fluxo_caixa::getAllMoney(Auth::id());
-            $vetor['token'] =   csrf_token();;
-            return response()->json($vetor, 200);
+            $data = [];
+            $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')
+            ->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao', 'planos.recursos'])->first();
+            $data = $vetor;
+            $data['recursos'] = json_decode( $data['recursos'] , true);
+            $data['receita'] = fluxo_caixa::getAllMoney(Auth::id());
+            $data['token'] =   csrf_token();
+
+            return response()->json($data, 200);
         } else {
             return response()->json(["error" => "true", "msg" => "Dados inválidos"],401);
         }

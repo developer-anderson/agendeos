@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Planos;
+use App\Models\PlanosDescricao;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,8 +31,12 @@ class PlanosController extends Controller
         }
 
         $result = $query->get();
-
-        return response()->json($result, 200);
+        $data = [];
+        foreach($result as $key => $item){
+            $data[$key] = $item;
+            $data[$key]['descricao_items'] = PlanosDescricao::where('plano_id', $item->id)->get();
+        }
+        return response()->json($data, 200);
     }
 
     public function store(Request $request)

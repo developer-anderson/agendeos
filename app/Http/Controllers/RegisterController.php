@@ -29,9 +29,14 @@ class RegisterController extends Controller
             $user = User::create($data);
             Auth::attempt(['email' => $request->email, 'password' => $request->password]);
             $request->session()->regenerate();
-            $vetor  = User::find(Auth::id());
 
-            $vetor['receita'] = fluxo_caixa::getAllMoney(Auth::id());
+            $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')
+            ->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao', 'planos.recursos'])->first();
+            $data = $vetor;
+            $data['recursos'] = json_decode( $data['recursos'] , true);
+            $data['receita'] = fluxo_caixa::getAllMoney(Auth::id());
+            $data['token'] =   csrf_token();
+
             return response()->json($vetor, 200);
 
         }

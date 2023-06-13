@@ -26,9 +26,8 @@ use App\Http\Controllers\FluxoCaixaController;
 
 Route::get('agendamento/getEstabelecimento/{slug}', [OrdemServicosController::class, 'getEstabelecimento'])->name('getEstabelecimento');
 
-Route::get('/', function () {
-    return "Site em desenvolvimento. Para mais informações contato@agendos.com.br";
-});
+Route::permanentRedirect('/', 'https://site.agendos.com.br/');
+
 
 Route::get('clientes/getall{id}/{filter?}', [ClientesController::class, 'getall']);
 

@@ -10,6 +10,6 @@ class Empresas extends Model
     use HasFactory;
     protected $table = 'empresas';
     protected $fillable =
-    ['razao_social', 'cnpj', 'situacao', 'plano_id', 'segmento_id', 'celular',
+    ['razao_social', 'cnpj', 'situacao', 'plano_id', 'segmento_id',  'telefone',
      'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'estado', 'cidade'];
 }

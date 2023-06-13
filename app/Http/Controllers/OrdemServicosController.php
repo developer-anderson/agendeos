@@ -190,6 +190,7 @@ class OrdemServicosController extends Controller
         $os_servicos = $post['id_servico'];
         $post['id_servico'] = 0;
         $os = OrdemServicos::create($post);
+        $this->addReceita($post);
         foreach ($os_servicos as $id_servico) {
             $data = array(
                 "os_id"      => $os->id,

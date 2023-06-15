@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Clientes;
 use App\Models\whatsapp;
+use App\Models\Empresas;
 use App\Models\token;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -64,7 +65,7 @@ class ClientesController extends Controller
     {
         //
         $user = Auth::user();
-
+        $empresa = Empresas::where('id', $user->empresa_id)->first();
         $post = $request->all();
         if($post['celular_f']){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_f']);
@@ -72,14 +73,27 @@ class ClientesController extends Controller
         elseif($post['celular_rj']){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_rj']);
         }
+        $values = [
+            "0" => [
+                "type" => "text",
+                "text" => $empresa->razao_social
+            ]
+        ];
         $vetor = array(
             "messaging_product" => "whatsapp",
             "to" => $telefone,
             "type" => 'template',
             "template" => array(
-                "name" => "bem_vindo",
+                "name" => "boas_vindas_cliente",
                 "language" => array(
                     "code" => "pt_BR"
+                ),
+                "components"     =>
+                array(
+                    array(
+                        "type"       => "body",
+                        "parameters" => $values
+                    )
                 )
             )
         );

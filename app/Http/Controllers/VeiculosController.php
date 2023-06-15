@@ -100,11 +100,24 @@ class VeiculosController extends Controller
     public function update(Request $request, $veiculos)
     {
         //
+
         $dados = $request->all();
-        Veiculos::find($veiculos)->first()->fill($request->all())->save();;
+
+        $veiculo = Veiculos::find($veiculos);
+
+        if (!$veiculo) {
+            return [
+                "erro" => true,
+                "mensagem" => "veiculo não encontrado!"
+            ];
+        }
+
+        $veiculo->fill($dados);
+        $veiculo->save();
+
         return [
             "erro" => false,
-            "mensagem" => "Veiculo editado com  sucesso!"
+            "mensagem" => "veiculo editado com sucesso!"
         ];
     }
 

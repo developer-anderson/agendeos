@@ -53,7 +53,7 @@ class ClientesController extends Controller
             });
         }
 
-        $result = $query->get();
+        $result =  $query->orderBy('id', 'desc')->get();
 
         return response()->json($result, 200);
     }
@@ -65,7 +65,6 @@ class ClientesController extends Controller
     {
         //
         $user = Auth::user();
-        $empresa = Empresas::where('id', $user->empresa_id)->first();
         $post = $request->all();
         if($post['celular_f']){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_f']);
@@ -73,36 +72,25 @@ class ClientesController extends Controller
         elseif($post['celular_rj']){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_rj']);
         }
-        $values = [
-            "0" => [
-                "type" => "text",
-                "text" => $empresa->razao_social
-            ]
-        ];
+
         $vetor = array(
             "messaging_product" => "whatsapp",
             "to" => $telefone,
             "type" => 'template',
             "template" => array(
-                "name" => "boas_vindas_cliente",
+                "name" => "bem_vindo",
                 "language" => array(
                     "code" => "pt_BR"
-                ),
-                "components"     =>
-                array(
-                    array(
-                        "type"       => "body",
-                        "parameters" => $values
-                    )
                 )
             )
         );
-        whatsapp::sendMessage($vetor, token::token());
+        $zap = whatsapp::sendMessage($vetor, token::token());
         $clientes = Clientes::create( $post);
         return response()->json([
             "erro" => false,
             "mensagem" => "Cliente cadastrado com  sucesso!",
-            'id' => $clientes->id
+            'id' => $clientes->id,
+            'zap' => $zap
         ], 200);
 
     }

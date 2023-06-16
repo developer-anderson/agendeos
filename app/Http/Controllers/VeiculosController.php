@@ -29,11 +29,14 @@ class VeiculosController extends Controller
             $veiculos->where(function ($q) use ($filter) {
                 $q->where('placa', 'like', '%'.$filter.'%')
                     ->orWhere('marca', 'like', '%'.$filter.'%')
+                    ->orWhere('razao_social', 'like', '%'.$filter.'%')
+                    ->orWhere('nome_f', 'like', '%'.$filter.'%')
                     ->orWhere('modelo', 'like', '%'.$filter.'%');
             });
         }
 
-        $result = $veiculos->get();
+        $result = $veiculos->orderBy('id', 'desc')->get();
+
 
         return response()->json($result, 200);
         return response()->json( $veiculos , 200);

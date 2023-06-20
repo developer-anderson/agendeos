@@ -116,6 +116,9 @@ class OrdemServicosController extends Controller
             } elseif ($value['situacao'] == 6) {
                 $data[$key]['nome_situacao'] = 'Cancelado';
             }
+            elseif ($value['situacao'] == 7) {
+                $data[$key]['nome_situacao'] = 'Orçamento';
+            }
             if($value['id_forma_pagamento']){
                 $data[$key]['forma_pagamento'] = FormaPagamento::where('id', $value['id_forma_pagamento'])->first()->nome;
             }
@@ -168,9 +171,10 @@ class OrdemServicosController extends Controller
 
         $post['id_servico'] = $os_servicos;
         $this->addReceita($post);
+        /*
         if ($post['remarketing']) {
             $this->remarketing($post);
-        }
+        }*/
         //$this->notifyClient($os->id);
         return [
             "erro" => false,
@@ -256,6 +260,9 @@ class OrdemServicosController extends Controller
         } elseif ($os->situacao == 6) {
             $os['nome_situacao'] = 'Cancelado';
         }
+        elseif ($os->situacao == 7) {
+            $os['nome_situacao'] = 'Orçamento';
+        }
         if($os->id_forma_pagamento){
             $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first()->nome;
         }
@@ -294,7 +301,7 @@ class OrdemServicosController extends Controller
         foreach ($dados as $item) {
 
             $nomes .= " | " . $item->nome;
-            $total += ($item->valor/100);
+            $total += ($item->valor);
         }
         return array("nomes" => $nomes, "total" => $total);
     }
@@ -330,6 +337,9 @@ class OrdemServicosController extends Controller
             $situacao = 'Remarketing';
         } elseif ($data['situacao'] == 6) {
             $situacao = 'Cancelado';
+        }
+        elseif ($data['situacao'] == 7) {
+            $situacao = 'Orçamento';
         }
         if($tipo == 'nova_ordem_servico'){
             $values = [
@@ -469,8 +479,8 @@ class OrdemServicosController extends Controller
         $data['receita_por_funcionario'] = $receita_funcionario;
         $data['quantidade_os_funcionario'] = $quantidade_os_funcionario;
         $data['receita_por_cliente'] = $receita_cliente;
-        $data['faturamento'] = $resultadosFormatados;
-        return response()->json($data, 200);
+        $data['faturamento'] = [$resultadosFormatados];
+        return response()->json([$data], 200);
     }
     /**
      * Update the specified resource in storage.

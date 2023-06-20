@@ -449,9 +449,27 @@ class OrdemServicosController extends Controller
         ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')->where('ordem_servicos.user_id', $id)
         ->whereBetween('ordem_servicos.created_at', [$inicio, $fim])->groupBy('clientes.nome_f')->get();
 
+        $resultados = DB::table('ordem_servicos')->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
+            ->selectRaw('YEAR(ordem_servicos.created_at) AS ano, MONTH(ordem_servicos.created_at) AS mes, SUM(servicos.valor) AS valor_total')->where('ordem_servicos.user_id', $id)
+            ->groupBy('ano', 'mes')->orderBy('ano', 'asc')->orderBy('mes', 'asc')->get();
+
+        $resultadosFormatados = [];
+        foreach ($resultados as $resultado) {
+            $ano = $resultado->ano;
+            $mes = Carbon::createFromFormat('!m', $resultado->mes)->locale('pt_BR')->monthName;
+            $valorTotal = $resultado->valor_total;
+
+            if (!isset($resultadosFormatados[$ano])) {
+                $resultadosFormatados[$ano] = [];
+            }
+
+            $resultadosFormatados[$ano][$mes] = $valorTotal;
+        }
+
         $data['receita_por_funcionario'] = $receita_funcionario;
         $data['quantidade_os_funcionario'] = $quantidade_os_funcionario;
         $data['receita_por_cliente'] = $receita_cliente;
+        $data['faturamento'] = $resultadosFormatados;
         return response()->json($data, 200);
     }
     /**

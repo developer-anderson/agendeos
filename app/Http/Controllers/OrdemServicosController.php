@@ -455,7 +455,7 @@ class OrdemServicosController extends Controller
         AND ordem_servicos.created_at >= '$inicio 00:00:00'
         AND ordem_servicos.created_at <= '$fim 23:59:59'
     GROUP BY funcionarios.nome
-", [$id]);;
+", [$id]);
 
         $receita_funcionario = DB::select("
     SELECT funcionarios.nome, SUM(servicos.valor) as total_valor,

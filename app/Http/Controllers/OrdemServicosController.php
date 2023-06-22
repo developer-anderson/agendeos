@@ -447,39 +447,79 @@ class OrdemServicosController extends Controller
             $fim     = date("Y-m-31");
         }
 
-        $quantidade_os_funcionario = DB::table('funcionarios')->select('funcionarios.nome', DB::raw('count(ordem_servicos.id) as total_os'))
-        ->join('ordem_servicos', 'funcionarios.id', '=', 'ordem_servicos.id_funcionario')->where('ordem_servicos.user_id', $id)
-        ->whereBetween('ordem_servicos.created_at', [$inicio, $fim])->groupBy('funcionarios.nome')->get();
+        $quantidade_os_funcionario = DB::select("
+    SELECT funcionarios.nome, COUNT(ordem_servicos.id) as total_os
+    FROM funcionarios
+    JOIN ordem_servicos ON funcionarios.id = ordem_servicos.id_funcionario
+    WHERE ordem_servicos.user_id = ?
+        AND ordem_servicos.created_at >= '$inicio 00:00:00'
+        AND ordem_servicos.created_at <= '$fim 23:59:59'
+    GROUP BY funcionarios.nome
+", [$id]);;
 
-        $receita_funcionario = DB::table('funcionarios')->select('funcionarios.nome', DB::raw('SUM(servicos.valor) as total_valor'))->join('ordem_servicos', 'funcionarios.id', '=', 'ordem_servicos.id_funcionario')
-        ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')->where('ordem_servicos.user_id', $id)
-        ->whereBetween('ordem_servicos.created_at', [$inicio, $fim])->groupBy('funcionarios.nome')->get();
+        $receita_funcionario = DB::select("
+    SELECT funcionarios.nome, SUM(servicos.valor) as total_valor,
+           SUM(servicos.valor * funcionarios.comissao / 100) as comissao_funcionario
+    FROM funcionarios
+    JOIN ordem_servicos ON funcionarios.id = ordem_servicos.id_funcionario
+    JOIN ordem_servico_servicos ON ordem_servicos.id = ordem_servico_servicos.os_id
+    JOIN servicos ON ordem_servico_servicos.id_servico = servicos.id
+    WHERE ordem_servicos.user_id = ?
+        AND ordem_servicos.created_at >= '$inicio 00:00:00'
+        AND ordem_servicos.created_at <= '$fim 23:59:59'
+    GROUP BY funcionarios.nome
+", [$id]);
 
         $receita_cliente = DB::table('clientes')->select('clientes.nome_f', DB::raw('SUM(servicos.valor) as total_valor'))->join('ordem_servicos', 'clientes.id', '=', 'ordem_servicos.id_cliente')
         ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')->where('ordem_servicos.user_id', $id)
-        ->whereBetween('ordem_servicos.created_at', [$inicio, $fim])->groupBy('clientes.nome_f')->get();
+        ->where('ordem_servicos.created_at', '>=' .$inicio.' 00:00:00')->where('ordem_servicos.created_at', '<=' .$fim.' 23:59:59')->groupBy('clientes.nome_f')->get();
 
-        $resultados = DB::table('ordem_servicos')->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
-            ->selectRaw('YEAR(ordem_servicos.created_at) AS ano, MONTH(ordem_servicos.created_at) AS mes, SUM(servicos.valor) AS valor_total')->where('ordem_servicos.user_id', $id)
-            ->groupBy('ano', 'mes')->orderBy('ano', 'asc')->orderBy('mes', 'asc')->get();
+        $resultados = DB::table('ordem_servicos')
+        ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')
+        ->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
+        ->selectRaw('YEAR(ordem_servicos.created_at) AS ano, MONTH(ordem_servicos.created_at) AS mes, SUM(servicos.valor) AS valor_total')
+        ->where('ordem_servicos.user_id', $id)
+        ->groupBy('ano', 'mes')
+        ->orderBy('ano', 'asc')
+        ->orderBy('mes', 'asc')
+        ->get();
 
-        $resultadosFormatados = [];
-        foreach ($resultados as $resultado) {
-            $ano = $resultado->ano;
-            $mes = Carbon::createFromFormat('!m', $resultado->mes)->locale('pt_BR')->monthName;
-            $valorTotal = $resultado->valor_total;
+    $resultadosFormatados = [];
 
-            if (!isset($resultadosFormatados[$ano])) {
-                $resultadosFormatados[$ano] = [];
-            }
+    // Cria um array com todos os meses do ano
+    $mesesDoAno = array(
+        'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+        'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+    );
 
-            $resultadosFormatados[$ano][$mes] = $valorTotal;
+    foreach ($resultados as $resultado) {
+        $ano = $resultado->ano;
+        $mes = Carbon::createFromFormat('!m', $resultado->mes)->locale('pt_BR')->monthName;
+        $valorTotal = $resultado->valor_total;
+
+        if (!isset($resultadosFormatados[$ano])) {
+            $resultadosFormatados[$ano] = array_fill_keys($mesesDoAno, 0);
         }
+
+        $resultadosFormatados[$ano][$mes] = $valorTotal;
+    }
+
+    // Ordena os meses
+    foreach ($resultadosFormatados as &$resultadosAno) {
+        uksort($resultadosAno, function ($mes1, $mes2) use ($mesesDoAno) {
+            return array_search($mes1, $mesesDoAno) - array_search($mes2, $mesesDoAno);
+        });
+    }
+
+    // Agora $resultadosFormatados contém os valores para todos os meses, incluindo aqueles com valor 0 e ordenados corretamente
+
+
+
 
         $data['receita_por_funcionario'] = $receita_funcionario;
         $data['quantidade_os_funcionario'] = $quantidade_os_funcionario;
         $data['receita_por_cliente'] = $receita_cliente;
-        $data['faturamento'] = [$resultadosFormatados];
+        $data['faturamento'] = $resultadosFormatados;
         return response()->json([$data], 200);
     }
     /**

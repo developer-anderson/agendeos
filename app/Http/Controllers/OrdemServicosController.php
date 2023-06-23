@@ -566,7 +566,13 @@ $receita_cliente = DB::select("
         }
         $caixa = fluxo_caixa::where('os_id', $ordemServicos)->first();
         if($caixa){
-            $caixa->valor = $valor_total;
+            if($dados['situacao'] <> 1){
+                $caixa->valor = 0;
+            }
+            else{
+                $caixa->valor = $valor_total;
+            }
+
             $caixa->save();
         }
 

@@ -457,9 +457,9 @@ class OrdemServicosController extends Controller
     GROUP BY funcionarios.nome
 ", [$id]);
 
-        $receita_funcionario = DB::select("
-    SELECT funcionarios.nome, SUM(servicos.valor) as total_valor,
-           SUM(servicos.valor * funcionarios.comissao / 100) as comissao_funcionario
+$receita_funcionario = DB::select("
+    SELECT funcionarios.nome, SUM(servicos.valor) as receita_total,
+           SUM(CASE WHEN ordem_servicos.situacao = 1 THEN servicos.valor * funcionarios.comissao / 100 ELSE 0 END) as comissao_funcionario
     FROM funcionarios
     JOIN ordem_servicos ON funcionarios.id = ordem_servicos.id_funcionario
     JOIN ordem_servico_servicos ON ordem_servicos.id = ordem_servico_servicos.os_id
@@ -470,9 +470,18 @@ class OrdemServicosController extends Controller
     GROUP BY funcionarios.nome
 ", [$id]);
 
-        $receita_cliente = DB::table('clientes')->select('clientes.nome_f', DB::raw('SUM(servicos.valor) as total_valor'))->join('ordem_servicos', 'clientes.id', '=', 'ordem_servicos.id_cliente')
-        ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')->where('ordem_servicos.user_id', $id)
-        ->where('ordem_servicos.created_at', '>=' .$inicio.' 00:00:00')->where('ordem_servicos.created_at', '<=' .$fim.' 23:59:59')->groupBy('clientes.nome_f')->get();
+
+$receita_cliente = DB::select("
+    SELECT clientes.nome_f, SUM(servicos.valor) as total_valor
+    FROM clientes
+    JOIN ordem_servicos ON clientes.id = ordem_servicos.id_cliente
+    JOIN ordem_servico_servicos ON ordem_servicos.id = ordem_servico_servicos.os_id
+    JOIN servicos ON ordem_servico_servicos.id_servico = servicos.id
+    WHERE ordem_servicos.user_id = ?
+        AND ordem_servicos.created_at >= ?
+        AND ordem_servicos.created_at <= ?
+    GROUP BY clientes.nome_f
+", [$id, $inicio . ' 00:00:00', $fim . ' 23:59:59']);
 
         $resultados = DB::table('ordem_servicos')
         ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')

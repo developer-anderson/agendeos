@@ -284,6 +284,9 @@ class OrdemServicosController extends Controller
         }
         $data['nome'] = "Ordem de Serviço #" . $data['os_id'];
         $data['produto_id'] = null;
+        if ($data['situacao'] <> 1) {
+            $data['valor'] = 0;
+        }
         if ($data['situacao'] >= 2 and $data['situacao'] <= 4) {
             $data['pagamento_id'] = 1;
         } elseif ($data['situacao'] == 0 or $data['situacao'] == 6) {
@@ -454,33 +457,43 @@ class OrdemServicosController extends Controller
     FROM funcionarios
     JOIN ordem_servicos ON funcionarios.id = ordem_servicos.id_funcionario
     WHERE ordem_servicos.user_id = ?
-        AND ordem_servicos.created_at >= '$inicio 00:00:00'
+        AND ordem_servicos.created_at >= '$inicio 00:00:00' and ordem_servicos.situacao = 1
         AND ordem_servicos.created_at <= '$fim 23:59:59'
     GROUP BY funcionarios.nome
 ", [$id]);
 
-        $receita_funcionario = DB::select("
-    SELECT funcionarios.nome, SUM(servicos.valor) as total_valor,
-           SUM(servicos.valor * funcionarios.comissao / 100) as comissao_funcionario
+$receita_funcionario = DB::select("
+    SELECT funcionarios.nome, SUM(servicos.valor) as receita_total,
+           SUM(CASE WHEN ordem_servicos.situacao = 1 THEN servicos.valor * funcionarios.comissao / 100 ELSE 0 END) as comissao_funcionario
     FROM funcionarios
     JOIN ordem_servicos ON funcionarios.id = ordem_servicos.id_funcionario
     JOIN ordem_servico_servicos ON ordem_servicos.id = ordem_servico_servicos.os_id
     JOIN servicos ON ordem_servico_servicos.id_servico = servicos.id
-    WHERE ordem_servicos.user_id = ?
+    WHERE ordem_servicos.user_id = ? and ordem_servicos.situacao = 1
         AND ordem_servicos.created_at >= '$inicio 00:00:00'
         AND ordem_servicos.created_at <= '$fim 23:59:59'
     GROUP BY funcionarios.nome
 ", [$id]);
 
-        $receita_cliente = DB::table('clientes')->select('clientes.nome_f', DB::raw('SUM(servicos.valor) as total_valor'))->join('ordem_servicos', 'clientes.id', '=', 'ordem_servicos.id_cliente')
-        ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')->where('ordem_servicos.user_id', $id)
-        ->where('ordem_servicos.created_at', '>=' .$inicio.' 00:00:00')->where('ordem_servicos.created_at', '<=' .$fim.' 23:59:59')->groupBy('clientes.nome_f')->get();
+
+$receita_cliente = DB::select("
+    SELECT clientes.nome_f, SUM(servicos.valor) as total_valor
+    FROM clientes
+    JOIN ordem_servicos ON clientes.id = ordem_servicos.id_cliente
+    JOIN ordem_servico_servicos ON ordem_servicos.id = ordem_servico_servicos.os_id
+    JOIN servicos ON ordem_servico_servicos.id_servico = servicos.id
+    WHERE ordem_servicos.user_id = ?
+        AND ordem_servicos.created_at >= ?
+        AND ordem_servicos.created_at <= ?  and ordem_servicos.situacao = 1
+    GROUP BY clientes.nome_f
+", [$id, $inicio . ' 00:00:00', $fim . ' 23:59:59']);
 
         $resultados = DB::table('ordem_servicos')
         ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')
         ->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
         ->selectRaw('YEAR(ordem_servicos.created_at) AS ano, MONTH(ordem_servicos.created_at) AS mes, SUM(servicos.valor) AS valor_total')
         ->where('ordem_servicos.user_id', $id)
+         ->where('ordem_servicos.situacao', 1)
         ->groupBy('ano', 'mes')
         ->orderBy('ano', 'asc')
         ->orderBy('mes', 'asc')
@@ -559,7 +572,13 @@ class OrdemServicosController extends Controller
         }
         $caixa = fluxo_caixa::where('os_id', $ordemServicos)->first();
         if($caixa){
-            $caixa->valor = $valor_total;
+            if($dados['situacao'] <> 1){
+                $caixa->valor = 0;
+            }
+            else{
+                $caixa->valor = $valor_total;
+            }
+
             $caixa->save();
         }
 

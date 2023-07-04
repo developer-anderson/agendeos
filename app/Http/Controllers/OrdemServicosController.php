@@ -53,7 +53,7 @@ class OrdemServicosController extends Controller
         $data['servicos']       = Servicos::where('user_id', $administrador->id)->get();
         $data['estabelecimento']       = $estabelecimento;
 
-        return view('agendamento');
+        return view('agendamento', compact($data));
 
     }
     /**

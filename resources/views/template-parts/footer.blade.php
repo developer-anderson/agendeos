@@ -33,6 +33,15 @@
 
 
 <script>
+const loading = document.getElementById('loading');
+        function showLoading() {
+            hideLoading()
+            loading.style.display = 'block';
+        }
+
+        function hideLoading() {
+            loading.style.display = 'none';
+        }
         var orderForm = {
             id_servico: [],
             remarketing: null,
@@ -102,7 +111,7 @@
                 }
                 orderForm.inicio_os = $(this).data("ano") + '-' + mes  + '-' + dia
                 orderForm.previsao_os =  orderForm.inicio_os
-                
+
                 // adicionar a requisição aqui e interagir com o .calendarResult
             })
 
@@ -147,19 +156,19 @@
         });
 
         // steps
-        
+
         jQuery(document).on('click', '.btn-step1, .btn-step2, .btn-step3, .btn-step4', function(e){
-            if(jQuery(this).hasClass("btn-step1")){              
+            if(jQuery(this).hasClass("btn-step1")){
                 jQuery(".steps").css("display", 'none')
                 jQuery("#step1").css("display", 'flex')
             }
 
-            if(jQuery(this).hasClass("btn-step2")){              
+            if(jQuery(this).hasClass("btn-step2")){
                 jQuery(".steps").css("display", 'none')
                 jQuery("#step2").css("display", 'flex')
             }
 
-            if(jQuery(this).hasClass("btn-step3")){              
+            if(jQuery(this).hasClass("btn-step3")){
                 jQuery(".steps").css("display", 'none')
                 jQuery("#step3").css("display", 'flex')
             }
@@ -186,7 +195,7 @@
             step2.style.display = "none";
             step3.style.display = "flex";
         });
-        
+
         btnStep4.addEventListener('click', function(event) {
             event.preventDefault()
             step3.style.display = "none";
@@ -195,7 +204,7 @@
 
 
 
-     
+
 
         function adicionarAoOrderForm(elemento) {
             var id = elemento.getAttribute('data-id');
@@ -234,8 +243,8 @@
 
                 if (!idExiste) {
                     orderForm.id_servico.push(id);
-                } 
-                
+                }
+
                 listaProdutos.push({
                     titulo: titulo,
                     preco: preco
@@ -321,6 +330,54 @@
         orderForm.inicio_os_time = horario
         orderForm.previsao_os_time = horario
     }
+function agendar() {
+    showLoading()
+  var data = {
+    nome_f: $("#nome").val(),
+    tipo_cliente: "PF",
+    email_f: $("#email").val(),
+    telefone_f: $("#whatsapp").val(),
+    celular_f: $("#whatsapp").val(),
+    observacoes: $("#observacoes").val(),
+    user_id: {{$administrador->id}}
+  };
+
+  var settings = {
+    url: "https://agendos.com.br/clientes/insert",
+    method: "POST",
+    timeout: 0,
+    contentType: "application/json",
+    data: JSON.stringify(data)
+  };
+
+  $.ajax(settings).done(function(response) {
+    orderForm.id_cliente = response.id;
+    if(!response.id){
+        hideLoading()
+        alert("Ocorreu um erro ao realizar o seu agendamento. Favor entrar, tente novamente em alguns instantes. Caso ainda não consiga, entrar em contato com o estabeleciomento.")
+    }
+    var orderFormSettings = {
+      url: "https://agendos.com.br/os/insert",
+      method: "POST",
+      timeout: 0,
+      contentType: "application/json",
+      data: JSON.stringify(orderForm)
+    };
+
+    $.ajax(orderFormSettings).done(function(response) {
+      console.log(response);
+          if(!response.id){
+        hideLoading()
+        alert("Ocorreu um erro ao realizar o seu agendamento. Favor entrar, tente novamente em alguns instantes. Caso ainda não consiga, entrar em contato com o estabeleciomento.")
+    }
+    else{
+        alert("Agendamento realizado com sucesso, em alguns minutos você receberá uma confirmação via Whatsapp.")
+        window.location.href = "https://site.agendos.com.br/";
+    }
+    });
+  });
+}
+
     (function() {
         'use strict';
         // ------------------------------------------------------- //
@@ -462,4 +519,5 @@
         });
 
     })(jQuery);
+    hideLoading()
 </script>

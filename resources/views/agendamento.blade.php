@@ -2055,7 +2055,73 @@ be a descendant of the grid when it is being dragged.
                     cursor: not-allowed;
                 }
             </style>
-          
+                  <style>
+            #loading {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+            }
+
+            .overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+
+            .spinner {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .spinner>div {
+                width: 12px;
+                height: 12px;
+                margin-right: 4px;
+                background-color: #ffffff;
+                border-radius: 100%;
+                display: inline-block;
+                animation: bounce 1.4s infinite ease-in-out both;
+            }
+
+            .spinner .bounce1 {
+                animation-delay: -0.32s;
+            }
+
+            .spinner .bounce2 {
+                animation-delay: -0.16s;
+            }
+
+
+
+            @keyframes bounce {
+
+                0%,
+                80%,
+                100% {
+                    transform: scale(0);
+                }
+
+                40% {
+                    transform: scale(1);
+                }
+            }
+        </style>
+                    <div id="loading">
+                <div class="overlay"></div>
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+            </div>
             <!-- step 1 -->
             <div class="row justify-content-center steps" id="step1">
                 <div class="col-sm-8">
@@ -2092,8 +2158,8 @@ be a descendant of the grid when it is being dragged.
                             </li>
                         @endforeach
 
-                     
-                 
+
+
                 </div>
 
             </div>
@@ -2134,8 +2200,8 @@ be a descendant of the grid when it is being dragged.
                             </a>
                         </li>
                         @endforeach
-           
-                 
+
+
                     </ul>
 
                     <div class="subtotal col-sm-12 text-center">
@@ -2247,7 +2313,7 @@ be a descendant of the grid when it is being dragged.
                     </div>
 
                     <div class="col-sm-12 py-5 text-center">
-                        <a href="#" class="btn-button btn-primary btn-next" id="salvar-agendamento"><i class="fa fa-save"></i>
+                        <a href="#" class="btn-button btn-primary btn-next" onclick="agendar()" id="salvar-agendamento"><i class="fa fa-save"></i>
                             Salvar </a>
                     </div>
                 </div>

@@ -66,10 +66,14 @@ class ClientesController extends Controller
         //
         $user = Auth::user();
         $post = $request->all();
-        if($post['celular_f']){
+        $validar = Clientes::where('email_f', $post['email_f'])->first();
+        if($validar){
+            return $validar->id;
+        }
+        if(isset($post['celular_f'])  and !empty($post['celular_f'])){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_f']);
         }
-        elseif($post['celular_rj']){
+        elseif(isset($post['celular_rj']) and  !empty($post['celular_rj'])){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_rj']);
         }
 

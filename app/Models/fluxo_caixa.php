@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class fluxo_caixa extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'valor', 'nome','pagamento_id', 'os_id', 'data', 'produto_id', 'cliente_id', 'desconto', 'tipo_id'];
+    protected $fillable = ['user_id', 'valor', 'nome','pagamento_id','situacao' , 'os_id', 'data', 'produto_id', 'cliente_id', 'desconto', 'tipo_id'];
 
 
     public static function getallMoney()

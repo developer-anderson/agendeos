@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\fluxo_caixa;
 use Illuminate\Http\Request;
-
+use App\Models\FormaPagamento;
+use App\Models\Situacao;
 class FluxoCaixaController extends Controller
 {
     /**
@@ -72,9 +73,14 @@ class FluxoCaixaController extends Controller
      * @param  \App\Models\fluxo_caixa  $fluxo_caixa
      * @return \Illuminate\Http\Response
      */
-    public function show( fluxo_caixa $fluxo_caixa)
+    public function show($fluxo_caixa)
     {
         //
+        $fluxo_caixa = fluxo_caixa::where('id',$fluxo_caixa)->first();
+        $fluxo_caixa['nome_situacao'] = Situacao::where('referencia_id',$fluxo_caixa->situacao)->first()->nome;
+        if($fluxo_caixa->pagamento_id){
+            $fluxo_caixa['forma_pagamento'] = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first()->nome;
+        }
         if(!$fluxo_caixa){
             return response()->json(
                 [

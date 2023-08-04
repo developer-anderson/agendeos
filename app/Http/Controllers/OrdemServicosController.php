@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\Servicos;
 use App\Models\Clientes;
 use App\Models\FormaPagamento;
+use App\Models\Situacao;
 use App\Models\funcionarios;
 use App\Models\whatsapp;
 use App\Models\token;
@@ -99,28 +100,8 @@ class OrdemServicosController extends Controller
             if($value['id_veiculo']){
                 $data[$key]['veiculo'] = Veiculos::where('id', $value['id_veiculo'])->first();
             }
-            if (!$value['situacao']) {
 
-               $data[$key]['nome_situacao']  = 'Aguardando Pagamento';
-            } elseif ($value['situacao'] == 1) {
-
-                $data[$key]['nome_situacao'] = 'Pago';
-            } elseif ($value['situacao'] == 2) {
-
-                $data[$key]['nome_situacao'] = 'Pago - serviço iniciado';
-            } elseif ($value['situacao'] == 3) {
-
-                $data[$key]['nome_situacao'] = 'Pago - Aguardando retirada do Cliente';
-            } elseif ($value['situacao'] == 4) {
-                $data[$key]['nome_situacao'] = 'Pago - Remarketing';
-            } elseif ($value['situacao'] == 5) {
-                $data[$key]['nome_situacao'] = 'Remarketing';
-            } elseif ($value['situacao'] == 6) {
-                $data[$key]['nome_situacao'] = 'Cancelado';
-            }
-            elseif ($value['situacao'] == 7) {
-                $data[$key]['nome_situacao'] = 'Orçamento';
-            }
+            $data[$key]['nome_situacao'] = Situacao::where('referencia_id', $value['situacao'])->first()->nome;
             if($value['id_forma_pagamento']){
                 $data[$key]['forma_pagamento'] = FormaPagamento::where('id', $value['id_forma_pagamento'])->first()->nome;
             }
@@ -243,28 +224,8 @@ class OrdemServicosController extends Controller
         if($os->id_veiculo){
             $os['veiculo'] = Veiculos::where('id', $os->id_veiculo)->get();
         }
-        if (!$os->situacao) {
+        $os['nome_situacao'] = Situacao::where('referencia_id',$os->situacao)->first()->nome;
 
-           $os['nome_situacao']  = 'Aguardando Pagamento';
-        } elseif ($os->situacao == 1) {
-
-            $os['nome_situacao'] = 'Pago';
-        } elseif ($os->situacao == 2) {
-
-            $os['nome_situacao'] = 'Pago - serviço iniciado';
-        } elseif ($os->situacao == 3) {
-
-            $os['nome_situacao'] = 'Pago - Aguardando retirada do Cliente';
-        } elseif ($os->situacao == 4) {
-            $os['nome_situacao'] = 'Pago - Remarketing';
-        } elseif ($os->situacao == 5) {
-            $os['nome_situacao'] = 'Remarketing';
-        } elseif ($os->situacao == 6) {
-            $os['nome_situacao'] = 'Cancelado';
-        }
-        elseif ($os->situacao == 7) {
-            $os['nome_situacao'] = 'Orçamento';
-        }
         if($os->id_forma_pagamento){
             $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first()->nome;
         }
@@ -325,27 +286,8 @@ class OrdemServicosController extends Controller
             $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $cliente['celular_rj']);
             $nome_cliente = $cliente['razao_social'];
         }
-        if (!$data['situacao']) {
-            $situacao = 'Aguardando Pagamento';
-        } elseif ($data['situacao'] == 1) {
 
-            $situacao = 'Pago';
-        } elseif ($data['situacao'] == 2) {
-
-            $situacao = 'Pago - serviço iniciado';
-        } elseif ($data['situacao'] == 3) {
-
-            $situacao = 'Pago - Aguardando retirada do Cliente';
-        } elseif ($data['situacao'] == 4) {
-            $situacao = 'Pago - Remarketing';
-        } elseif ($data['situacao'] == 5) {
-            $situacao = 'Remarketing';
-        } elseif ($data['situacao'] == 6) {
-            $situacao = 'Cancelado';
-        }
-        elseif ($data['situacao'] == 7) {
-            $situacao = 'Orçamento';
-        }
+        $situacao = Situacao::where('referencia_id',$data['situacao'])->first()->nome;
         if($tipo == 'nova_ordem_servico'){
             $values = [
                 "0" => [

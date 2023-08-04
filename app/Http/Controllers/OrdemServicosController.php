@@ -53,8 +53,7 @@ class OrdemServicosController extends Controller
         $data['servicos']       = Servicos::where('user_id', $administrador->id)->get();
         $data['estabelecimento']       = $estabelecimento;
         $data['administrador']       = $administrador;
-
-        return view('agendamento', compact($data));
+       return view('agendamento')->with($data);
 
     }
     /**
@@ -307,7 +306,7 @@ class OrdemServicosController extends Controller
         foreach ($dados as $item) {
 
             $nomes .= " | " . $item->nome;
-            $total += ($item->valor);
+            $total += ($item->valor/100);
         }
         return array("nomes" => $nomes, "total" => $total);
     }

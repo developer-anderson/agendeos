@@ -56,7 +56,7 @@ class FluxoCaixaController extends Controller
         else{
             $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
         }
-
+        $post['valor'] = $post['valor']  * $post['quantidade']; 
         fluxo_caixa::create( $post);
         return response()->json(
             [
@@ -131,13 +131,13 @@ class FluxoCaixaController extends Controller
             $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
         }
 
-
+ $post['valor'] = $post['valor']  * $post['quantidade'];
         $fluxo_caixa = fluxo_caixa::find($fluxo_caixa);
 
         if (!$fluxo_caixa) {
             return [
                 "erro" => true,
-                "mensagem" => "Editado não encontrado!"
+                "mensagem" => "Transação  não encontrado!"
             ];
         }
 

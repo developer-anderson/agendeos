@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Usuarios;
 use App\Models\Veiculos;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use PagSeguro\Configuration\Configure;
 
@@ -136,35 +137,40 @@ class OrdemServicosController extends Controller
     public function store(Request $request)
     {
         //
-        $post = $request->all();
-        $os_servicos = $post['id_servico'];
+        try{
+            $post = $request->all();
+            $os_servicos = $post['id_servico'];
 
-        $post['id_servico'] = 0;
-        $post['inicio_os'] = $post['inicio_os'] . " " . $post['inicio_os_time'];
-        $post['previsao_os'] = $post['previsao_os'] . " " . $post['previsao_os_time'];
-        $os =  OrdemServicos::create($post);
-        $post['os_id'] = $os->id;
-        foreach ($os_servicos as $id_servico) {
-            $data = array(
-                "os_id"      => $os->id,
-                "id_servico" => $id_servico
-            );
-            ordem_servico_servico::create($data);
+            $post['id_servico'] = 0;
+            $post['inicio_os'] = $post['inicio_os'] . " " . $post['inicio_os_time'];
+            $post['previsao_os'] = $post['previsao_os'] . " " . $post['previsao_os_time'];
+            $os =  OrdemServicos::create($post);
+            $post['os_id'] = $os->id;
+            foreach ($os_servicos as $id_servico) {
+                $data = array(
+                    "os_id"      => $os->id,
+                    "id_servico" => $id_servico
+                );
+                ordem_servico_servico::create($data);
+            }
+
+            $post['id_servico'] = $os_servicos;
+            $this->addReceita($post);
+    /*
+            if ($post['remarketing']) {
+                $this->remarketing($post);
+            }*/
+            //$this->notifyClient($os->id);
+            return [
+                "erro" => false,
+                'id' =>$os->id,
+                'zap' => $this->notifyClient($os->id),
+                "mensagem" => "Ordem de Servicos com  sucesso!"
+            ];
+        }catch( Exception $e){
+            echo ($e->getMessage());
         }
 
-        $post['id_servico'] = $os_servicos;
-        $this->addReceita($post);
-
-        if ($post['remarketing']) {
-            $this->remarketing($post);
-        }
-        //$this->notifyClient($os->id);
-        return [
-            "erro" => false,
-            'id' =>$os->id,
-            'zap' => $this->notifyClient($os->id),
-            "mensagem" => "Ordem de Servicos com  sucesso!"
-        ];
     }
     public function remarketing($post)
     {

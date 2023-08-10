@@ -264,6 +264,7 @@ class OrdemServicosController extends Controller
         $data['data'] = date("Y-m-d");
         $data['tipo_id'] = 1;
         fluxo_caixa::create($data);
+        return true;
     }
     public function getServicosNotifyClint($dados)
     {

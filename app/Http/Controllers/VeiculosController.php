@@ -35,8 +35,7 @@ class VeiculosController extends Controller
             });
         }
 
-        $result = $veiculos->orderBy('id', 'desc')->get();
-
+              $result = $veiculos->orderBy('id', 'desc')->get();
 
         return response()->json($result, 200);
         return response()->json( $veiculos , 200);

@@ -23,7 +23,7 @@ use App\Http\Controllers\VeiculosController;
 use App\Http\Controllers\ServicosController;
 use App\Http\Controllers\OrdemServicosController;
 use App\Http\Controllers\FluxoCaixaController;
-
+use App\Http\Controllers\AgendamentoController;
 Route::get('agendamento/getEstabelecimento/{slug}', [OrdemServicosController::class, 'getEstabelecimento'])->name('getEstabelecimento');
 
 Route::permanentRedirect('/', 'https://site.agendos.com.br/');
@@ -103,4 +103,10 @@ Route::post('/reset-password', [App\Http\Controllers\PasswordResetController::cl
 Route::post('logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
 
-
+Route::get('/agendamentos/{id}/{filter?}', [AgendamentoController::class, 'getAll']);
+Route::post('/agendamentos/{agendamentoId}/adicionar-itens', [AgendamentoController::class, 'adicionarItens']);
+Route::post('/agendamentos', [AgendamentoController::class, 'store']);
+Route::get('/agendamentos/buscar/{id}/{agendamento?}', [AgendamentoController::class, 'show']);
+Route::put('/agendamentos/{agendamento}/{situacao_id}', [AgendamentoController::class, 'updateStatusAgendamento']);
+Route::put('/agendamentos/{id}', [AgendamentoController::class, 'update']);
+Route::delete('/agendamentos/{agendamento}', [AgendamentoController::class, 'destroy']);

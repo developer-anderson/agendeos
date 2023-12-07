@@ -11,4 +11,9 @@ class Veiculos extends Model
     protected $fillable = [
         'placa', 'marca', 'modelo', 'cor', 'id_cliente', 'observacoes'
     ];
+    protected $table = 'veiculos';
+    public function cliente()
+    {
+        return $this->belongsTo(Clientes::class, 'id_cliente');
+    }
 }

@@ -72,12 +72,13 @@ class VeiculosController extends Controller
      * @param  \App\Models\Veiculos  $veiculos
      * @return \Illuminate\Http\Response
      */
-    public function show(Veiculos $veiculos)
+    public function show($veiculos)
     {
         //
-        $registro = Veiculos::find($veiculos)->first();
+        $registro = Veiculos::where('veiculos.id', $veiculos)->leftJoin('clientes', 'clientes.id', '=', 'veiculos.id_cliente')->select('veiculos.*', 'clientes.nome_f', 'clientes.razao_social')->first();
+
         return response()->json(
-            $veiculos
+            $registro
         , 200);
     }
 

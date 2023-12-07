@@ -11,5 +11,5 @@ class Empresas extends Model
     protected $table = 'empresas';
     protected $fillable =
     ['razao_social', 'cnpj', 'situacao', 'plano_id', 'segmento_id',  'telefone',
-     'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'estado', 'cidade'];
+     'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'estado', 'cidade', 'use_terms'];
 }

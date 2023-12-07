@@ -76,7 +76,7 @@ class ServicosController extends Controller
      */
     public function show($id)
     {
-        $registro = Servicos::find($id)->first();
+        $registro = Servicos::where('id',$id)->first();
         return response()->json(
             $registro
         , 200);

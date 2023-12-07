@@ -89,12 +89,12 @@ class FuncionariosController extends Controller
      * @param  \App\Models\funcionarios  $funcionarios
      * @return \Illuminate\Http\Response
      */
-    public function show(funcionarios $funcionarios)
+    public function show($funcionarios)
     {
         //
-        $registro = funcionarios::find($funcionarios)->first();
+        $registro = funcionarios::where('id', $funcionarios)->first();
         return response()->json(
-            $funcionarios
+            $registro
         , 200);
     }
 

@@ -4,8 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Agendamento;
 use App\Models\AgendamentoItem;
+use App\Models\Empresas;
+use App\Models\OrdemServicos;
+use App\Models\Servicos;
+use App\Models\User;
+use App\Models\Usuarios;
+use Carbon\Carbon;
+use DateInterval;
+use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AgendamentoController extends Controller
 {
@@ -199,13 +209,88 @@ class AgendamentoController extends Controller
             "mensagem" => "Agendamento editado com sucesso!"
         ];
     }
-
+    public function getDiaSemana($dia){
+        $diasDaSemana = [
+            'sunday' => 'domingo',
+            'monday' => 'segunda',
+            'tuesday' => 'terca',
+            'wednesday' => 'quarta',
+            'thursday' => 'quinta',
+            'friday' => 'sexta',
+            'saturday' => 'sabado',
+        ];
+        return $diasDaSemana[$dia];
+    }
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Agendamento  $agendamento
      * @return \Illuminate\Http\Response
      */
+    public function getHorariosDisponiveis(Request $request, $user_id, $funcionario_id, $data)
+    {
+
+        $proprietario = Usuarios::where('id', $user_id)->first();
+        $empresa = Empresas::where('id',$proprietario->empresa_id)->first();
+        $carbonDate = Carbon::parse($data);
+        $diaSemana = $carbonDate->format('l');
+        $diaSemana = $this->getDiaSemana(strtolower($diaSemana));
+        $horarioInicio = new DateTime($empresa->{$diaSemana. '_horario_inicio'});
+        $horarioFim = new DateTime($empresa->{$diaSemana. '_horario_fim'});
+        $ultimo_horario = $horarioInicio;
+        if(!$empresa->{$diaSemana}){
+            return response()->json(['error' => true, 'message' => "Estabelecimento Fechado"]);
+        }
+        if(!$horarioInicio or !$horarioFim){
+            return response()->json(['error' => true, 'message' => "Estabelecimento não informou horário de funcionamento."]);
+        }
+        $idsServicos = $request->input('servicos');
+        $tempoTotal = DB::table('servicos')
+            ->whereIn('id', $idsServicos)
+            ->select(DB::raw('SEC_TO_TIME(SUM(TIME_TO_SEC(tempo_estimado))) as tempo_total'))
+            ->first();
+        $horarios = [];
+        $agenda_atual_funcionario = OrdemServicos::where("id_funcionario", $funcionario_id)
+            ->where("user_id", $user_id)
+            ->whereDate('inicio_os', '=', $data)
+            ->orderBy("inicio_os", "asc")
+            ->get();
+        $horaInicial = DateTime::createFromFormat('H:i:s', $tempoTotal->tempo_total);
+        $intervalo = $horaInicial->diff(new DateTime('00:00:00'));
+        $representacaoFormatada = 'PT' . $intervalo->format('%H') . 'H' . $intervalo->format('%I') . 'M';
+        $horasASomar = new DateInterval($representacaoFormatada);
+        $mediador = $ultimo_horario->format('H:i:s');
+        if(isset($agenda_atual_funcionario)){
+            foreach ($agenda_atual_funcionario as $agenda){
+                $horario = date("H:i", strtotime($agenda->inicio_os));
+                $horarios[$horario] = ["horario" => $horario, "disponivel" => 0];
+            }
+            while ($ultimo_horario < $horarioFim) {
+                $ultimo_horario->add($horasASomar);
+                $verificadorUm = date("Y-m-d H:i:s", strtotime($data." ".$mediador));
+                $verificadorDois = date("Y-m-d H:i:s", strtotime($data." ".$ultimo_horario->format("H:i:s")));
+                $ordensServicoExists = OrdemServicos::where('user_id', $user_id)
+                    ->where('id_funcionario', $funcionario_id)
+                    ->whereBetween('inicio_os', [$verificadorUm, $verificadorDois])
+                    ->exists();
+                if(!$ordensServicoExists ){
+                    $horarios[$ultimo_horario->format('H:i')] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
+                }
+                $mediador = $ultimo_horario->format("H:i:s");
+            }
+            ksort($horarios);
+        }
+        else{
+            while ($ultimo_horario < $horarioFim) {
+                $horarios[$ultimo_horario->format('H:i')] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
+                $ultimo_horario->add($horasASomar);
+            }
+        }
+        return $horarios;
+    }
+    public function compararHorarios($a, $b) {
+        return strtotime($a) - strtotime($b);
+    }
     public function destroy(Agendamento $agendamento)
     {
         $agendamento->delete();

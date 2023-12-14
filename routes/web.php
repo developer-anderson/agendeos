@@ -104,6 +104,7 @@ Route::post('logout', [App\Http\Controllers\LoginController::class, 'logout'])->
 
 
 Route::get('/agendamentos/{id}/{filter?}', [AgendamentoController::class, 'getAll']);
+Route::post('/agendamentos/agenda_funcionario/{id}/{funcionario_id}/{data}', [AgendamentoController::class, 'getHorariosDisponiveis']);
 Route::post('/agendamentos/{agendamentoId}/adicionar-itens', [AgendamentoController::class, 'adicionarItens']);
 Route::post('/agendamentos', [AgendamentoController::class, 'store']);
 Route::get('/agendamentos/buscar/{id}/{agendamento?}', [AgendamentoController::class, 'show']);

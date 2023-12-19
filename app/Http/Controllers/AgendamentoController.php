@@ -263,7 +263,7 @@ class AgendamentoController extends Controller
         if(isset($agenda_atual_funcionario)){
             foreach ($agenda_atual_funcionario as $agenda){
                 $horario = date("H:i", strtotime($agenda->inicio_os));
-                $horarios[$horario] = ["horario" => $horario, "disponivel" => 0];
+                $horarios[] = ["horario" => $horario, "disponivel" => 0];
             }
             while ($ultimo_horario < $horarioFim) {
                 $ultimo_horario->add($horasASomar);
@@ -274,7 +274,7 @@ class AgendamentoController extends Controller
                     ->whereBetween('inicio_os', [$verificadorUm, $verificadorDois])
                     ->exists();
                 if(!$ordensServicoExists ){
-                    $horarios[$ultimo_horario->format('H:i')] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
+                    $horarios[] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
                 }
                 $mediador = $ultimo_horario->format("H:i:s");
             }
@@ -282,7 +282,7 @@ class AgendamentoController extends Controller
         }
         else{
             while ($ultimo_horario < $horarioFim) {
-                $horarios[$ultimo_horario->format('H:i')] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
+                $horarios[] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
                 $ultimo_horario->add($horasASomar);
             }
         }

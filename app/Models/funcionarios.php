@@ -11,5 +11,5 @@ class funcionarios extends Model
     protected $fillable =
     ['nome', 'cpf', 'rg', 'email', 'telefone', 'celular', 'sexo',
      'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'estado', 'cidade', 'observacoes',
-     'comissao', 'user_id'];
+     'comissao', 'user_id', 'foto'];
 }

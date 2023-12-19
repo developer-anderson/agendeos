@@ -10,6 +10,8 @@ use App\Models\token;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
+
 class FuncionariosController extends Controller
 {
     /**
@@ -75,6 +77,14 @@ class FuncionariosController extends Controller
             )
         );
         whatsapp::sendMessage($vetor, token::token());
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $fileName);
+
+            $url = URL::asset('uploads/' . $fileName);
+            $post['foto'] = $url;
+        }
         $clientes = funcionarios::create( $post);
         return response()->json([
             "erro" => false,
@@ -127,7 +137,14 @@ class FuncionariosController extends Controller
                 "mensagem" => "funcionarios não encontrado!"
             ];
         }
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $fileName);
 
+            $url = URL::asset('uploads/' . $fileName);
+            $dados['foto'] = $url;
+        }
         $funcionarios->fill($dados);
         $funcionarios->save();
 

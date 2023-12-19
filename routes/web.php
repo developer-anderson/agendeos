@@ -24,6 +24,7 @@ use App\Http\Controllers\ServicosController;
 use App\Http\Controllers\OrdemServicosController;
 use App\Http\Controllers\FluxoCaixaController;
 use App\Http\Controllers\AgendamentoController;
+use App\Http\Controllers\UploadController;
 Route::get('agendamento/getEstabelecimento/{slug}', [OrdemServicosController::class, 'getEstabelecimento'])->name('getEstabelecimento');
 
 Route::permanentRedirect('/', 'https://site.agendos.com.br/');
@@ -71,7 +72,7 @@ Route::delete('os/destroy{os}', [OrdemServicosController::class, 'destroy']);
 Route::get('/politica-de-privacidade', function () {
     return view('politica-privacidade');
 });
-
+Route::post('/upload', [UploadController::class, 'upload']);
 Route::get('fluxo_caixa/getall/{id}/{inicio}/{fim}/{filter?}', [FluxoCaixaController::class, 'getall']);
 Route::get('fluxo_caixa/show/{fluxo_caixa}', [FluxoCaixaController::class, 'show']);
 Route::post('fluxo_caixa/insert', [FluxoCaixaController::class, 'store']);

@@ -62,13 +62,13 @@ class PlanosController extends Controller
      * @param  \App\Models\Planos  $Planos
      * @return \Illuminate\Http\Response
      */
-    public function show(Planos $Planos)
+    public function show($id)
     {
         //
-        $registro = Planos::where('id',$Planos)->first();
-        return response()->json(
-            $Planos
-        , 200);
+        $registro = Planos::where('id',$id)->first();
+        $registro->recursos = json_decode($registro->recursos, true);
+        $registro->descricao_items = PlanosDescricao::where('plano_id', $registro->id)->get();
+        return response()->json($registro, 200);
     }
 
     /**

@@ -27,15 +27,15 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            //$token = $user->createToken('API Token')->accessToken;
-            //$request->session()->regenerate();
+            $token = $user->createToken('api-token')->plainTextToken;
             $data = [];
             $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')
             ->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao', 'planos.recursos'])->first();
             $data = $vetor;
             $data['recursos'] = json_decode( $data['recursos'] , true);
             $data['receita'] = fluxo_caixa::getAllMoney(Auth::id());
-            $data['token'] =   csrf_token();
+            $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
+            $data['token'] =  $token ;
 
             return response()->json($data, 200);
         } else {

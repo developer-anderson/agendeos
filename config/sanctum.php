@@ -44,7 +44,7 @@ return [
     |
     */
 
-    'expiration' => null,
+    'expiration' => 60,
 
     /*
     |--------------------------------------------------------------------------
@@ -58,6 +58,7 @@ return [
     */
 
     'middleware' => [
+        'custom_sanctum' => \App\Http\Middleware\CustomEnsureFrontendRequestsAreStateful::class,
         'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
         'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
     ],

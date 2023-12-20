@@ -23,6 +23,6 @@ class PasswordResetMail extends Mailable
             ->with([
                 'token' => $this->token,
             ])
-            ->subject('Password Reset');
+            ->subject('Recuperação de senha');
     }
 }

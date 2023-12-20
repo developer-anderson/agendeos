@@ -29,3 +29,12 @@ Route::get('agendamento/getEstabelecimento/{slug}', [OrdemServicosController::cl
 
 Route::permanentRedirect('/', 'https://site.agendos.com.br/');
 
+Route::post('/cadastrar', [App\Http\Controllers\RegisterController::class, 'store'])->name('cadastrar');
+Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_recuperar_Senha');
+Route::post('/password/reset', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('password.reset.form');
+
+Route::post('/reset-password', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('trocar_senha');
+Route::post('logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
+Route::get('/politica-de-privacidade', function () {
+    return view('politica-privacidade');
+});

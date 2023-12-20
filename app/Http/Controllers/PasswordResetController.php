@@ -39,10 +39,10 @@ class PasswordResetController extends Controller
             'token' => $token,
             'created_at' => now()
         ]);
-        return response()->json(["error" => "false", 'token_acesso' => $token ,"msg" => "Informe o token para atualizar a senha"],200);
-        //Mail::to($user->email)->send(new PasswordResetMail($token));
+        //return response()->json(["error" => "false", 'token_acesso' => $token ,"msg" => "Informe o token para atualizar a senha"],200);
+        Mail::to($user->email)->send(new PasswordResetMail($token));
 
-        //return back()->with(['status' => 'We have emailed your password reset link!']); '', $request->
+        return response()->json(["error" => "false","msg" => "Informe o token enviado por e-mail"],200);
     }
     public function showResetPasswordForm(Request $request)
     {
@@ -58,7 +58,7 @@ class PasswordResetController extends Controller
         $token = PasswordReset::where('email', $request->email)->where('token', $request->token)->first();
         if (!$token) {
 
-            return response()->json(["error" => "true", "msg" => "Token inválido"],200);
+            return response()->json(["error" => "true", "msg" => "Token inválido"],401);
         }
         else{
             if($request->password <> $request->password_confirmation)

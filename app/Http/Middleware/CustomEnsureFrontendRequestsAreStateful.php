@@ -18,7 +18,7 @@ class CustomEnsureFrontendRequestsAreStateful
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->route()->getName() !== 'login' && !$request->bearerToken()) {
+        if (($request->route()->getName() !== 'login' ) && !$request->bearerToken()) {
             return response()->json(['error' => true, 'message' => 'Token de autenticação ausente ou inválido.'], 401);
         }
         $tokenExpiration = Auth::guard('web')->user()->token->expires_at ?? null;

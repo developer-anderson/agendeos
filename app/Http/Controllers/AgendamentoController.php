@@ -41,7 +41,7 @@ class AgendamentoController extends Controller
             });
         }
 
-        $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens')->orderBy('id', 'desc')->get();
+        $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens')->orderBy('id', 'desc')->paginate();
 
 
         return response()->json($result->load('cliente', 'situacao', 'formaPagamento', 'funcionario'), 200);

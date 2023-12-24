@@ -28,7 +28,7 @@ class EmpresasController extends Controller
             });
         }
 
-        $result = $query->orderBy('id', 'desc')->get();
+        $result = $query->orderBy('id', 'desc')->paginate();
 
         return response()->json($result, 200);
 

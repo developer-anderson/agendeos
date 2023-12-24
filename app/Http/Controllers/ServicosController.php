@@ -35,7 +35,7 @@ class ServicosController extends Controller
             });
         }
 
-        $result = $query->get();
+        $result = $query->paginate();
 
         return response()->json($result, 200);
 

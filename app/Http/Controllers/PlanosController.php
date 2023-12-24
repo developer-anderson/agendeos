@@ -30,7 +30,7 @@ class PlanosController extends Controller
             });
         }
 
-        $result = $query->get();
+        $result = $query->paginate();
         $data = [];
         foreach($result as $key => $item){
             $data[$key] = $item;

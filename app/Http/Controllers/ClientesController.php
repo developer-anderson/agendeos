@@ -30,7 +30,7 @@ class ClientesController extends Controller
             });
         }
 
-        $result = $query->orderBy('id', 'desc')->get();
+        $result = $query->orderBy('id', 'desc')->paginate();
 
         return response()->json($result, 200);
     }
@@ -53,7 +53,7 @@ class ClientesController extends Controller
             });
         }
 
-        $result =  $query->orderBy('id', 'desc')->get();
+        $result =  $query->orderBy('id', 'desc')->paginate();
 
         return response()->json($result, 200);
     }
@@ -71,7 +71,7 @@ class ClientesController extends Controller
                   return response()->json([
             "erro" => true,
             "mensagem" => "Já possui um cliente com o e-mail informado!",
-     
+
         ], 200);
         }
         if(isset($post['celular_f'])  and !empty($post['celular_f'])){

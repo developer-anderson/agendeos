@@ -18,7 +18,7 @@ class FluxoCaixaController extends Controller
         //
 
         return response()->json(
-            fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->get()
+            fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->paginate()
         , 200);
     }
 
@@ -56,7 +56,7 @@ class FluxoCaixaController extends Controller
         else{
             $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
         }
-        $post['valor'] = $post['valor']  * $post['quantidade']; 
+        $post['valor'] = $post['valor']  * $post['quantidade'];
         fluxo_caixa::create( $post);
         return response()->json(
             [

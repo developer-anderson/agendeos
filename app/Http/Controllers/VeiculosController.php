@@ -35,17 +35,15 @@ class VeiculosController extends Controller
             });
         }
 
-              $result = $veiculos->orderBy('id', 'desc')->get();
+              $result = $veiculos->orderBy('id', 'desc')->paginate();
 
         return response()->json($result, 200);
-        return response()->json( $veiculos , 200);
-
     }
 
     public function getallCliente($id)
     {
         //
-        $veiculos = DB::table('veiculos')->join('clientes', 'clientes.id', '=', 'veiculos.id_cliente')->where('id_cliente',$id)->select('veiculos.*', 'clientes.nome_f', 'clientes.razao_social')->get();
+        $veiculos = DB::table('veiculos')->join('clientes', 'clientes.id', '=', 'veiculos.id_cliente')->where('id_cliente',$id)->select('veiculos.*', 'clientes.nome_f', 'clientes.razao_social')->paginate();
         return response()->json( $veiculos , 200);
 
     }

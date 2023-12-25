@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Empresas;
+use App\Models\token;
+use App\Models\whatsapp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use App\Models\PasswordReset;
@@ -25,7 +28,7 @@ class PasswordResetController extends Controller
             'email' => 'required|email',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::query()->where('email', $request->email)->first();
 
         if (!$user) {
 
@@ -39,10 +42,52 @@ class PasswordResetController extends Controller
             'token' => $token,
             'created_at' => now()
         ]);
-        //return response()->json(["error" => "false", 'token_acesso' => $token ,"msg" => "Informe o token para atualizar a senha"],200);
-        Mail::to($user->email)->send(new PasswordResetMail($token));
-
-        return response()->json(["error" => "false","msg" => "Informe o token enviado por e-mail"],200);
+        $empresaVinculada = Empresas::query()->where("id", $user->empresa_id)->first();
+        if(!$empresaVinculada){
+            return response()->json(["error" => true, "message" => "Usuário nåo possui empresa vinculada"],401);
+        }
+        if(empty($empresaVinculada->telefone)){
+            return response()->json(["error" => true, "message" => "Usuário nåo possui Telefone Cadastro para envio do Token. Contate o Administrador!"],401);
+        }
+        $this->enviarToken($user, $token, $empresaVinculada);
+    }
+    public function enviarToken(User  $user, $token, Empresas $empresas)
+    {
+        $empresas->telefone = str_replace(array("(", ")", ".", "-"), "", $empresas->telefone);
+        $values = [
+            "0" => [
+                "type" => "text",
+                "text" => $user->name
+            ],
+            "1" => [
+                "type" => "text",
+                "text" => date("d/m/Y H:i")
+            ],
+            "2" => [
+                "type" => "text",
+                "text" => $empresas
+            ]
+        ];
+        $vetor = array(
+            "messaging_product" => "whatsapp",
+            "to"           => "55".$user->telefone,
+            "type"         => 'template',
+            "template"     => array(
+                "name"     => "token_senha",
+                "language" => array(
+                    "code" => "pt_BR",
+                    "policy" => "deterministic"
+                ),
+                "components"     =>
+                    array(
+                        array(
+                            "type"       => "body",
+                            "parameters" => $values
+                        )
+                    )
+            ),
+        );
+        return  whatsapp::sendMessage($vetor, token::token());
     }
     public function showResetPasswordForm(Request $request)
     {

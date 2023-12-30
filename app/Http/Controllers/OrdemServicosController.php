@@ -6,6 +6,7 @@ use App\Models\OrdemServicos;
 use App\Models\ordem_servico_servico;
 use App\Models\Empresas;
 use App\Models\fluxo_caixa;
+use App\Models\RetornoPagamento;
 use Illuminate\Http\Request;
 use App\Models\Servicos;
 use App\Models\Clientes;
@@ -557,5 +558,9 @@ $receita_cliente = DB::select("
             "mensagem" => "Serviço apagado com sucesso!"
         ];
         return  $response;
+    }
+    public function retornoPagamento(Request $request)
+    {
+        RetornoPagamento::query()->where("os_id", $request->reference_id)->update(["retorno" => $request->all()]);
     }
 }

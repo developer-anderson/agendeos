@@ -32,6 +32,7 @@ Route::permanentRedirect('/', 'https://site.agendos.com.br/');
 Route::post('/cadastrar', [App\Http\Controllers\RegisterController::class, 'store'])->name('cadastrarWeb');
 Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_recuperar_SenhaWeb');
 Route::post('/password/reset', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('password.reset.form');
+Route::post('/retorno_pagamento', [App\Http\Controllers\OrdemServicosController::class, 'retornoPagamento'])->name('retornoPagamento');
 
 Route::post('/reset-password', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('trocar_senhaWeb');
 Route::post('logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logoutWeb');

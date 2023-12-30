@@ -107,7 +107,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/agendamentos/{agendamento}', [AgendamentoController::class, 'destroy']);
 });
 Route::post('/login', [App\Http\Controllers\LoginController::class, 'login'])->name('login');
-Route::post('/retorno_pagamento', [App\Http\Controllers\OrdemServicosController::class, 'retornoPagamento'])->name('retornoPagamento');
 
 Route::post('/cadastrar', [App\Http\Controllers\RegisterController::class, 'store'])->name('cadastrar');
 Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_recuperar_Senha');

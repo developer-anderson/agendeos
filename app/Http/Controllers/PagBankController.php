@@ -169,5 +169,34 @@ class PagBankController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function criarPEdidoPagamentoComCartaoCredito($data)
+    {
+        $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
+        $url = $dadosPagBank->endpoint_producao.'subscriptions';
+        $apiKey = $dadosPagBank->token_producao;
+
+        // Substitua isso pelo seu vetor de dados
+
+        $client = new Client();
+        try {
+            $response = $client->request('POST', $url, [
+                'body' => json_encode($data),
+                'headers' => [
+                    'accept' => 'application/json',
+                    'content-type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $apiKey,
+                ],
+            ]);
+
+            $statusCode = $response->getStatusCode();
+            $body = $response->getBody()->getContents();
+
+            return response()->json(['statusCode' => $statusCode, 'response' => $body]);
+        } catch (\Exception $e) {
+            // Tratar erros, se necessário
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 
 }

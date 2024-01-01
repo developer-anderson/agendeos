@@ -561,6 +561,7 @@ $receita_cliente = DB::select("
     }
     public function retornoPagamento(Request $request)
     {
-        RetornoPagamento::query()->where("os_id", $request->reference_id)->update(["retorno" => $request->all()]);
+
+        RetornoPagamento::query()->create(["retorno" => $request->all(), "os_id" => $request->reference_id]);
     }
 }

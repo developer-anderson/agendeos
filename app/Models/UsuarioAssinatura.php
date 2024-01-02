@@ -16,6 +16,8 @@ class UsuarioAssinatura extends Model
         'data_assinatura',
         'data_renovacao',
         'usuario_pagamento_id',
+        'referencia_id',
+        'ativo'
     ];
 
     protected $dates = ['deleted_at'];

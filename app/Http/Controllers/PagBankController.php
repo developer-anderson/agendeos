@@ -45,46 +45,70 @@ class PagBankController extends Controller
             'birth_date' => $data["aniversario"],
             'billing_info' => [
                 [
-                    'type' => '',
                     'card' => [
                         'encrypted' => $data["cartaoHash"],
+                        "holder"=> [
+                            "name"=> $user->name,
+                              "birth_date"=> $data["aniversario"],
+                              "tax_id"=> str_replace(array(".", "-"), "", $data["cpf"])
+                        ],
                     ],
+                    "type"=> "CREDIT_CARD"
                 ],
             ],
         ];
-
         $client = new Client();
         try {
             $response = $client->request('POST', $url, [
                 'body' => json_encode($dados),
                 'headers' => [
-                    'accept' => 'application/json',
                     'content-type' => 'application/json',
                     'Authorization' => 'Bearer ' . $apiKey,
                 ],
             ]);
-
-            $statusCode = $response->getStatusCode();
             $body = $response->getBody()->getContents();
             $decodedResponse = json_decode($body, true);
-            if($statusCode >= 200 and $statusCode <= 299){
-                $user->update(["gateway_assinante_id" => $decodedResponse["id"] ]);
+            $user->gateway_assinante_id = $decodedResponse['id'];
+            $user->save();
+            return $decodedResponse['id'];
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function buscarAssinante($id)
+    {
+        $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
+        $url = $dadosPagBank->endpoint_producao.'customers/'.$id;
+        $apiKey = $dadosPagBank->token_producao;
 
-                return response()->json(['cliente_id' => $decodedResponse['id']], 200);
-
-            }
-            return response()->json(['error' => true], 500);
+        $client = new Client();
+        try {
+            $response = $client->request('GET', $url, [
+                'headers' => [
+                    'content-type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $apiKey,
+                ],
+            ]);
+            $body = $response->getBody()->getContents();
+            $decodedResponse = json_decode($body, true);
+            return $decodedResponse['id'];
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
     public function criarAssinatura(Request $request)
     {
-        $cliente_id = $this->criarAssinante($request->all());
+        $user = User::query()->where('id',$request->user_id)->first();
+        if(isset($user->gateway_assinante_id)){
+            $cliente_id = $this->buscarAssinante($user->gateway_assinante_id);
+        }else{
+            $cliente_id = $this->criarAssinante($request->all());
+        }
+
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
         $url = $dadosPagBank->endpoint_producao.'subscriptions';
         $apiKey = $dadosPagBank->token_producao;
-        $user = User::query()->where('id',$request->user_id)->first();
+
         $empresaUser = Empresas::query()->where("id", $user->empresa_id)->first();
         $planoAssinado = Planos::query()->where("id", $empresaUser->plano_id)->first();
         $assinatura = UsuarioAssinatura::query()->where("user_id", $user->id)
@@ -139,7 +163,6 @@ class PagBankController extends Controller
             $response = $client->request('POST', $url, [
                 'body' => json_encode($data),
                 'headers' => [
-                    'accept' => 'application/json',
                     'content-type' => 'application/json',
                     'Authorization' => 'Bearer ' . $apiKey,
                 ],
@@ -154,7 +177,8 @@ class PagBankController extends Controller
                 $dataAtualFormatada = $dataAtual->format('Y-m-d');
                 $dataFuturaFormatada = $dataFutura->format('Y-m-d');
                 $assinatura->update(["referencia_id" => $decodedResponse["id"], "ativo"  => 1,
-                    "data_assinatura" =>$dataAtualFormatada, "data_renovacao" => $dataFuturaFormatada  ]);
+                    "data_assinatura" =>date("Y-m-d"), "data_renovacao" => $dataFuturaFormatada  ]);
+                return response()->json(['error' => false, 'response' => $decodedResponse], 200);
 
             }
             return response()->json(['error' => true, 'status' => $statusCode], 500);
@@ -168,9 +192,6 @@ class PagBankController extends Controller
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
         $url = $dadosPagBank->endpoint_producao.'subscriptions';
         $apiKey = $dadosPagBank->token_producao;
-
-        // Substitua isso pelo seu vetor de dados
-
         $client = new Client();
         try {
             $response = $client->request('POST', $url, [

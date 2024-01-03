@@ -29,12 +29,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('agendamento/getEstabelecimento/{slug}', [OrdemServicosController::class, 'getEstabelecimento'])->name('getEstabelecimento');
-
     Route::permanentRedirect('/', 'https://site.agendos.com.br/');
-
-
     Route::get('clientes/getall{id}/{filter?}', [ClientesController::class, 'getall']);
-
     Route::get('clientes/getAllclientByType/{type}/{id}/{filter?}', [ClientesController::class, 'getAllclientByType']);
     Route::get('clientes/show/{id}', [ClientesController::class, 'exibirCliente'])->name('exibirCliente');
     Route::post('clientes/insert', [ClientesController::class, 'store']);
@@ -43,17 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('empresas/getall/{filter?}', [EmpresasController::class, 'getall']);
     Route::get('empresas/show/{empresas}', [EmpresasController::class, 'show']);
-    Route::post('empresas/insert', [EmpresasController::class, 'store']);
-    Route::put('empresas/update/{empresas}',[EmpresasController::class, 'update']);
+
     Route::delete('empresas/destroy{empresas}', [EmpresasController::class, 'destroy']);
-
-
-
-    Route::get('segmento/getall/{filter?}', [SegmentoController::class, 'getall']);
-    Route::get('segmento/show/{segmento}', [SegmentoController::class, 'show']);
-
-    Route::get('planos/getall/{filter?}', [PlanosController::class, 'getall']);
-    Route::get('planos/show/{planos}', [PlanosController::class, 'show']);
 
     Route::get('funcionarios/getall/{id}/{filter?}', [FuncionariosController::class, 'getall']);
 
@@ -95,23 +82,26 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('servicos/destroy{servicos}', [ServicosController::class, 'destroy']);
 
     Route::put('usuario/update/{usuario}',[UsuariosController::class, 'atualizarPerfil'])->name('atualizarPerfil');
-
-
-    Route::get('/agendamentos/{id}/{filter?}', [AgendamentoController::class, 'getAll']);
     Route::post('/agendamentos/agenda_funcionario/{id}/{funcionario_id}/{data}', [AgendamentoController::class, 'getHorariosDisponiveis']);
     Route::post('/agendamentos/{agendamentoId}/adicionar-itens', [AgendamentoController::class, 'adicionarItens']);
     Route::post('/agendamentos', [AgendamentoController::class, 'store']);
-    Route::get('/agendamentos/buscar/{id}/{agendamento?}', [AgendamentoController::class, 'show']);
+
     Route::put('/agendamentos/{agendamento}/{situacao_id}', [AgendamentoController::class, 'updateStatusAgendamento']);
     Route::put('/agendamentos/{id}', [AgendamentoController::class, 'update']);
     Route::delete('/agendamentos/{agendamento}', [AgendamentoController::class, 'destroy']);
 });
+Route::get('/agendamentos/{id}/{filter?}', [AgendamentoController::class, 'getAll'])->name('agendamentosGetAll');
+Route::get('planos/getall/{filter?}', [PlanosController::class, 'getall'])->name('planosGetAll');
+Route::get('planos/show/{planos}', [PlanosController::class, 'show'])->name('planosShow');
+Route::get('/agendamentos/buscar/{id}/{agendamento?}', [AgendamentoController::class, 'show'])->name('agendamentoShow');
 Route::post('/login', [App\Http\Controllers\LoginController::class, 'login'])->name('login');
-
+Route::post('empresas/insert', [EmpresasController::class, 'store'])->name('empresacriar');
+Route::put('empresas/update/{empresas}',[EmpresasController::class, 'update'])->name('empresaatualizar');
 Route::post('/cadastrar', [App\Http\Controllers\RegisterController::class, 'store'])->name('cadastrar');
 Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_recuperar_Senha');
 Route::post('/password/reset', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('password.reset.resetPassword');
-
+Route::get('segmento/getall/{filter?}', [SegmentoController::class, 'getall'])->name('segmentoAll');
+Route::get('segmento/show/{segmento}', [SegmentoController::class, 'show'])->name('segmentoShow');
 Route::post('/reset-password', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('trocar_senha');
 Route::post('logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 Route::get('/politica-de-privacidade', function () {

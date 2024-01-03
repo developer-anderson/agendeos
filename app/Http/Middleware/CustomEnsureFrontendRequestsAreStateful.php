@@ -18,13 +18,19 @@ class CustomEnsureFrontendRequestsAreStateful
      */
     public function handle(Request $request, Closure $next)
     {
-        if (($request->route()->getName() !== 'login' or $request->route()->getName() !== 'retornoPagamento' ) && !$request->bearerToken()) {
+        $allowedRoutesWithoutToken = ['login', 'retornoPagamento', 'planosGetAll', 'agendamentosGetAll', 'planosShow', 'agendamentoShow',
+            'empresacriar', 'empresaatualizar', 'cadastrar', 'token_recuperar_Senha', 'password.reset.resetPassword', 'segmentoAll', 'segmentoShow', 'trocar_senha'];
+        if (!in_array($request->route()->getName(), $allowedRoutesWithoutToken) && !$request->bearerToken()) {
             return response()->json(['error' => true, 'message' => 'Token de autenticação ausente ou inválido.'], 401);
         }
-        $tokenExpiration = Auth::guard('web')->user()->token->expires_at ?? null;
-        if ($tokenExpiration && now()->gt($tokenExpiration)) {
-            return response()->json(['error' => true, 'message' => 'Token expirado.'], 401);
+
+        if ($request->bearerToken()) {
+            $tokenExpiration = Auth::guard('web')->user()->token->expires_at ?? null;
+            if ($tokenExpiration && now()->gt($tokenExpiration)) {
+                return response()->json(['error' => true, 'message' => 'Token expirado.'], 401);
+            }
         }
+
         return $next($request);
     }
 }

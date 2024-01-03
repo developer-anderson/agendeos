@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Empresas;
 use App\Models\GatewayPagamento;
 use App\Models\Planos;
+use App\Models\User;
 use App\Models\UsuarioAssinatura;
 use Illuminate\Support\Carbon;
 use GuzzleHttp\Client;
@@ -17,7 +18,7 @@ class PagBankController extends Controller
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
         $url = $dadosPagBank->endpoint_producao.'customers';
         $apiKey = $dadosPagBank->token_producao;
-        $user = Auth::user();
+        $user = User::query()->where('id', $data['user_id'])->first();
         $empresaUser = Empresas::query()->where("id", $user->empresa_id)->first();
         $dados = [
             'address' => [
@@ -83,7 +84,7 @@ class PagBankController extends Controller
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
         $url = $dadosPagBank->endpoint_producao.'subscriptions';
         $apiKey = $dadosPagBank->token_producao;
-        $user = Auth::user();
+        $user = User::query()->where('id',$request->user_id)->first();
         $empresaUser = Empresas::query()->where("id", $user->empresa_id)->first();
         $planoAssinado = Planos::query()->where("id", $empresaUser->plano_id)->first();
         $assinatura = UsuarioAssinatura::query()->where("user_id", $user->id)
@@ -93,50 +94,50 @@ class PagBankController extends Controller
         if(!$assinatura){
             $assinatura = UsuarioAssinatura::create(["plano_id" => $planoAssinado->id, "user_id" => $user->id, "ativo" => 0, "data_assinatura" => date("Y-m-d")]);
         }
-        $dados = [
-            'plan' => [
-                'id' => $planoAssinado->gateway_plano_id
-            ],
-            'customer' => [
+        $data = array(
+            "plan" => array(
+                "id" => $planoAssinado->gateway_plano_id
+            ),
+            "customer" => array(
                 "id" => $cliente_id,
-                'billing_info' => [
-                    [
-                        'card' => [
-                            'holder' => [
-                                'phone' => [
+                "billing_info" => array(
+                    array(
+                        "card" => array(
+                            "holder" => array(
+                                "phone" => array(
                                     'country' => "55",
                                     'area' => $request->ddd,
                                     'number' => $request->telefone
-                                ],
+                                ),
                                 'name' => $request->nome_titular,
                                 'birth_date' => $request->aniversario,
                                 'tax_id' => str_replace(array(".", "-"), "", $request->cpf)
-                            ],
-                        ],
-                        'type' => 'CREDIT_CARD'
-                    ]
-                ],
-            ],
-            'amount' => [
-                'currency' => 'BRL',
-                'value' => $planoAssinado->valor
-            ],
-
-            'reference_id' => $assinatura->id,
-            'payment_method' => [
-                [
-                    'type' => 'CREDIT_CARD',
-                    'card' => [
-                        'security_code' => $request->cvv
-                    ]
-                ]
-            ],
-            'pro_rata' => false
-        ];
+                            ),
+                            "encrypted" => $request->cartaoHash
+                        ),
+                        "type" => "CREDIT_CARD"
+                    )
+                )
+            ),
+            "amount" => array(
+                "currency" => "BRL",
+                "value" => $planoAssinado->valor
+            ),
+            "reference_id" => $assinatura->id,
+            "payment_method" => array(
+                array(
+                    "type" => "CREDIT_CARD",
+                    "card" => array(
+                        "security_code" => $request->cvv
+                    )
+                )
+            ),
+            "pro_rata" => false
+        );
         $client = new Client();
         try {
             $response = $client->request('POST', $url, [
-                'body' => json_encode($dados),
+                'body' => json_encode($data),
                 'headers' => [
                     'accept' => 'application/json',
                     'content-type' => 'application/json',

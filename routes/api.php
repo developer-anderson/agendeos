@@ -95,6 +95,7 @@ Route::get('planos/getall/{filter?}', [PlanosController::class, 'getall'])->name
 Route::get('planos/show/{planos}', [PlanosController::class, 'show'])->name('planosShow');
 Route::get('/agendamentos/buscar/{id}/{agendamento?}', [AgendamentoController::class, 'show'])->name('agendamentoShow');
 Route::post('/login', [App\Http\Controllers\LoginController::class, 'login'])->name('login');
+Route::post('/assinatura', [App\Http\Controllers\PagBankController::class, 'criarAssinatura'])->name('criarAssinatura');
 Route::post('empresas/insert', [EmpresasController::class, 'store'])->name('empresacriar');
 Route::put('empresas/update/{empresas}',[EmpresasController::class, 'update'])->name('empresaatualizar');
 Route::post('/cadastrar', [App\Http\Controllers\RegisterController::class, 'store'])->name('cadastrar');

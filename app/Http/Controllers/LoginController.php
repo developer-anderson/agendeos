@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UsuarioAssinatura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -35,6 +36,7 @@ class LoginController extends Controller
             $data['recursos'] = json_decode( $data['recursos'] , true);
             $data['receita'] = fluxo_caixa::getAllMoney(Auth::id());
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
+            $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
             $data['token'] =  $token ;
 
             return response()->json($data, 200);

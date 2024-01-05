@@ -7,6 +7,7 @@ use App\Models\ordem_servico_servico;
 use App\Models\Empresas;
 use App\Models\fluxo_caixa;
 use App\Models\RetornoPagamento;
+use App\Models\UsuarioAssinatura;
 use Illuminate\Http\Request;
 use App\Models\Servicos;
 use App\Models\Clientes;
@@ -561,7 +562,22 @@ $receita_cliente = DB::select("
     }
     public function retornoPagamento(Request $request)
     {
-
+        $dataAtual = Carbon::now();
+        $dataFutura = $dataAtual->addDays(30);
+        $dataAtualFormatada = $dataAtual->format('Y-m-d');
+        $dataFuturaFormatada = $dataFutura->format('Y-m-d');
+        $dados = $request->all();
+        if(str_contains($dados["event"], 'subscription')){
+            $assinatura = UsuarioAssinatura::query()->where("id", $dados["resource"]["reference_id"])->first();
+            if($dados["resource"]["current_invoice"]["payments"]["status"] == "DENIED"){
+                $assinatura->ativo = false;
+            }
+            else{
+                $assinatura->ativo = true;
+                $assinatura->data_renovacao = $dataFuturaFormatada;
+            }
+            $assinatura->save();
+        }
         RetornoPagamento::query()->create(["retorno" => $request->all(), "os_id" => $request->reference_id]);
     }
 }

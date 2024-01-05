@@ -72,7 +72,7 @@ class PagBankController extends Controller
             $user->save();
             return $decodedResponse['id'];
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage(), "status" => 500], 500);
         }
     }
     public function buscarAssinante($id)
@@ -99,12 +99,14 @@ class PagBankController extends Controller
     public function criarAssinatura(Request $request)
     {
         $user = User::query()->where('id',$request->user_id)->first();
-        if(isset($user->gateway_assinante_id)){
+
+        if(isset($user->gateway_assinante_id) and !empty($user->gateway_assinante_id)){
             $cliente_id = $this->buscarAssinante($user->gateway_assinante_id);
         }else{
             $cliente_id = $this->criarAssinante($request->all());
         }
-
+        if(isset($cliente_id->original))
+            return response()->json($cliente_id->original, 500);
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
         $url = $dadosPagBank->endpoint_producao.'subscriptions';
         $apiKey = $dadosPagBank->token_producao;

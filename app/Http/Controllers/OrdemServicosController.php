@@ -578,6 +578,6 @@ $receita_cliente = DB::select("
             }
             $assinatura->save();
         }
-        RetornoPagamento::query()->create(["retorno" => $request->all(), "os_id" => $request->reference_id]);
+        RetornoPagamento::query()->create(["retorno" => $request->all()]);
     }
 }

@@ -18,7 +18,7 @@ class FluxoCaixaController extends Controller
         //
 
         return response()->json(
-            fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->get()
+            fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->orderBy('id', 'DESC')->get()
         , 200);
     }
 

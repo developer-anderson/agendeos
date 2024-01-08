@@ -32,7 +32,7 @@ class ServicosController extends Controller
                 $q->where('id', 'like', '%'.$filter.'%')
                     ->orWhere('nome', 'like', '%'.$filter.'%')
                     ->orWhere('tempo_estimado', 'like', '%'.$filter.'%')
-                    ->orWhere('situacao', 'like', '%'.$filter.'%');
+                    ->orWhere('valor', 'like', '%'.$filter.'%');
             });
         }
 

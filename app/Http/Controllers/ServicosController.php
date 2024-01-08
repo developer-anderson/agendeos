@@ -29,8 +29,7 @@ class ServicosController extends Controller
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {
-                $q->where('segmento', 'like', '%'.$filter.'%')
-                    ->orWhere('id', 'like', '%'.$filter.'%')
+                $q->where('id', 'like', '%'.$filter.'%')
                     ->orWhere('nome', 'like', '%'.$filter.'%')
                     ->orWhere('tempo_estimado', 'like', '%'.$filter.'%')
                     ->orWhere('situacao', 'like', '%'.$filter.'%');

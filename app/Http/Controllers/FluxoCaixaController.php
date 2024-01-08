@@ -17,9 +17,18 @@ class FluxoCaixaController extends Controller
     {
         //
 
+       $registros =   fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->orderBy('id', 'DESC')->get();
+       foreach ($registros as $registro){
+           $registro->nome_situacao = Situacao::where('referencia_id',$registro->situacao)->first()->nome;
+           if($registro->pagamento_id){
+               $registro->forma_pagamento = FormaPagamento::where('id', $registro->pagamento_id)->first()->nome;
+           }
+       }
         return response()->json(
-            fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->orderBy('id', 'DESC')->get()
+            $registros
         , 200);
+
+
     }
 
     /**

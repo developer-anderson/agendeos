@@ -19,7 +19,7 @@ class CustomEnsureFrontendRequestsAreStateful
     public function handle(Request $request, Closure $next)
     {
         $allowedRoutesWithoutToken = ['login', 'retornoPagamento', 'planosGetAll', 'agendamentosGetAll', 'planosShow', 'agendamentoShow',
-            'empresacriar', 'empresaatualizar', 'cadastrar', 'token_recuperar_Senha', 'password.reset.resetPassword', 'segmentoAll', 'segmentoShow', 'trocar_senha', 'criarAssinatura'];
+            'empresacriar', 'empresaatualizar', 'cadastrar', 'token_senha', 'password.reset.resetPassword', 'segmentoAll', 'segmentoShow', 'trocar_senha', 'criarAssinatura'];
         if (!in_array($request->route()->getName(), $allowedRoutesWithoutToken) && !$request->bearerToken()) {
             return response()->json(['error' => true, 'message' => 'Token de autenticação ausente ou inválido.'], 401);
         }

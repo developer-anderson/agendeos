@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/agendamentos/agenda_funcionario/{id}/{funcionario_id}/{data}', [AgendamentoController::class, 'getHorariosDisponiveis']);
     Route::post('/agendamentos/{agendamentoId}/adicionar-itens', [AgendamentoController::class, 'adicionarItens']);
     Route::post('/agendamentos', [AgendamentoController::class, 'store']);
+    Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_senha');
 
     Route::put('/agendamentos/{agendamento}/{situacao_id}', [AgendamentoController::class, 'updateStatusAgendamento']);
     Route::put('/agendamentos/{id}', [AgendamentoController::class, 'update']);
@@ -99,7 +100,6 @@ Route::post('/assinatura', [App\Http\Controllers\PagBankController::class, 'cria
 Route::post('empresas/insert', [EmpresasController::class, 'store'])->name('empresacriar');
 Route::put('empresas/update/{empresas}',[EmpresasController::class, 'update'])->name('empresaatualizar');
 Route::post('/cadastrar', [App\Http\Controllers\RegisterController::class, 'store'])->name('cadastrar');
-Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_senha');
 Route::post('/password/reset', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('password.reset.resetPassword');
 Route::get('segmento/getall/{filter?}', [SegmentoController::class, 'getall'])->name('segmentoAll');
 Route::get('segmento/show/{segmento}', [SegmentoController::class, 'show'])->name('segmentoShow');

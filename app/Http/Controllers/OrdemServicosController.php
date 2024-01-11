@@ -72,7 +72,6 @@ class OrdemServicosController extends Controller
     public function getAll($id, $incio, $fim = null, $funcionario_id = null)
     {
         $data = array();
-        //
         $query = DB::table('ordem_servicos')->where('ordem_servicos.user_id', $id);
         if($fim){
             $query->where('inicio_os', '>=', $incio . " 00:00:00")
@@ -86,7 +85,8 @@ class OrdemServicosController extends Controller
                 ->whereDate('previsao_os', '=', $incio . " 23:59:59")
                 ->where('ordem_servicos.user_id', $id);
         }
-        if(isset($funcionario_id)){
+        if($funcionario_id){
+
             $query->where('ordem_servicos.id_funcionario', $funcionario_id);
         }
         $os = $query->orderBy('id', 'desc')->get();

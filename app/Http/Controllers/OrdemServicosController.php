@@ -69,16 +69,25 @@ class OrdemServicosController extends Controller
     {
         return response()->json(ordem_servico_servico::where('os_id', $os_id)->get(), 200);
     }
-    public function getAll($id, $incio, $fim = null, $filter = null)
+    public function getAll($id, $incio, $fim = null, $funcionario_id = null)
     {
         $data = array();
         //
         $query = DB::table('ordem_servicos')->where('ordem_servicos.user_id', $id);
         if($fim){
-            $query->where('inicio_os', '>=', $incio . " 00:00:00")->where('inicio_os', '<=', $fim . " 23:59:59")->orWhere('previsao_os', '>=', $incio . " 00:00:00")->where('previsao_os', '<=', $fim . " 23:59:59")->where('ordem_servicos.user_id', $id);
+            $query->where('inicio_os', '>=', $incio . " 00:00:00")
+                ->where('inicio_os', '<=', $fim . " 23:59:59")
+                ->orWhere('previsao_os', '>=', $incio . " 00:00:00")
+                ->where('previsao_os', '<=', $fim . " 23:59:59")
+                ->where('ordem_servicos.user_id', $id);
         }
         else{
-            $query->whereDate('inicio_os', '=', $incio . " 00:00:00")->whereDate('previsao_os', '=', $incio . " 23:59:59")->where('ordem_servicos.user_id', $id);
+            $query->whereDate('inicio_os', '=', $incio . " 00:00:00")
+                ->whereDate('previsao_os', '=', $incio . " 23:59:59")
+                ->where('ordem_servicos.user_id', $id);
+        }
+        if(isset($funcionario_id)){
+            $query->where('ordem_servicos.id_funcionario', $funcionario_id);
         }
         $os = $query->orderBy('id', 'desc')->get();
 

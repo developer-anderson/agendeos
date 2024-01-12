@@ -112,7 +112,7 @@ class OrdemServicosController extends Controller
                 $data[$key]['veiculo'] = Veiculos::where('id', $value['id_veiculo'])->first();
             }
 
-            $data[$key]['situacao'] = Situacao::where('referencia_id', $value['situacao'])->first();
+            $data[$key]['situacao'] = Situacao::where('referencia_id', $value['situacao'])->select("referencia_id as id", "nome")->first();
             if($value['id_forma_pagamento']){
                 $data[$key]['forma_pagamento'] = FormaPagamento::where('id', $value['id_forma_pagamento'])->first();
             }

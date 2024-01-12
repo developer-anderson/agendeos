@@ -86,7 +86,6 @@ class OrdemServicosController extends Controller
                 ->where('ordem_servicos.user_id', $id);
         }
         if($funcionario_id){
-
             $query->where('ordem_servicos.id_funcionario', $funcionario_id);
         }
         $os = $query->orderBy('id', 'desc')->get();
@@ -113,9 +112,9 @@ class OrdemServicosController extends Controller
                 $data[$key]['veiculo'] = Veiculos::where('id', $value['id_veiculo'])->first();
             }
 
-            $data[$key]['nome_situacao'] = Situacao::where('referencia_id', $value['situacao'])->first()->nome;
+            $data[$key]['situacao'] = Situacao::where('referencia_id', $value['situacao'])->first();
             if($value['id_forma_pagamento']){
-                $data[$key]['forma_pagamento'] = FormaPagamento::where('id', $value['id_forma_pagamento'])->first()->nome;
+                $data[$key]['forma_pagamento'] = FormaPagamento::where('id', $value['id_forma_pagamento'])->first();
             }
             $inicio_os = explode(" ",  $value["inicio_os"]);
             $previsao_os = explode(" ",  $value["previsao_os"]);
@@ -241,10 +240,10 @@ class OrdemServicosController extends Controller
         if($os->id_veiculo){
             $os['veiculo'] = Veiculos::where('id', $os->id_veiculo)->get();
         }
-        $os['nome_situacao'] = Situacao::where('referencia_id',$os->situacao)->first()->nome;
+        $os['situacao'] = Situacao::where('referencia_id',$os->situacao)->first();
 
         if($os->id_forma_pagamento){
-            $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first()->nome;
+            $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first();
         }
         if($tipo){
             return $os;

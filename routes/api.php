@@ -91,7 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/agendamentos/{agendamento}', [AgendamentoController::class, 'destroy']);
 });
 Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_senha');
-Route::post('/agendamentos/agenda_funcionario/{id}/{funcionario_id}/{data}', [AgendamentoController::class, 'getHorariosDisponiveis']);
+Route::post('/agendamentos/agenda_funcionario/{id}/{funcionario_id}/{data}', [AgendamentoController::class, 'getHorariosDisponiveis'])->name("getHorariosDisponiveis");
 Route::get('/agendamentos/{id}/{filter?}', [AgendamentoController::class, 'getAll'])->name('agendamentosGetAll');
 Route::get('planos/getall/{filter?}', [PlanosController::class, 'getall'])->name('planosGetAll');
 Route::get('planos/show/{planos}', [PlanosController::class, 'show'])->name('planosShow');

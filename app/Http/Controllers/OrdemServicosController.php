@@ -240,7 +240,7 @@ class OrdemServicosController extends Controller
         if($os->id_veiculo){
             $os['veiculo'] = Veiculos::where('id', $os->id_veiculo)->get();
         }
-        $os['situacao'] = Situacao::where('referencia_id',$os->situacao)->first();
+        $os['situacao'] = Situacao::where('referencia_id',$os->situacao)->select("referencia_id as id", "nome")->first();
 
         if($os->id_forma_pagamento){
             $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first();

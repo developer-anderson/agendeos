@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Empresas;
 use App\Models\UsuarioAssinatura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +29,8 @@ class RegisterController extends Controller
         {
             $data['password'] = bcrypt( $data['password']);
             $user = User::create($data);
+            $Empresas = Empresas::create(["razao_social" => $data["name"]]);
+            $user->empresa_id = $Empresas->id;
             Auth::attempt(['email' => $request->email, 'password' => $request->password]);
             $data = [];
             $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')

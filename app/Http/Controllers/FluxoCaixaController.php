@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Clientes;
 use App\Models\fluxo_caixa;
 use App\Models\OrdemServicos;
+use App\Models\Tipo;
 use Illuminate\Http\Request;
 use App\Models\FormaPagamento;
 use App\Models\Situacao;
@@ -27,6 +28,7 @@ class FluxoCaixaController extends Controller
            }
            $registro->cliente = Clientes::where('id', $registro->cliente_id)->first();
            $registro->os = OrdemServicos::where('id', $registro->os_id)->first();
+           $registro->tipo = Tipo::where('id', $registro->tipo_id)->first();
        }
         return response()->json(
             $registros
@@ -96,6 +98,7 @@ class FluxoCaixaController extends Controller
         }
         $fluxo_caixa['cliente'] = Clientes::where('id', $fluxo_caixa->cliente_id)->first();
         $fluxo_caixa['os'] = OrdemServicos::where('id', $fluxo_caixa->os_id)->first();
+        $fluxo_caixa['tipo'] = Tipo::where('id', $fluxo_caixa->tipo_id)->first();
         if(!$fluxo_caixa){
             return response()->json(
                 [

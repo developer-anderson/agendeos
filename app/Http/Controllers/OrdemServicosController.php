@@ -150,7 +150,16 @@ class OrdemServicosController extends Controller
         try{
             $post = $request->all();
             $os_servicos = $post['id_servico'];
-
+            if(isset($post["validar"])){
+                $cliente = Clientes::where('email', $post['email'])->first();
+                if($cliente and !empty($post['email'])){
+                    $post["id_cliente"] = $cliente->id;
+                }
+                else{
+                    $cliente = Clientes::create(["nome_f" => $post["nome"], "email_f" =>$post["email"], "telefone_f" =>$post["telefone"], "celular_f" =>$post["telefone"] ]);
+                    $post["id_cliente"] = $cliente->id;
+                }
+            }
             $post['id_servico'] = 0;
             $post['inicio_os'] = $post['inicio_os'] . " " . $post['inicio_os_time'];
             $post['previsao_os'] = $post['previsao_os'] . " " . $post['previsao_os_time'];

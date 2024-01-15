@@ -193,7 +193,7 @@ class OrdemServicosController extends Controller
                 "mensagem" => "Ordem de Servicos com  sucesso!"
             ];
         }catch( Exception $e){
-            echo ($e->getMessage());
+            echo ($e->getMessage()." linha ". $e->getLine(). " arquivo ". $e->getFile());
         }
 
     }

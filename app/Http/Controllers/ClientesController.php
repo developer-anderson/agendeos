@@ -26,6 +26,10 @@ class ClientesController extends Controller
             $query->where(function ($q) use ($filter) {
                 $q->where('email', 'like', '%'.$filter.'%')
                     ->orWhere('cpf', 'like', '%'.$filter.'%')
+                    ->orWhere('telefone_f', 'like', '%'.$filter.'%')
+                    ->orWhere('celular_f', 'like', '%'.$filter.'%')
+                    ->orWhere('telefone_j', 'like', '%'.$filter.'%')
+                    ->orWhere('celular_j', 'like', '%'.$filter.'%')
                     ->orWhere('name', 'like', '%'.$filter.'%');
             });
         }

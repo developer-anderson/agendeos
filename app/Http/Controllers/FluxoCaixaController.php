@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clientes;
 use App\Models\fluxo_caixa;
+use App\Models\OrdemServicos;
+use App\Models\Tipo;
 use Illuminate\Http\Request;
 use App\Models\FormaPagamento;
 use App\Models\Situacao;
@@ -19,10 +22,13 @@ class FluxoCaixaController extends Controller
 
        $registros =   fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->orderBy('id', 'DESC')->get();
        foreach ($registros as $registro){
-           $registro->nome_situacao = Situacao::where('referencia_id',$registro->situacao)->first()->nome;
+           $registro->situacao = Situacao::where('referencia_id',$registro->situacao)->select("referencia_id as id", "nome")->first();
            if($registro->pagamento_id){
-               $registro->forma_pagamento = FormaPagamento::where('id', $registro->pagamento_id)->first()->nome;
+               $registro->forma_pagamento = FormaPagamento::where('id', $registro->pagamento_id)->first();
            }
+           $registro->cliente = Clientes::where('id', $registro->cliente_id)->first();
+           $registro->os = OrdemServicos::where('id', $registro->os_id)->first();
+           $registro->tipo = Tipo::where('id', $registro->tipo_id)->first();
        }
         return response()->json(
             $registros
@@ -86,10 +92,13 @@ class FluxoCaixaController extends Controller
     {
         //
         $fluxo_caixa = fluxo_caixa::where('id',$fluxo_caixa)->first();
-        $fluxo_caixa['nome_situacao'] = Situacao::where('referencia_id',$fluxo_caixa->situacao)->first()->nome;
+        $fluxo_caixa['situacao'] = Situacao::where('referencia_id',$fluxo_caixa->situacao)->select("referencia_id as id", "nome")->first();
         if($fluxo_caixa->pagamento_id){
-            $fluxo_caixa['forma_pagamento'] = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first()->nome;
+            $fluxo_caixa['forma_pagamento'] = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first();
         }
+        $fluxo_caixa['cliente'] = Clientes::where('id', $fluxo_caixa->cliente_id)->first();
+        $fluxo_caixa['os'] = OrdemServicos::where('id', $fluxo_caixa->os_id)->first();
+        $fluxo_caixa['tipo'] = Tipo::where('id', $fluxo_caixa->tipo_id)->first();
         if(!$fluxo_caixa){
             return response()->json(
                 [
@@ -140,7 +149,7 @@ class FluxoCaixaController extends Controller
             $post['desconto'] = str_replace(",", ".",   $post['desconto'] );
         }
 
- $post['valor'] = $post['valor']  * $post['quantidade'];
+        $post['valor'] = $post['valor']  * $post['quantidade'];
         $fluxo_caixa = fluxo_caixa::find($fluxo_caixa);
 
         if (!$fluxo_caixa) {

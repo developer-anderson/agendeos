@@ -151,7 +151,7 @@ class OrdemServicosController extends Controller
             $post = $request->all();
             $os_servicos = $post['id_servico'];
             if(isset($post["validar"])){
-                $cliente = Clientes::where('email', $post['email'])->first();
+                $cliente = Clientes::where('email_f', $post['email'])->first();
                 if($cliente and !empty($post['email'])){
                     $post["id_cliente"] = $cliente->id;
                 }

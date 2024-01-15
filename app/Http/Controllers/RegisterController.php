@@ -31,6 +31,7 @@ class RegisterController extends Controller
             $user = User::create($data);
             $Empresas = Empresas::create(["razao_social" => $data["name"]]);
             $user->empresa_id = $Empresas->id;
+            $user->save();
             Auth::attempt(['email' => $request->email, 'password' => $request->password]);
             $data = [];
             $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')

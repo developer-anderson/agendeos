@@ -17,6 +17,18 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
+    public function criarEmpresa(User $user): Empresas
+    {
+        $empresas = Empresas::create(["razao_social" => $user->name]);
+        return $empresas;
+    }
+
+    public function vincularEmpresaUsuario( Empresas $empresas, User $user): void
+    {
+        $user->empresa_id = $empresas->id;
+        $user->save();
+    }
+
     public function store(Request $request)
     {
         $data = $request->all();
@@ -29,23 +41,19 @@ class RegisterController extends Controller
         {
             $data['password'] = bcrypt( $data['password']);
             $user = User::create($data);
-            $Empresas = Empresas::create(["razao_social" => $data["name"]]);
-            $user->empresa_id = $Empresas->id;
-            $user->save();
+            $empresa = $this->criarEmpresa($user);
+            $this->vincularEmpresaUsuario($empresa, $user);
             Auth::attempt(['email' => $request->email, 'password' => $request->password]);
-            $data = [];
             $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')
                 ->where('users.id',Auth::id())
                 ->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao', 'planos.recursos'])
                 ->first();
             $data = $vetor;
             $data['recursos'] = json_decode( $data['recursos'] , true);
-            $data['receita'] = fluxo_caixa::getAllMoney(Auth::id());
+            $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
             $data['token'] = $user->createToken('api-token')->plainTextToken;
             $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
-
-
             return response()->json($vetor, 200);
 
         }

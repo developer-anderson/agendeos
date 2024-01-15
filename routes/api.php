@@ -2,6 +2,7 @@
 
 //use Illuminate\Http\Request;
 use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\EmpresasController;
 use App\Http\Controllers\PlanosController;
@@ -80,6 +81,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('servicos/insert', [ServicosController::class, 'store']);
     Route::put('servicos/update/{servicos}',[ServicosController::class, 'update']);
     Route::delete('servicos/destroy{servicos}', [ServicosController::class, 'destroy']);
+
+    Route::get('produtos/getall/{id}/{filter?}', [ProdutosController::class, 'getall']);
+    Route::get('produtos/show/{produtos}', [ProdutosController::class, 'show']);
+    Route::post('produtos/insert', [ProdutosController::class, 'store']);
+    Route::put('produtos/update/{produtos}',[ProdutosController::class, 'update']);
+    Route::delete('produtos/destroy{produtos}', [ProdutosController::class, 'destroy']);
 
     Route::put('usuario/update/{usuario}',[UsuariosController::class, 'atualizarPerfil'])->name('atualizarPerfil');
     Route::post('/agendamentos/{agendamentoId}/adicionar-itens', [AgendamentoController::class, 'adicionarItens']);

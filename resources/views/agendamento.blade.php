@@ -1852,7 +1852,8 @@ be a descendant of the grid when it is being dragged.
             text-decoration: none;
         }
 
-        .slide-funcionarios a:hover {
+        .slide-funcionarios a:hover,
+        .slide-funcionarios a.active {
             background: {{ $estabelecimento->cor_primaria }};
         }
 
@@ -1877,13 +1878,31 @@ be a descendant of the grid when it is being dragged.
             padding: 0 20px;
         }
 
-        .form-buscar input {
+        .form-buscar input,
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
             font-size: 14px;
             outline: none;
             width: 100%;
-            border: 0;
             padding: 10px;
             background: transparent;
+            border: 2px solid #000;
+            border-radius: 20px;
+        }
+
+        textarea {
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 2px solid #000;
+            border-radius: 20px;
+        }
+
+        .form-buscar input {
+            border: 0;
         }
 
         .servico-item a {
@@ -1914,6 +1933,54 @@ be a descendant of the grid when it is being dragged.
             padding: 15px 20px;
             text-align: center;
         }
+
+        .box-payment {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .payment-button {
+            border-radius: 10px;
+            padding: 10px 14px;
+            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            background: linear-gradient(92deg, #ECECEC 1.13%, #D7D7D7 99.34%);
+            border: 0;
+            cursor: pointer;
+        }
+
+        .payment-button.active,
+        .payment-button:hover {
+            background: linear-gradient(92deg, #29D27F 1.13%, #52ECA2 99.34%);
+        }
+
+        .payment-button i {
+            font-size: 27px;
+        }
+
+        .btAgendar {
+            background: #000;
+            color: #FFF;
+            border-radius: 100px;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .btAgendar:disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -1922,12 +1989,38 @@ be a descendant of the grid when it is being dragged.
     {{-- {{$estabelecimento}} --}}
     <main>
         <div class="container py-5">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h1>Informe seus dados:</h1>
+                </div>
+
+
+
+                <div class="col-12 py-3">
+                    <div class="form-group">
+                        <input name="nome" type="text" id="nome" placeholder="Digite seu nome..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <input name="email" type="email" id="email" placeholder="Informe o seu e-mail..."
+                            required>
+                        <div class="invalid-feedback">Digite um e-mail válido.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <input name="telefone" type="tel" id="telefone" placeholder="Digite seu WhatsApp ..."
+                            required>
+                        <small class="form-text text-muted">Apenas números</small>
+                    </div>
+                </div>
+            </div>
+
             <div class="row" id="formAgendar">
                 <div class="col-sm-12 text-center">
                     <h1>Escolha o funcionário:</h1>
                 </div>
 
-                <div class="col-12 py-5">
+                <div class="col-12 py-3 pb-5">
                     <!-- Slider main container -->
                     <div class="swiper">
                         <!-- Additional required wrapper -->
@@ -1935,7 +2028,7 @@ be a descendant of the grid when it is being dragged.
                             <!-- Slides -->
                             @foreach ($funcionarios as $funcionario)
                                 <div class="swiper-slide slide-funcionarios">
-                                    <a href="#" data-id="{{ $funcionario->id }}"
+                                    <a href="#" class="funcionario-item" data-id="{{ $funcionario->id }}"
                                         data-nome="{{ $funcionario->nome }}">
                                         <figure class="rounded">
                                             <img src="{{ $funcionario->foto ? $funcionario->foto : 'https://placehold.it/80x80' }}"
@@ -1952,9 +2045,9 @@ be a descendant of the grid when it is being dragged.
 
             <div class="row">
                 <div class="col-sm-12 text-center">
-                    <h1>Escolha o(s) serviço(s): {{ $administrador->id }}</h1>
+                    <h1>Escolha o(s) serviço(s):</h1>
                 </div>
-                <div class="col-12 py-5">
+                <div class="col-12 py-3 pb-5">
                     <div class="form-buscar">
                         <i class="fa fa-search" aria-hidden="true"></i>
                         <input type="text" class="search-servico" placeholder="Digite para filtrar">
@@ -1980,12 +2073,71 @@ be a descendant of the grid when it is being dragged.
 
             <div class="row">
                 <div class="col-sm-12 text-center">
+                    <h1>Escolha a forma de pagamento:</h1>
+                </div>
+
+                <div class="col-12 py-3 pb-5 box-payment">
+                    <button class="payment-button" data-id="1" data-name="Pix">
+                        <svg width="29" height="26" viewBox="0 0 29 26" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <rect y="0.391357" width="28.3182" height="24.6522" fill="url(#pattern0)" />
+                            <defs>
+                                <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1"
+                                    height="1">
+                                    <use xlink:href="#image0_606_720"
+                                        transform="matrix(0.00195312 0 0 0.00224357 0 -0.0743547)" />
+                                </pattern>
+                                <image id="image0_606_720" width="512" height="512"
+                                    xlink:href="data:image/png;base64,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" />
+                            </defs>
+                        </svg>
+                        PIX
+                    </button>
+
+                    <button class="payment-button" data-id="2" data-name="Cartão de débito">
+                        <i class="fa fa-credit-card"></i>
+                        Débito
+                    </button>
+
+                    <button class="payment-button" data-id="3" data-name="Cartão de crédito">
+                        <i class="fa fa-credit-card"></i>
+                        Crédito
+                    </button>
+
+                    <button class="payment-button" data-id="4" data-name="Dinheiro">
+                        <i class="fa fa-money"></i>
+                        Dinheiro
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 text-center">
                     <h1>Escolha a data e horário do seu agendamento:</h1>
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 py-3 pb-5">
                     <div class="grid-week">
                     </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h1>Observações:</h1>
+                </div>
+
+                <div class="col-12 py-3 pb-5">
+                    <div class="form-group">
+                        <textarea name="observacoes" id="observacoes" cols="30" rows="10"></textarea>
+                        <small class="form-text text-muted">Escreva aqui caso tenha alguma observação.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <button class="btAgendar" disabled>Finalizar Agendamento</button>
                 </div>
             </div>
 
@@ -2128,21 +2280,19 @@ be a descendant of the grid when it is being dragged.
                 .button-list {}
 
                 .button-list button {
-                    border: 1px solid #002147;
                     padding: 5px;
                     border-radius: 10px;
-                    margin: 10px;
-                    max-width: 150px;
+                    margin: 10px 4px;
+                    min-width: 91px;
                     display: grid;
-                    background: #202020;
-                    color: #ffffff;
                     cursor: pointer;
+                    background: linear-gradient(92deg, #ECECEC 1.13%, #D7D7D7 99.34%);
+                    border: 0;
                 }
 
                 .button-list button:hover,
                 .button-list button.active {
-                    background-color: #02D07A;
-                    border-color: #02D07A;
+                    background: linear-gradient(92deg, #29D27F 1.13%, #52ECA2 99.34%);
                 }
 
                 .button-list button.empty {
@@ -2178,6 +2328,8 @@ be a descendant of the grid when it is being dragged.
                     background: #F6F6F6;
                     color: #202020;
                     cursor: pointer;
+                    width: 100%;
+                    border-radius: 40px;
                 }
 
                 .calendarResult button:hover,
@@ -2260,113 +2412,6 @@ be a descendant of the grid when it is being dragged.
             </div> --}}
 
 
-
-            <!-- step 3 -->
-            <div class="row justify-content-center steps" id="step3">
-                <div class="col-sm-8">
-                    <div class="steps-header">
-                        <div class="number active">
-                            <span class="btn-step1">1</span>
-                        </div>
-                        <div class="number active">
-                            <span class="btn-step2">2</span>
-                        </div>
-                        <div class="number active">
-                            <span class="btn-step3">3</span>
-                        </div>
-                        <div class="number">
-                            <span class="btn-step4">4</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-12 text-center">
-                    <h1>Selecione a data e horário</h1>
-                    <p>Clique no horário desejado na agenda abaixo:</p>
-                </div>
-
-                <div class="col-sm-12">
-
-
-
-                    {{-- <div class="card">
-                        <div class="card-body p-0">
-                            <div id="calendar"></div>
-                        </div>
-                    </div> --}}
-
-
-                    <div class="col-sm-12 py-5 text-center">
-                        <a href="#" class="btn-button btn-primary btn-next" id="btn-step4"><i
-                                class="fa fa-check"></i>
-                            Finalizar</a>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- step 4 -->
-            <div class="row justify-content-center steps" id="step4">
-                <div class="col-sm-8">
-                    <div class="steps-header">
-                        <div class="number active">
-                            <span class="btn-step1">1</span>
-                        </div>
-                        <div class="number active">
-                            <span class="btn-step2">2</span>
-                        </div>
-                        <div class="number active">
-                            <span class="btn-step3">3</span>
-                        </div>
-                        <div class="number active">
-                            <span class="btn-step4">4</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-12 text-center">
-                    <h1>Finalize seu agendamento</h1>
-                    <p>Preencha corretamente os campos abaixo:</p>
-                </div>
-
-                <div class="col-sm-12">
-
-                    <div class="form data">
-                        <form id="formulario">
-                            <div class="form-group">
-                                <label for="nome">Nome:</label>
-                                <input name="nome" type="text" class="form-control" id="nome" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email">E-mail:</label>
-                                <input name="email" type="email" class="form-control" id="email" required>
-                                <div class="invalid-feedback">Digite um e-mail válido.</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="whatsapp">WhatsApp:</label>
-                                <input name="whatsapp" type="tel" class="form-control" id="whatsapp"
-                                    pattern="\([0-9]{2}\) [0-9]{4,6}-[0-9]{3,4}" required>
-                                <small class="form-text text-muted">Formato: (99) 99999-9999</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="observacoes">Observações:</label>
-                                <textarea name="observacoes" class="form-control" id="observacoes" rows="4"></textarea>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="col-sm-12 py-5 text-center">
-                        <a href="#" class="btn-button btn-primary btn-next" onclick="agendar()"
-                            id="salvar-agendamento"><i class="fa fa-save"></i>
-                            Salvar </a>
-                    </div>
-                </div>
-
-            </div>
-
             <div class="row box-infos">
                 <div class="col-sm-4">
                     <div class="card">
@@ -2433,57 +2478,6 @@ be a descendant of the grid when it is being dragged.
         </div>
     </main>
 
-    <!-- calendar modal -->
-    <div id="modal-view-event" class="modal modal-top fade calendar-modal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <h4 class="modal-title"><span class="event-icon"></span><span class="event-title"></span></h4>
-                    <div class="event-body"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-view-event-add" class="modal modal-top fade calendar-modal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form id="add-event">
-                    <div class="modal-body">
-                        <h4>Agendar Horário</h4>
-                        <div class="form-group">
-                            <label>Seu Cliente</label>
-                            <input type="text" class="form-control" name="nome">
-                        </div>
-                        <div class="form-group">
-                            <label>WhatsApp</label>
-                            <input type="text" class="form-control" name="whatsapp" class="input-whatsapp">
-                        </div>
-                        <div class="form-group">
-                            <label>E-mail</label>
-                            <input type="email" class="form-control" name="email">
-                        </div>
-                        <div class="form-group">
-                            <label>Data de Nascimento</label>
-                            <input type="text" class="form-control" name="data-de-nascimento"
-                                name="data-de-nascimento">
-                        </div>
-                        <div class="form-group">
-                            <label>Observações</label>
-                            <textarea class="form-control" name="observacoes" class="observacoes"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Salvar</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
     @include('template-parts/footer')
 </body>

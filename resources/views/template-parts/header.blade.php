@@ -83,14 +83,10 @@
 
 <header>
     <div class="container">
-        <div class="row">
-            <div class="col-12 d-none d-sm-block text-center">
+        <div class="row banner-full">
+            <div class="col-12 text-center">
                 <h1>Sistema de Agendamento</h1>
             </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row banner-full">
             <figure>
                 <img src="{{ asset('assets/img/mikacorts/banner.jpg') }}" class="img-fluid" alt="">
             </figure>

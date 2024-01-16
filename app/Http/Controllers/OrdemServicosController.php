@@ -138,10 +138,13 @@ class OrdemServicosController extends Controller
 
     private function formatDateFields(&$osData)
     {
-        $osData["inicio_os"] = $osData['inicio_os'][0];
-        $osData["inicio_os_time"] =$osData['inicio_os'][1];
-        $osData["previsao_os"] =$osData['previsao_os'][0];
-        $osData["previsao_os_time"] =$osData['previsao_os'][1];
+
+        $inicio = explode(" ", $osData['inicio_os']);
+        $fim = explode(" ", $osData['previsao_os']);
+        $osData["inicio_os"] = $inicio[0];
+        $osData["inicio_os_time"] =$inicio[1];
+        $osData["previsao_os"] =$fim[0];
+        $osData["previsao_os_time"] =$fim[1];
     }
 
     private function formatDateTimeField($dateTime)

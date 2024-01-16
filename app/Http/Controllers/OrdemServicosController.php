@@ -158,8 +158,10 @@ class OrdemServicosController extends Controller
                 }
                 else{
                     $cliente = Clientes::create(["nome_f" => $post["nome"], "email_f" =>$post["email"], "telefone_f" =>$post["telefone"], "celular_f" =>$post["telefone"] ]);
+
                     $post["id_cliente"] = $cliente->id;
                 }
+                logger($cliente);
                 $post['previsao_os'] = $post['inicio_os'];
             }
             else{

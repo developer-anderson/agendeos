@@ -260,7 +260,7 @@ class AgendamentoController extends Controller
         $representacaoFormatada = 'PT' . $intervalo->format('%H') . 'H' . $intervalo->format('%I') . 'M';
         $horasASomar = new DateInterval($representacaoFormatada);
         $mediador = $ultimo_horario->format('H:i:s');
-        if(isset($agenda_atual_funcionario)){
+        if(isset($agenda_atual_funcionario) && !empty($agenda_atual_funcionario)){
             foreach ($agenda_atual_funcionario as $agenda){
                 $horario = date("H:i", strtotime($agenda->inicio_os));
                 $horarios[] = ["horario" => $horario, "disponivel" => 0];

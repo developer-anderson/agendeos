@@ -70,68 +70,85 @@ class OrdemServicosController extends Controller
     {
         return response()->json(ordem_servico_servico::where('os_id', $os_id)->get(), 200);
     }
-    public function getAll($id, $incio, $fim = null, $funcionario_id = null)
+    public function getAll($id, $inicio, $fim = null, $funcionario_id = null)
     {
-        $data = array();
         $user = Auth::user();
+        $data = [];
 
         $query = DB::table('ordem_servicos');
-        if($fim){
-            $query->where('inicio_os', '>=', $incio . " 00:00:00")
-                ->where('inicio_os', '<=', $fim . " 23:59:59")
-                ->orWhere('previsao_os', '>=', $incio . " 00:00:00")
-                ->where('previsao_os', '<=', $fim . " 23:59:59");
-        }
-        else{
-            $query->whereDate('inicio_os', '=', $incio . " 00:00:00")
-                ->whereDate('previsao_os', '=', $incio . " 23:59:59");
+        $this->applyDateFilters($query, $inicio, $fim);
+        $this->applyUserFilters($query, $user, $id, $funcionario_id);
 
-        }
-        if($funcionario_id || $user->funcionario_id){
-            $query->where('ordem_servicos.id_funcionario', "=", $funcionario_id ?? $user->funcionario_id);
-        }
-        else{
-            $query->where('ordem_servicos.user_id', $id);
-        }
         $os = $query->orderBy('id', 'desc')->get();
-        foreach($os as $key => $value)
-        {
-            $value = get_object_vars($value);
-           // dd($value);
-            $data[$key] = $value;
-            $ids_servicos = ordem_servico_servico::where('os_id', $value['id'])->select('id_servico')->get();
-            $data[$key]['ids_servicos'] =  $ids_servicos ;
-            $servicos = [];
-            foreach($ids_servicos as  $id){
 
-                $servicos[]= Servicos::where('id',$id['id_servico'])->first();
-            }
-            $data[$key]['servicos'] =  $servicos ;
-            $data[$key]['cliente'] = Clientes::where('id', $value['id_cliente'])->first();
-
-            if($value['id_funcionario']){
-                $data[$key]['funcionario'] = funcionarios::where('id', $value['id_funcionario'])->first();
-            }
-            if($value['id_veiculo']){
-                $data[$key]['veiculo'] = Veiculos::where('id', $value['id_veiculo'])->first();
-            }
-
-            $data[$key]['situacao'] = Situacao::where('referencia_id', $value['situacao'])->select("referencia_id as id", "nome")->first();
-            if($value['id_forma_pagamento']){
-                $data[$key]['forma_pagamento'] = FormaPagamento::where('id', $value['id_forma_pagamento'])->first();
-            }
-            $inicio_os = explode(" ",  $value["inicio_os"]);
-            $previsao_os = explode(" ",  $value["previsao_os"]);
-            $data[$key]["inicio_os"] = $inicio_os[0];
-            $data[$key]["inicio_os_time"] =$inicio_os[1];
-            $data[$key]["previsao_os"] =$previsao_os[0];
-            $data[$key]["previsao_os_time"] =$previsao_os[1];
-
-
+        foreach ($os as $key => $value) {
+            $data[$key] = $this->transformOsData($value);
         }
 
         return response()->json($data, 200);
+    }
 
+    private function applyDateFilters($query, $inicio, $fim)
+    {
+        if ($fim) {
+            $query->where(function ($query) use ($inicio, $fim) {
+                $query->whereBetween('inicio_os', ["$inicio 00:00:00", "$fim 23:59:59"])
+                    ->orWhereBetween('previsao_os', ["$inicio 00:00:00", "$fim 23:59:59"]);
+            });
+        } else {
+            $query->whereDate('inicio_os', '=', "$inicio 00:00:00")
+                ->whereDate('previsao_os', '=', "$inicio 23:59:59");
+        }
+    }
+
+    private function applyUserFilters($query, $user, $id, $funcionario_id)
+    {
+        if ($funcionario_id || $user->funcionario_id) {
+            $query->where('ordem_servicos.id_funcionario', "=", $funcionario_id ?? $user->funcionario_id);
+        } else {
+            $query->where('ordem_servicos.user_id', $id);
+        }
+    }
+
+    private function transformOsData($osData)
+    {
+        $osData = get_object_vars($osData);
+        $osData['ids_servicos'] = $this->getIdsServicos($osData['id']);
+        $osData['servicos'] = $this->getServicos($osData['ids_servicos']);
+        $osData['cliente'] = Clientes::find($osData['id_cliente']);
+        $osData['funcionario'] = $osData['id_funcionario'] ? Funcionarios::find($osData['id_funcionario']) : null;
+        $osData['veiculo'] = $osData['id_veiculo'] ? Veiculos::find($osData['id_veiculo']) : null;
+        $osData['situacao'] = Situacao::where('referencia_id', $osData['situacao'])->select("referencia_id as id", "nome")->first();
+        $osData['forma_pagamento'] = $osData['id_forma_pagamento'] ? FormaPagamento::find($osData['id_forma_pagamento']) : null;
+
+        $this->formatDateFields($osData);
+
+        return $osData;
+    }
+
+    private function getIdsServicos($osId)
+    {
+        return ordem_servico_servico::where('os_id', $osId)->pluck('id_servico');
+    }
+
+    private function getServicos($idsServicos)
+    {
+        return Servicos::whereIn('id', $idsServicos)->get();
+    }
+
+    private function formatDateFields(&$osData)
+    {
+        $osData['inicio_os'] = $this->formatDateTimeField($osData['inicio_os']);
+        $osData['previsao_os'] = $this->formatDateTimeField($osData['previsao_os']);
+    }
+
+    private function formatDateTimeField($dateTime)
+    {
+        $dateTimeParts = explode(" ", $dateTime);
+        return [
+            'date' => $dateTimeParts[0],
+            'time' => $dateTimeParts[1]
+        ];
     }
     public function getModeloMensagem($os_id)
     {

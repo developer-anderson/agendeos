@@ -50,7 +50,7 @@ class PasswordResetController extends Controller
             return response()->json(["error" => true, "message" => "Usuário nåo possui Telefone Cadastro para envio do Token. Contate o Administrador!"],401);
         }
         $this->enviarToken($user, $token, $empresaVinculada);
-        return response()->json(["error" => false, "message" => "Token enviado para Whatsapp"],200);
+        return response()->json(["error" => false, "message" => "Token enviado para Whatsapp", "token" => $token],200);
     }
     public function enviarToken(User  $user, $token, Empresas $empresas)
     {

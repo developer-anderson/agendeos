@@ -17,6 +17,7 @@ use App\Models\funcionarios;
 use App\Models\whatsapp;
 use App\Models\token;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Usuarios;
@@ -72,24 +73,27 @@ class OrdemServicosController extends Controller
     public function getAll($id, $incio, $fim = null, $funcionario_id = null)
     {
         $data = array();
-        $query = DB::table('ordem_servicos')->where('ordem_servicos.user_id', $id);
+        $user = Auth::user();
+
+        $query = DB::table('ordem_servicos');
         if($fim){
             $query->where('inicio_os', '>=', $incio . " 00:00:00")
                 ->where('inicio_os', '<=', $fim . " 23:59:59")
                 ->orWhere('previsao_os', '>=', $incio . " 00:00:00")
-                ->where('previsao_os', '<=', $fim . " 23:59:59")
-                ->where('ordem_servicos.user_id', $id);
+                ->where('previsao_os', '<=', $fim . " 23:59:59");
         }
         else{
             $query->whereDate('inicio_os', '=', $incio . " 00:00:00")
-                ->whereDate('previsao_os', '=', $incio . " 23:59:59")
-                ->where('ordem_servicos.user_id', $id);
+                ->whereDate('previsao_os', '=', $incio . " 23:59:59");
+
         }
-        if($funcionario_id){
-            $query->where('ordem_servicos.id_funcionario', $funcionario_id);
+        if($funcionario_id || $user->funcionario_id){
+            $query->where('ordem_servicos.id_funcionario', "=", $funcionario_id ?? $user->funcionario_id);
+        }
+        else{
+            $query->where('ordem_servicos.user_id', $id);
         }
         $os = $query->orderBy('id', 'desc')->get();
-
         foreach($os as $key => $value)
         {
             $value = get_object_vars($value);

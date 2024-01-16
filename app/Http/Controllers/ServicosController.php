@@ -25,7 +25,7 @@ class ServicosController extends Controller
     public function getAll($id, $filter = null)
     {
 
-        $query =   Servicos::where('user_id',$id);
+        $query =   Servicos::where('user_id',$id)->where("ativo", 1);
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {

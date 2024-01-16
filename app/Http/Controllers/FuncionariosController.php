@@ -23,7 +23,7 @@ class FuncionariosController extends Controller
     {
         //
         $user = Auth::user();
-        $query = funcionarios::where('user_id', $id);
+        $query = funcionarios::where('user_id', $id)->where("ativo", 1);
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {

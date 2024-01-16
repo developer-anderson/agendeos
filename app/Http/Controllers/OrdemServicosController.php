@@ -53,8 +53,8 @@ class OrdemServicosController extends Controller
             return response()->json(['error' => true, 'message' => "Estabelecimento Não encontrado"], 404);
         }
         $administrador  = User::where('empresa_id', $estabelecimento->id)->first();
-        $data['funcionarios']   = funcionarios::where('user_id', $administrador->id)->get();
-        $data['servicos']       = Servicos::where('user_id', $administrador->id)->get();
+        $data['funcionarios']   = funcionarios::where('user_id', $administrador->id)->where("ativo", 1)->get();
+        $data['servicos']       = Servicos::where('user_id', $administrador->id)->where("ativo", 1)->get();
         $data['estabelecimento']       = $estabelecimento;
         $data['administrador']       = $administrador;
        return view('agendamento')->with($data);

@@ -20,7 +20,7 @@ class ClientesController extends Controller
     public function getAll($id, $filter = null)
     {
         $user = Auth::user();
-        $query = Clientes::where('user_id', $id);
+        $query = Clientes::where('user_id', $id)->where("ativo", 1);
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {
@@ -43,7 +43,7 @@ class ClientesController extends Controller
     {
 
 
-        $query = Clientes::where('tipo_cliente',$type)->where('user_id',$id);
+        $query = Clientes::where('tipo_cliente',$type)->where('user_id',$id)->where("ativo", 1);
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {

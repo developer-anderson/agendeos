@@ -48,7 +48,7 @@ class OrdemServicosController extends Controller
 
     }
     public function getEstabelecimento($slug){
-        $estabelecimento  =  Empresas::where('situacao', 1)->where('razao_social', $slug)->first();
+        $estabelecimento  =  Empresas::where('situacao', 1)->where('slug', $slug)->first();
         if(empty($slug) or  !$estabelecimento)
         {
             return response()->json(['error' => true, 'message' => "Estabelecimento Não encontrado"], 404);

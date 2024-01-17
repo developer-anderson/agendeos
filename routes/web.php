@@ -25,7 +25,7 @@ use App\Http\Controllers\OrdemServicosController;
 use App\Http\Controllers\FluxoCaixaController;
 use App\Http\Controllers\AgendamentoController;
 use App\Http\Controllers\UploadController;
-Route::get('agendamento/getEstabelecimento/{slug}', [OrdemServicosController::class, 'getEstabelecimento'])->name('getEstabelecimentoWeb');
+Route::get('/agendamento/{slug}', [OrdemServicosController::class, 'getEstabelecimento'])->name('getEstabelecimentoWeb');
 
 Route::permanentRedirect('/', 'https://site.agendos.com.br/');
 

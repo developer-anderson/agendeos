@@ -261,6 +261,7 @@ class AgendamentoController extends Controller
         $horasASomar = new DateInterval($representacaoFormatada);
         $mediador = $ultimo_horario->format('H:i:s');
         if(isset($agenda_atual_funcionario) && !empty($agenda_atual_funcionario)){
+            logger("Aqui");
             foreach ($agenda_atual_funcionario as $agenda){
                 $horario = date("H:i", strtotime($agenda->inicio_os));
                 $horarios[] = ["horario" => $horario, "disponivel" => 0];
@@ -281,6 +282,7 @@ class AgendamentoController extends Controller
             ksort($horarios);
         }
         else{
+
             while ($ultimo_horario < $horarioFim) {
                 $horarios[] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
                 $ultimo_horario->add($horasASomar);

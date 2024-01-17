@@ -43,7 +43,7 @@ class VeiculosController extends Controller
     public function getallCliente($id)
     {
         //
-        $veiculos = DB::table('veiculos')->join('clientes', 'clientes.id', '=', 'veiculos.id_cliente')->where("ativo", 1)->where('id_cliente',$id)->select('veiculos.*', 'clientes.nome_f', 'clientes.razao_social')->get();
+        $veiculos = DB::table('veiculos')->join('clientes', 'clientes.id', '=', 'veiculos.id_cliente')->where("veiculos.ativo", 1)->where("clientes.ativo", 1)->where('id_cliente',$id)->select('veiculos.*', 'clientes.nome_f', 'clientes.razao_social')->get();
         return response()->json( $veiculos , 200);
 
     }

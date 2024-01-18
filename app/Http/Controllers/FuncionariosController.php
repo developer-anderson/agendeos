@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\funcionarios;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Clientes;
 use App\Models\whatsapp;
@@ -21,8 +22,6 @@ class FuncionariosController extends Controller
      */
     public function getAll($id, $filter = null)
     {
-        //
-        $user = Auth::user();
         $query = funcionarios::where('user_id', $id)->where("ativo", 1);
 
         if ($filter) {
@@ -34,7 +33,9 @@ class FuncionariosController extends Controller
         }
 
         $result = $query->orderBy('id', 'desc')->paginate();
-
+        foreach ($result as $item){
+            $item->id_conta_acesso = User::query()->where('funcionario_id', $item->id)->select('id')->first();
+        }
         return response()->json($result, 200);
 
     }

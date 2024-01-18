@@ -88,6 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('produtos/update/{produtos}',[ProdutosController::class, 'update']);
     Route::delete('produtos/destroy{produtos}', [ProdutosController::class, 'destroy']);
 
+    Route::delete('usuario/destroy/{usuario}', [UsuariosController::class, 'delete']);
     Route::put('usuario/update/{usuario}',[UsuariosController::class, 'atualizarPerfil'])->name('atualizarPerfil');
     Route::post('/agendamentos/{agendamentoId}/adicionar-itens', [AgendamentoController::class, 'adicionarItens']);
     Route::post('/agendamentos', [AgendamentoController::class, 'store']);

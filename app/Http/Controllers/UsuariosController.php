@@ -51,8 +51,8 @@ class UsuariosController extends Controller
         Usuarios::find($id)->delete();
         $response = [
             "erro" => false,
-            "mensagem" => "Usuário apagado com sucesso!"
+            "mensagem" => "Usuário desativado com sucesso!"
         ];
-        return  $response;
+        return response()->json($response, 200);
     }
 }

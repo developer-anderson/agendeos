@@ -48,7 +48,7 @@ class UsuariosController extends Controller
 
     public function delete($id)
     {
-        Usuarios::find($id)->delete();
+        Usuarios::where('funcionario_id',$id)->delete();
         $response = [
             "erro" => false,
             "mensagem" => "Usuário desativado com sucesso!"

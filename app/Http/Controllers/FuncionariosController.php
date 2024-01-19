@@ -34,21 +34,12 @@ class FuncionariosController extends Controller
 
         $result = $query->orderBy('id', 'desc')->paginate();
         foreach ($result as $item){
-            $item->id_conta_acesso = User::query()->where('funcionario_id', $item->id)->select('id')->first();
+            $item->dados_conta_acesso = User::query()->where('funcionario_id', $item->id)->select('id', 'nome', 'email')->first();
         }
         return response()->json($result, 200);
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -115,10 +106,6 @@ class FuncionariosController extends Controller
      * @param  \App\Models\funcionarios  $funcionarios
      * @return \Illuminate\Http\Response
      */
-    public function edit(funcionarios $funcionarios)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -133,10 +120,7 @@ class FuncionariosController extends Controller
         $funcionarios = funcionarios::find($id);
 
         if (!$funcionarios) {
-            return [
-                "erro" => true,
-                "mensagem" => "funcionarios não encontrado!"
-            ];
+            return response()->json(["erro" => true, "mensagem" => "funcionarios não encontrado!"], 404);
         }
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
@@ -148,12 +132,9 @@ class FuncionariosController extends Controller
         }
         $funcionarios->fill($dados);
         $funcionarios->save();
+        $this->atualizarSenhaAcessoFuncionario($funcionarios);
 
-        return [
-            "erro" => false,
-            "mensagem" => "funcionarios editado com sucesso!"
-        ];
-
+        return response()->json(["erro" => false, "mensagem" => "funcionarios editado com sucesso!"], 200);
     }
 
     /**
@@ -172,5 +153,12 @@ class FuncionariosController extends Controller
                 "mensagem" => "Funcionário deletado com  sucesso!"
             ]
         , 200);
+    }
+    private function atualizarSenhaAcessoFuncionario(funcionarios $funcionarios): void
+    {
+        $usuario = User::query()->where("funcionario_id", $funcionarios->id)->first();
+        if($usuario){
+            $usuario->password = bcrypt( str_replace(array(".", "-"), "",$funcionarios->cpf));
+        }
     }
 }

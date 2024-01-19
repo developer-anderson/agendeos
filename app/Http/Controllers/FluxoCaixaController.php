@@ -97,6 +97,7 @@ class FluxoCaixaController extends Controller
         if($fluxo_caixa->pagamento_id){
             $fluxo_caixa['forma_pagamento'] = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first();
         }
+        $fluxo_caixa->valor_final = $fluxo_caixa->valor - ($fluxo_caixa->desconto ?? 0.00);
         $fluxo_caixa['cliente'] = Clientes::where('id', $fluxo_caixa->cliente_id)->first();
         $fluxo_caixa['os'] = OrdemServicos::where('id', $fluxo_caixa->os_id)->first();
         $fluxo_caixa['tipo'] = Tipo::where('id', $fluxo_caixa->tipo_id)->first();

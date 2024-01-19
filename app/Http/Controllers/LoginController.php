@@ -34,7 +34,7 @@ class LoginController extends Controller
             ->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao', 'planos.recursos'])->first();
             $data = $vetor;
             $data['recursos'] = json_decode( $data['recursos'] , true);
-            $data['receita'] = fluxo_caixa::getAllMoney(Auth::id());
+            $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
             $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
             $data['token'] =  $token ;

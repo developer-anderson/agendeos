@@ -26,6 +26,7 @@ class FluxoCaixaController extends Controller
            if($registro->pagamento_id){
                $registro->forma_pagamento = FormaPagamento::where('id', $registro->pagamento_id)->first();
            }
+           $registro->valor_final = $registro->valor - ($registro->desconto ?? 0.00);
            $registro->cliente = Clientes::where('id', $registro->cliente_id)->first();
            $registro->os = OrdemServicos::where('id', $registro->os_id)->first();
            $registro->tipo = Tipo::where('id', $registro->tipo_id)->first();

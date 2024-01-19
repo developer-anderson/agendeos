@@ -19,8 +19,10 @@ class fluxo_caixa extends Model
         $startOfDay = Carbon::parse(date("Y-m-d"))->startOfDay();
         $endOfDay = Carbon::parse(date("Y-m-d"))->endOfDay();
         $receita = fluxo_caixa::where('tipo_id', 1)->where('pagamento_id', 1)->where('user_id', Auth::id())
-            ->whereBetween('data', [$startOfDay, $endOfDay])->sum(DB::raw('valor - desconto'));
+            ->whereBetween('data', [$startOfDay, $endOfDay])->sum('valor');
+        $desconto = fluxo_caixa::where('tipo_id', 1)->where('pagamento_id', 1)->where('user_id', Auth::id())
+            ->whereBetween('data', [$startOfDay, $endOfDay])->sum('desconto');
         $despesa = fluxo_caixa::where('tipo_id', 2)->where('pagamento_id', 1)->where('user_id', Auth::id())->whereBetween('data', [$startOfDay, $endOfDay])->sum('valor');
-        return $receita-$despesa;
+        return ($receita-$desconto)-$despesa;
     }
 }

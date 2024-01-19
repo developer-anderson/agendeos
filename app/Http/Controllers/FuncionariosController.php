@@ -34,7 +34,7 @@ class FuncionariosController extends Controller
 
         $result = $query->orderBy('id', 'desc')->paginate();
         foreach ($result as $item){
-            $item->dados_conta_acesso = User::query()->where('funcionario_id', $item->id)->select('id', 'nome', 'email')->first();
+            $item->dados_conta_acesso = User::query()->where('funcionario_id', $item->id)->select('id', 'name', 'email')->first();
         }
         return response()->json($result, 200);
 

@@ -187,7 +187,6 @@ class OrdemServicosController extends Controller
 
                     $post["id_cliente"] = $cliente->id;
                 }
-                logger($cliente);
                 $post['previsao_os'] = $post['inicio_os'];
             }
             else{
@@ -304,9 +303,7 @@ class OrdemServicosController extends Controller
         }
         $data['nome'] = "Ordem de Serviço #" . $data['os_id'];
         $data['produto_id'] = null;
-        if ($data['situacao'] <> 1) {
-            $data['valor'] = 0;
-        }
+
         if ($data['situacao'] >= 2 and $data['situacao'] <= 4) {
             $data['pagamento_id'] = 1;
         } elseif ($data['situacao'] == 0 or $data['situacao'] == 6) {

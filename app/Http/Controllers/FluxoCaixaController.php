@@ -23,9 +23,7 @@ class FluxoCaixaController extends Controller
        $registros =   fluxo_caixa::where('user_id',$id)->where('data', '>=',$incio)->where('data', '<=',$fim)->orderBy('id', 'DESC')->get();
        foreach ($registros as $registro){
            $registro->situacao = Situacao::where('referencia_id',$registro->situacao)->select("referencia_id as id", "nome")->first();
-           if($registro->pagamento_id){
-               $registro->forma_pagamento = FormaPagamento::where('id', $registro->pagamento_id)->first();
-           }
+           $registro->forma_pagamento = FormaPagamento::where('id', $registro->pagamento_id)->first() ?? null;
            $registro->valor_final = $registro->valor - ($registro->desconto ?? 0.00);
            $registro->cliente = Clientes::where('id', $registro->cliente_id)->first();
            $registro->os = OrdemServicos::where('id', $registro->os_id)->first();
@@ -94,9 +92,7 @@ class FluxoCaixaController extends Controller
         //
         $fluxo_caixa = fluxo_caixa::where('id',$fluxo_caixa)->first();
         $fluxo_caixa['situacao'] = Situacao::where('referencia_id',$fluxo_caixa->situacao)->select("referencia_id as id", "nome")->first();
-        if($fluxo_caixa->pagamento_id){
-            $fluxo_caixa['forma_pagamento'] = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first();
-        }
+        $fluxo_caixa->forma_pagamento = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first() ?? null;
         $fluxo_caixa->valor_final = $fluxo_caixa->valor - ($fluxo_caixa->desconto ?? 0.00);
         $fluxo_caixa['cliente'] = Clientes::where('id', $fluxo_caixa->cliente_id)->first();
         $fluxo_caixa['os'] = OrdemServicos::where('id', $fluxo_caixa->os_id)->first();

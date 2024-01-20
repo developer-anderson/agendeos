@@ -452,7 +452,7 @@ class OrdemServicosController extends Controller
         }
 
         $quantidade_os_funcionario = DB::select("
-    SELECT funcionarios.nome, COUNT(ordem_servicos.id) as total_os
+    SELECT funcionarios.nome,funcionarios.id ,COUNT(ordem_servicos.id) as total_os
     FROM funcionarios
     JOIN ordem_servicos ON funcionarios.id = ordem_servicos.id_funcionario
     WHERE ordem_servicos.user_id = ?
@@ -462,7 +462,7 @@ class OrdemServicosController extends Controller
 ", [$id]);
 
 $receita_funcionario = DB::select("
-    SELECT funcionarios.nome, SUM(servicos.valor) as receita_total,
+    SELECT funcionarios.nome, funcionarios.id ,SUM(servicos.valor) as receita_total,
            SUM(CASE WHEN ordem_servicos.situacao = 1 THEN servicos.valor * funcionarios.comissao / 100 ELSE 0 END) as comissao_funcionario
     FROM funcionarios
     JOIN ordem_servicos ON funcionarios.id = ordem_servicos.id_funcionario

@@ -458,7 +458,7 @@ class OrdemServicosController extends Controller
     WHERE ordem_servicos.user_id = ?
         AND ordem_servicos.created_at >= '$inicio 00:00:00' and ordem_servicos.situacao = 1
         AND ordem_servicos.created_at <= '$fim 23:59:59'
-    GROUP BY funcionarios.nome
+    GROUP BY funcionarios.nome, funcionarios.id
 ", [$id]);
 
 $receita_funcionario = DB::select("
@@ -471,7 +471,7 @@ $receita_funcionario = DB::select("
     WHERE ordem_servicos.user_id = ? and ordem_servicos.situacao = 1
         AND ordem_servicos.created_at >= '$inicio 00:00:00'
         AND ordem_servicos.created_at <= '$fim 23:59:59'
-    GROUP BY funcionarios.nome
+    GROUP BY funcionarios.nome, funcionarios.id
 ", [$id]);
 
 

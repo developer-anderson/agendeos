@@ -27,6 +27,9 @@ class FluxoCaixaController extends Controller
            $registro->valor_final = $registro->valor - ($registro->desconto ?? 0.00);
            $registro->cliente = Clientes::where('id', $registro->cliente_id)->first();
            $registro->os = OrdemServicos::where('id', $registro->os_id)->first();
+           if($registro->os and !$registro->forma_pagamento){
+               $registro->forma_pagamento = FormaPagamento::where('id', $registro->os->id_forma_pagamento)->first();
+           }
            $registro->tipo = Tipo::where('id', $registro->tipo_id)->first();
        }
         return response()->json(
@@ -94,9 +97,12 @@ class FluxoCaixaController extends Controller
         $fluxo_caixa['situacao'] = Situacao::where('referencia_id',$fluxo_caixa->situacao)->select("referencia_id as id", "nome")->first();
         $fluxo_caixa->forma_pagamento = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first() ?? null;
         $fluxo_caixa->valor_final = $fluxo_caixa->valor - ($fluxo_caixa->desconto ?? 0.00);
-        $fluxo_caixa['cliente'] = Clientes::where('id', $fluxo_caixa->cliente_id)->first();
-        $fluxo_caixa['os'] = OrdemServicos::where('id', $fluxo_caixa->os_id)->first();
-        $fluxo_caixa['tipo'] = Tipo::where('id', $fluxo_caixa->tipo_id)->first();
+        $fluxo_caixa->cliente = Clientes::where('id', $fluxo_caixa->cliente_id)->first();
+        $fluxo_caixa->os = OrdemServicos::where('id', $fluxo_caixa->os_id)->first();
+        $fluxo_caixa->tipo = Tipo::where('id', $fluxo_caixa->tipo_id)->first();
+        if($fluxo_caixa->os and !$fluxo_caixa->forma_pagamento){
+            $fluxo_caixa->forma_pagamento = FormaPagamento::where('id', $fluxo_caixa->os->id_forma_pagamento)->first();
+        }
         if(!$fluxo_caixa){
             return response()->json(
                 [

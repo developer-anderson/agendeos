@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="Sync is a landing page HTML template built with Bootstrap 4 for presenting mobile apps to the online audience and for getting visitors to become users.">
     <meta name="author" content="Inovatik">
@@ -19,7 +19,7 @@
 
     <!-- Webpage Title -->
     <title>Article Details - Sync</title>
-    
+
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap&subset=latin-ext" rel="stylesheet">
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -27,12 +27,12 @@
     <link href="css/swiper.css" rel="stylesheet">
 	<link href="css/magnific-popup.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
-	
+
 	<!-- Favicon  -->
-    <link rel="icon" href="images/favicon.png">
+    <link rel="icon" href="outros/app-assets/images/favicon.png">
 </head>
 <body data-spy="scroll" data-target=".fixed-top">
-    
+
     <!-- Preloader -->
 	<div class="spinner-wrapper">
         <div class="spinner">
@@ -42,7 +42,7 @@
         </div>
     </div>
     <!-- end of preloader -->
-    
+
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
@@ -51,8 +51,8 @@
             <!-- <a class="navbar-brand logo-text page-scroll" href="index.html">Sync</a> -->
 
             <!-- Image Logo -->
-            <a class="navbar-brand logo-image" href="index.html"><img src="images/logo.svg" alt="alternative"></a> 
-            
+            <a class="navbar-brand logo-image" href="index.html"><img src="outros/app-assets/images/logo.svg" alt="alternative"></a>
+
             <!-- Mobile Menu Toggle Button -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-awesome fas fa-bars"></span>
@@ -72,7 +72,7 @@
                         <a class="nav-link page-scroll" href="index.html#screens">SCREENS</a>
                     </li>
 
-                    <!-- Dropdown Menu -->          
+                    <!-- Dropdown Menu -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle page-scroll" id="navbarDropdown" role="button" aria-haspopup="true" aria-expanded="false">EXTRA</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -129,7 +129,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="image-container-large">
-                        <img class="img-fluid" src="images/article-details-large.jpg" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/article-details-large.jpg" alt="alternative">
                     </div> <!-- end of image-container-large -->
                     <div class="text-container">
                         <h3>Business Analysis And Reporting Tools</h3>
@@ -187,7 +187,7 @@
                             </div> <!-- end of col -->
                         </div> <!-- end of row -->
                     </div> <!-- end of text-container-->
-                    
+
                     <div class="text-container">
                         <div class="row">
                             <div class="col-md-6">
@@ -198,7 +198,7 @@
                             </div> <!-- end of col -->
                             <div class="col-md-6">
                                 <div class="image-container-small">
-                                    <img class="img-fluid" src="images/article-details-small.jpg" alt="alternative">
+                                    <img class="img-fluid" src="outros/app-assets/images/article-details-small.jpg" alt="alternative">
                                 </div> <!-- end of image-container-small -->
                             </div> <!-- end of col -->
                         </div> <!-- end of row -->
@@ -234,7 +234,7 @@
     </div> <!-- end of ex-basic-1 -->
     <!-- end of breadcrumbs -->
 
-    
+
     <!-- Footer -->
     <div class="footer">
         <div class="container">
@@ -306,7 +306,7 @@
                 </div> <!-- end of col -->
             </div> <!-- end of row -->
         </div> <!-- end of container -->
-    </div> <!-- end of footer -->  
+    </div> <!-- end of footer -->
     <!-- end of footer -->
 
 
@@ -319,10 +319,10 @@
                 </div> <!-- end of col -->
             </div> <!-- enf of row -->
         </div> <!-- end of container -->
-    </div> <!-- end of copyright --> 
+    </div> <!-- end of copyright -->
     <!-- end of copyright -->
-    
-        
+
+
     <!-- Scripts -->
     <script src="js/jquery.min.js"></script> <!-- jQuery for Bootstrap's JavaScript plugins -->
     <script src="js/popper.min.js"></script> <!-- Popper tooltip library for Bootstrap -->

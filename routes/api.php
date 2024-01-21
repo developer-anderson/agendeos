@@ -53,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('os/getall/{id}/{inicio}/{fim?}/{funcionario_id?}', [OrdemServicosController::class, 'getall']);
     Route::get('relatorio/{id}/{inicio?}/{fim?}', [OrdemServicosController::class, 'relatorio']);
     Route::get('/cron', [OrdemServicosController::class, 'cron']);
-    Route::get('os/pdf/{id}/{os}', [OrdemServicosController::class, 'pdf']);
+    Route::get('os/pdf/{id}/{inicio}/{fim?}/{funcionario_id?}', [OrdemServicosController::class, 'gerarPDF']);
     Route::get('os/show/{os}', [OrdemServicosController::class, 'show']);
     Route::get('os/getServicosOs/{os}', [OrdemServicosController::class, 'getServicosOs']);
     Route::post('os/insert', [OrdemServicosController::class, 'store']);

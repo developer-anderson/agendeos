@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="Sync is a landing page HTML template built with Bootstrap 4 for presenting mobile apps to the online audience and for getting visitors to become users.">
     <meta name="author" content="Inovatik">
@@ -19,7 +19,7 @@
 
     <!-- Webpage Title -->
     <title>Sync - Mobile App Landing Page HTML Template</title>
-    
+
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap&subset=latin-ext" rel="stylesheet">
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -27,12 +27,12 @@
     <link href="css/swiper.css" rel="stylesheet">
 	<link href="css/magnific-popup.css" rel="stylesheet">
 	<link href="css/styles.css" rel="stylesheet">
-	
+
 	<!-- Favicon  -->
-    <link rel="icon" href="images/favicon.png">
+    <link rel="icon" href="outros/app-assets/images/favicon.png">
 </head>
 <body data-spy="scroll" data-target=".fixed-top">
-    
+
     <!-- Preloader -->
 	<div class="spinner-wrapper">
         <div class="spinner">
@@ -42,7 +42,7 @@
         </div>
     </div>
     <!-- end of preloader -->
-    
+
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
@@ -51,8 +51,8 @@
             <!-- <a class="navbar-brand logo-text page-scroll" href="index.html">Sync</a> -->
 
             <!-- Image Logo -->
-            <a class="navbar-brand logo-image" href="index.html"><img src="images/logo.svg" alt="alternative"></a> 
-            
+            <a class="navbar-brand logo-image" href="index.html"><img src="outros/app-assets/images/logo.svg" alt="alternative"></a>
+
             <!-- Mobile Menu Toggle Button -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-awesome fas fa-bars"></span>
@@ -72,7 +72,7 @@
                         <a class="nav-link page-scroll" href="#screens">SCREENS</a>
                     </li>
 
-                    <!-- Dropdown Menu -->          
+                    <!-- Dropdown Menu -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle page-scroll" id="navbarDropdown" role="button" aria-haspopup="true" aria-expanded="false">EXTRA</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -110,25 +110,25 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="image-container">
-                        <img class="img-fluid" src="images/header-iphone.png" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/header-iphone.png" alt="alternative">
                     </div> <!-- end of text-container -->
                 </div> <!-- end of col -->
             </div> <!-- end of row -->
         </div> <!-- end of container -->
         <div class="deco-white-circle-1">
-            <img src="images/decorative-white-circle.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-white-circle.svg" alt="alternative">
         </div> <!-- end of deco-white-circle-1 -->
         <div class="deco-white-circle-2">
-            <img src="images/decorative-white-circle.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-white-circle.svg" alt="alternative">
         </div> <!-- end of deco-white-circle-2 -->
         <div class="deco-blue-circle">
-            <img src="images/decorative-blue-circle.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-blue-circle.svg" alt="alternative">
         </div> <!-- end of deco-blue-circle -->
         <div class="deco-yellow-circle">
-            <img src="images/decorative-yellow-circle.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-yellow-circle.svg" alt="alternative">
         </div> <!-- end of deco-yellow-circle -->
         <div class="deco-green-diamond">
-            <img src="images/decorative-green-diamond.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-green-diamond.svg" alt="alternative">
         </div> <!-- end of deco-yellow-circle -->
     </header> <!-- end of header -->
     <!-- end of header -->
@@ -139,7 +139,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    
+
                     <!-- Card -->
                     <div class="card">
                         <div class="card-image">
@@ -208,7 +208,7 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="image-container">
-                        <img class="img-fluid" src="images/description-1-app.png" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/description-1-app.png" alt="alternative">
                     </div> <!-- end of image-container -->
                 </div> <!-- end of col -->
                 <div class="col-lg-6">
@@ -237,7 +237,7 @@
     </div> <!-- end of basic-1 -->
     <!-- end of description 1 -->
 
-    
+
     <!-- Description 1 Details Lightbox -->
 	<!-- Details Lightbox -->
 	<div id="description-1-details-lightbox" class="lightbox-basic zoom-anim-dialog mfp-hide">
@@ -245,7 +245,7 @@
             <button title="Close (Esc)" type="button" class="mfp-close x-button">×</button>
 			<div class="col-lg-8">
                 <div class="image-container">
-                    <img class="img-fluid" src="images/description-1-details-lightbox.jpg" alt="alternative">
+                    <img class="img-fluid" src="outros/app-assets/images/description-1-details-lightbox.jpg" alt="alternative">
                 </div> <!-- end of image-container -->
 			</div>
 			<div class="col-lg-4">
@@ -300,7 +300,7 @@
                             </li>
                         </ul>
                         <!-- end of tabs links -->
-                        
+
                         <!-- Tabs Content -->
                         <div class="tab-content" id="cedoTabsContent">
                             <!-- Tab -->
@@ -358,12 +358,12 @@
                             <!-- end of tab -->
                         </div> <!-- end of tab-content -->
                         <!-- end of nav tabs content -->
-                    
+
                     </div> <!-- end of tabs-container -->
                 </div> <!-- end of col -->
                 <div class="col-lg-6">
                     <div class="image-container">
-                        <img class="img-fluid" src="images/description-2-app.png" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/description-2-app.png" alt="alternative">
                     </div> <!-- end of image-container -->
                 </div> <!-- end of col -->
             </div> <!-- end of row -->
@@ -417,7 +417,7 @@
                     </ul>
                 </div> <!-- end of col -->
                 <div class="col-lg-4">
-                    <img class="img-fluid" src="images/features-app.jpg" alt="alternative">
+                    <img class="img-fluid" src="outros/app-assets/images/features-app.jpg" alt="alternative">
                 </div> <!-- end of col -->
                 <div class="col-lg-4">
                     <ul class="list-unstyled li-space-lg">
@@ -464,92 +464,92 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    
+
                     <!-- Image Slider -->
                     <div class="slider-container">
                         <div class="swiper-container image-slider">
                             <div class="swiper-wrapper">
-                                
+
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-1.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-1.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-1.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-1.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
 
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-2.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-2.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-2.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-2.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
 
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-3.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-3.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-3.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-3.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
 
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-4.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-4.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-4.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-4.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
 
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-5.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-5.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-5.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-5.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
 
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-1.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-6.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-1.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-6.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
 
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-2.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-7.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-2.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-7.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
 
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-3.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-8.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-3.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-8.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
 
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-4.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-9.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-4.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-9.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
 
                                 <!-- Slide -->
                                 <div class="swiper-slide">
-                                    <a href="images/screenshot-5.jpg" class="popup-link" data-effect="fadeIn">
-                                        <img class="img-fluid" src="images/screenshot-10.jpg" alt="alternative">
+                                    <a href="outros/app-assets/images/screenshot-5.jpg" class="popup-link" data-effect="fadeIn">
+                                        <img class="img-fluid" src="outros/app-assets/images/screenshot-10.jpg" alt="alternative">
                                     </a>
                                 </div>
                                 <!-- end of slide -->
-                                
+
                             </div> <!-- end of swiper-wrapper -->
 
                             <!-- Add Arrows -->
@@ -623,11 +623,11 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="image-container">
-                        <img class="img-fluid" src="images/customer-logo-1.png" alt="alternative">
-                        <img class="img-fluid" src="images/customer-logo-2.png" alt="alternative">
-                        <img class="img-fluid" src="images/customer-logo-3.png" alt="alternative">
-                        <img class="img-fluid" src="images/customer-logo-4.png" alt="alternative">
-                        <img class="img-fluid" src="images/customer-logo-5.png" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/customer-logo-1.png" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/customer-logo-2.png" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/customer-logo-3.png" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/customer-logo-4.png" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/customer-logo-5.png" alt="alternative">
                     </div> <!-- end of image-container -->
                 </div> <!-- end of col -->
             </div> <!-- end of row -->
@@ -685,7 +685,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    
+
                     <!-- Counter -->
                     <div id="counter">
                         <div class="cell">
@@ -729,7 +729,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="image-container">
-                        <img class="img-fluid" src="images/download-iphone.png" alt="alternative">
+                        <img class="img-fluid" src="outros/app-assets/images/download-iphone.png" alt="alternative">
                     </div> <!-- end of image-container -->
                     <p class="p-large">Do you feel like you're wasting time with small stuff instead of working towards your goals? Start using Sync to organize your time and get a grip on your personal development</p>
                     <a class="btn-solid-lg" href="#your-link"><i class="fab fa-apple"></i>DOWNLOAD</a>
@@ -738,19 +738,19 @@
             </div> <!-- end of row -->
         </div> <!-- end of container -->
         <div class="deco-white-circle-1">
-            <img src="images/decorative-white-circle.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-white-circle.svg" alt="alternative">
         </div> <!-- end of deco-white-circle-1 -->
         <div class="deco-white-circle-2">
-            <img src="images/decorative-white-circle.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-white-circle.svg" alt="alternative">
         </div> <!-- end of deco-white-circle-2 -->
         <div class="deco-blue-circle">
-            <img src="images/decorative-blue-circle.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-blue-circle.svg" alt="alternative">
         </div> <!-- end of deco-blue-circle -->
         <div class="deco-yellow-circle">
-            <img src="images/decorative-yellow-circle.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-yellow-circle.svg" alt="alternative">
         </div> <!-- end of deco-yellow-circle -->
         <div class="deco-green-diamond">
-            <img src="images/decorative-green-diamond.svg" alt="alternative">
+            <img src="outros/app-assets/images/decorative-green-diamond.svg" alt="alternative">
         </div> <!-- end of deco-yellow-circle -->
     </div> <!-- end of basic-3 -->
     <!-- end of download -->
@@ -827,7 +827,7 @@
                 </div> <!-- end of col -->
             </div> <!-- end of row -->
         </div> <!-- end of container -->
-    </div> <!-- end of footer -->  
+    </div> <!-- end of footer -->
     <!-- end of footer -->
 
 
@@ -840,10 +840,10 @@
                 </div> <!-- end of col -->
             </div> <!-- enf of row -->
         </div> <!-- end of container -->
-    </div> <!-- end of copyright --> 
+    </div> <!-- end of copyright -->
     <!-- end of copyright -->
-    
-    	
+
+
     <!-- Scripts -->
     <script src="js/jquery.min.js"></script> <!-- jQuery for Bootstrap's JavaScript plugins -->
     <script src="js/popper.min.js"></script> <!-- Popper tooltip library for Bootstrap -->

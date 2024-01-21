@@ -8,6 +8,7 @@ use App\Models\Empresas;
 use App\Models\fluxo_caixa;
 use App\Models\RetornoPagamento;
 use App\Models\UsuarioAssinatura;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\Servicos;
 use App\Models\Clientes;
@@ -438,11 +439,40 @@ class OrdemServicosController extends Controller
      * @param  \App\Models\OrdemServicos  $ordemServicos
      * @return \Illuminate\Http\Response
      */
-    public function edit(OrdemServicos $ordemServicos)
+    public function gerarPDF($id, $inicio, $fim = null, $funcionario_id = null)
     {
-        //
-    }
+        $user = Auth::user();
+        $dados = [];
 
+        $funcionario = funcionarios::query()->find($funcionario_id);
+        $administrador = User::query()->find($id);
+        $empresa = Empresas::query()->find($administrador->empresa_id);
+        $query = DB::table('ordem_servicos');
+        $this->applyDateFilters($query, $inicio, $fim);
+        $this->applyUserFilters($query, $user, $id, $funcionario_id);
+        $comissao = $funcionario->comissao / 100;
+        $total = 0;
+        $os = $query->orderBy('id', 'desc')->pluck("id");
+        $caixa = fluxo_caixa::query()->whereIn("os_id", $os)->get();
+        foreach ($caixa as $registro){
+            $registro->valor_receber = "R$ ". number_format((($registro->valor / 100) * ($comissao / 100)), 2, ",", ".");
+            $total += (($registro->valor / 100) * ($comissao / 100));
+        }
+       $total = "R$ ". number_format($total, 2, ",", ".");
+        $data = [
+            "caixa" =>  $caixa,
+            "funcionario" => $funcionario,
+            "empresa" => $empresa,
+            "comissao" => $comissao,
+            "inicio" => date("d/m/Y", strtotime($inicio)),
+            "fim" => date("d/m/Y", strtotime($fim)),
+            "total" => $total
+        ];
+
+        $pdf = PDF::loadView('outros.recibo', $data);
+        return $pdf->stream('recibo.pdf', array('Content-Type' => 'application/pdf'));
+        //return $pdf->download('recibo.pdf');
+    }
     public function relatorio($id, $inicio = null, $fim = null)
     {
         $data = [];

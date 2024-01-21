@@ -470,8 +470,8 @@ class OrdemServicosController extends Controller
         ];
 
         $pdf = PDF::loadView('outros.recibo', $data);
-        return $pdf->stream('recibo.pdf', array('Content-Type' => 'application/pdf'));
-        //return $pdf->download('recibo.pdf');
+        ////return $pdf->stream('recibo.pdf', array('Content-Type' => 'application/pdf'));
+        return $pdf->download('recibo.pdf');
     }
     public function relatorio($id, $inicio = null, $fim = null)
     {

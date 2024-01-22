@@ -196,13 +196,16 @@ class OrdemServicosController extends Controller
             }
             $post['id_servico'] = 0;
 
-
+            $post['valor'] = 0;
             $os =  OrdemServicos::create($post);
             $post['os_id'] = $os->id;
             foreach ($os_servicos as $id_servico) {
+                $valor_temp = Servicos::query()->where('id', $id_servico)->first()->valor;
+                $post['valor'] = $valor_temp;
                 $data = array(
                     "os_id"      => $os->id,
-                    "id_servico" => $id_servico
+                    "id_servico" => $id_servico,
+                    "valor" =>$valor_temp
                 );
                 ordem_servico_servico::create($data);
             }
@@ -224,26 +227,6 @@ class OrdemServicosController extends Controller
             echo ($e->getMessage()." linha ". $e->getLine(). " arquivo ". $e->getFile());
         }
 
-    }
-    public function remarketing($post)
-    {
-        //
-        $post['situacao'] = 5;
-        $remarketing = $post['remarketing'];
-        $post['remarketing'] = 0;
-        $post['previsao_os'] = date('Y-m-d H:i:s', strtotime("+$remarketing days", strtotime($post['inicio_os'])));
-        $post['inicio_os'] = date('Y-m-d H:i:s', strtotime("+$remarketing days", strtotime($post['inicio_os'])));
-        $os_servicos = $post['id_servico'];
-        $post['id_servico'] = 0;
-        $os = OrdemServicos::create($post);
-        $this->addReceita($post);
-        foreach ($os_servicos as $id_servico) {
-            $data = array(
-                "os_id"      => $os->id,
-                "id_servico" => $id_servico
-            );
-            ordem_servico_servico::create($data);
-        }
     }
     public function getServico($id)
     {
@@ -297,11 +280,7 @@ class OrdemServicosController extends Controller
     {
         $data['cliente_id'] = $data['id_cliente'];
         $data['os_id'] = $data['os_id'];
-        $data['valor'] = 0;
-        foreach ($data['id_servico'] as $id_servico) {
-            $servico = $this->getServico($id_servico);
-            $data['valor'] += $servico->valor;
-        }
+
         $data['nome'] = "Ordem de Serviço #" . $data['os_id'];
         $data['produto_id'] = null;
 
@@ -575,18 +554,13 @@ $receita_cliente = DB::select("
      */
     public function update(Request $request,  $ordemServicos)
     {
-        //
-
         $dados = $request->all();
         $os_servicos = $dados['id_servico'];
         $dados['id_servico'] = 0;
         $dados['inicio_os'] = $dados['inicio_os']." ".$dados['inicio_os_time'];
         $dados['previsao_os'] =$dados['previsao_os']." ".$dados['previsao_os_time'];
-        //dd($dados);
         ordem_servico_servico::where('os_id', $ordemServicos)->delete();
-        //OrdemServicos::find($ordemServicos)->first()->fill($dados)->save();
         $OrdemServicos = OrdemServicos::find($ordemServicos);
-
         $OrdemServicos->fill($dados);
         $OrdemServicos->save();
         $valor_total = 0;
@@ -595,17 +569,16 @@ $receita_cliente = DB::select("
             $valor_total += $servico->valor;
             $data = array(
                 "os_id"      => $ordemServicos,
-                "id_servico" => $id_servico
+                "id_servico" => $id_servico,
+                'valor' => $servico->valor
             );
             ordem_servico_servico::create($data);
         }
         $caixa = fluxo_caixa::where('os_id', $ordemServicos)->first();
         if($caixa){
             $caixa->valor = $valor_total;
-
             $caixa->save();
         }
-
 
         return response()->json(
             [

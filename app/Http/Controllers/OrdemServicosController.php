@@ -245,20 +245,16 @@ class OrdemServicosController extends Controller
 
         $os = OrdemServicos::where('id',$ordemServicos)->first();
         $ids_servicos = ordem_servico_servico::where('os_id', $ordemServicos)->select('id_servico')->get();
-        $os['ids_servicos'] =  $ids_servicos ;
-        $servicos = [];
+
         $inicio_os = explode(" ",  $os["inicio_os"]);
         $previsao_os = explode(" ",  $os["previsao_os"]);
         $os["inicio_os"] = $inicio_os[0];
         $os["inicio_os_time"] =$inicio_os[1];
         $os["previsao_os"] =$previsao_os[0];
         $os["previsao_os_time"] =$previsao_os[1];
-        foreach($ids_servicos as  $id){
 
-            $servicos[]= Servicos::where('id',$id['id_servico'])->first();
-        }
 
-        $os['servicos'] =  $servicos ;
+        $os['servicos'] =  Servicos::whereIn('id',$ids_servicos)->get();
         $os['cliente'] = Clientes::where('id', $os->id_cliente)->get();
         if($os->id_funcionario){
             $os['funcionario'] = funcionarios::where('id', $os->id_funcionario)->get();
@@ -421,8 +417,6 @@ class OrdemServicosController extends Controller
     public function gerarPDF($id, $inicio, $fim = null, $funcionario_id = null)
     {
         $user = Auth::user();
-        $dados = [];
-
         $funcionario = funcionarios::query()->find($funcionario_id);
         $administrador = User::query()->find($id);
         $empresa = Empresas::query()->find($administrador->empresa_id);
@@ -447,9 +441,7 @@ class OrdemServicosController extends Controller
             "fim" => date("d/m/Y", strtotime($fim)),
             "total" => $total
         ];
-
         $pdf = PDF::loadView('outros.recibo', $data);
-        ////return $pdf->stream('recibo.pdf', array('Content-Type' => 'application/pdf'));
         return $pdf->download('recibo.pdf');
     }
     public function relatorio($id, $inicio = null, $fim = null)
@@ -459,43 +451,35 @@ class OrdemServicosController extends Controller
             $inicio  = date("Y-m-01");
             $fim     = date("Y-m-31");
         }
-
-        $quantidade_os_funcionario = DB::select("
-    SELECT funcionarios.nome,funcionarios.id ,COUNT(ordem_servicos.id) as total_os
-    FROM funcionarios
-    JOIN ordem_servicos ON funcionarios.id = ordem_servicos.id_funcionario
-    WHERE ordem_servicos.user_id = ?
-        AND ordem_servicos.created_at >= '$inicio 00:00:00' and ordem_servicos.situacao = 1
-        AND ordem_servicos.created_at <= '$fim 23:59:59'
-    GROUP BY funcionarios.nome, funcionarios.id
-", [$id]);
-
-$receita_funcionario = DB::select("
-    SELECT funcionarios.nome, funcionarios.id ,SUM(servicos.valor) as receita_total,
-           SUM(CASE WHEN ordem_servicos.situacao = 1 THEN servicos.valor * funcionarios.comissao / 100 ELSE 0 END) as comissao_funcionario
-    FROM funcionarios
-    JOIN ordem_servicos ON funcionarios.id = ordem_servicos.id_funcionario
-    JOIN ordem_servico_servicos ON ordem_servicos.id = ordem_servico_servicos.os_id
-    JOIN servicos ON ordem_servico_servicos.id_servico = servicos.id
-    WHERE ordem_servicos.user_id = ? and ordem_servicos.situacao = 1
-        AND ordem_servicos.created_at >= '$inicio 00:00:00'
-        AND ordem_servicos.created_at <= '$fim 23:59:59'
-    GROUP BY funcionarios.nome, funcionarios.id
-", [$id]);
-
-
-$receita_cliente = DB::select("
-    SELECT clientes.nome_f, SUM(servicos.valor) as total_valor
-    FROM clientes
-    JOIN ordem_servicos ON clientes.id = ordem_servicos.id_cliente
-    JOIN ordem_servico_servicos ON ordem_servicos.id = ordem_servico_servicos.os_id
-    JOIN servicos ON ordem_servico_servicos.id_servico = servicos.id
-    WHERE ordem_servicos.user_id = ?
-        AND ordem_servicos.created_at >= ?
-        AND ordem_servicos.created_at <= ?  and ordem_servicos.situacao = 1
-    GROUP BY clientes.nome_f
-", [$id, $inicio . ' 00:00:00', $fim . ' 23:59:59']);
-
+        $quantidade_os_funcionario = DB::table('funcionarios')
+            ->select('funcionarios.nome', 'funcionarios.id', DB::raw('COUNT(ordem_servicos.id) as total_os'))
+            ->join('ordem_servicos', 'funcionarios.id', '=', 'ordem_servicos.id_funcionario')
+            ->where('ordem_servicos.user_id', '=', $id)
+            ->where('ordem_servicos.situacao', '=', 1)
+            ->whereBetween('ordem_servicos.created_at', ["$inicio 00:00:00", "$fim 23:59:59"])
+            ->groupBy('funcionarios.nome', 'funcionarios.id')
+            ->get();
+        $receita_funcionario = DB::table('funcionarios')
+            ->select('funcionarios.nome', 'funcionarios.id', DB::raw('SUM(servicos.valor) as receita_total'),
+                DB::raw('SUM(CASE WHEN ordem_servicos.situacao = 1 THEN servicos.valor * funcionarios.comissao / 100 ELSE 0 END) as comissao_funcionario'))
+            ->join('ordem_servicos', 'funcionarios.id', '=', 'ordem_servicos.id_funcionario')
+            ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')
+            ->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
+            ->where('ordem_servicos.user_id', '=', $id)
+            ->where('ordem_servicos.situacao', '=', 1)
+            ->whereBetween('ordem_servicos.created_at', ["$inicio 00:00:00", "$fim 23:59:59"])
+            ->groupBy('funcionarios.nome', 'funcionarios.id')
+            ->get();
+        $receita_cliente = DB::table('clientes')
+            ->select('clientes.nome_f', DB::raw('SUM(servicos.valor) as total_valor'))
+            ->join('ordem_servicos', 'clientes.id', '=', 'ordem_servicos.id_cliente')
+            ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')
+            ->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
+            ->where('ordem_servicos.user_id', '=', $id)
+            ->where('ordem_servicos.situacao', '=', 1)
+            ->whereBetween('ordem_servicos.created_at', [$inicio . ' 00:00:00', $fim . ' 23:59:59'])
+            ->groupBy('clientes.nome_f')
+            ->get();
         $resultados = DB::table('ordem_servicos')
         ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')
         ->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
@@ -506,39 +490,25 @@ $receita_cliente = DB::select("
         ->orderBy('ano', 'asc')
         ->orderBy('mes', 'asc')
         ->get();
-
-    $resultadosFormatados = [];
-
-    // Cria um array com todos os meses do ano
-    $mesesDoAno = array(
-        'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
-        'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
-    );
-
-    foreach ($resultados as $resultado) {
-        $ano = $resultado->ano;
-        $mes = Carbon::createFromFormat('!m', $resultado->mes)->locale('pt_BR')->monthName;
-        $valorTotal = $resultado->valor_total;
-
-        if (!isset($resultadosFormatados[$ano])) {
-            $resultadosFormatados[$ano] = array_fill_keys($mesesDoAno, 0);
+        $resultadosFormatados = [];
+        $mesesDoAno = array(
+            'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+            'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+        );
+        foreach ($resultados as $resultado) {
+            $ano = $resultado->ano;
+            $mes = Carbon::createFromFormat('!m', $resultado->mes)->locale('pt_BR')->monthName;
+            $valorTotal = $resultado->valor_total;
+            if (!isset($resultadosFormatados[$ano])) {
+                $resultadosFormatados[$ano] = array_fill_keys($mesesDoAno, 0);
+            }
+            $resultadosFormatados[$ano][$mes] = $valorTotal;
         }
-
-        $resultadosFormatados[$ano][$mes] = $valorTotal;
-    }
-
-    // Ordena os meses
-    foreach ($resultadosFormatados as &$resultadosAno) {
-        uksort($resultadosAno, function ($mes1, $mes2) use ($mesesDoAno) {
-            return array_search($mes1, $mesesDoAno) - array_search($mes2, $mesesDoAno);
-        });
-    }
-
-    // Agora $resultadosFormatados contém os valores para todos os meses, incluindo aqueles com valor 0 e ordenados corretamente
-
-
-
-
+        foreach ($resultadosFormatados as &$resultadosAno) {
+            uksort($resultadosAno, function ($mes1, $mes2) use ($mesesDoAno) {
+                return array_search($mes1, $mesesDoAno) - array_search($mes2, $mesesDoAno);
+            });
+        }
         $data['receita_por_funcionario'] = $receita_funcionario;
         $data['quantidade_os_funcionario'] = $quantidade_os_funcionario;
         $data['receita_por_cliente'] = $receita_cliente;

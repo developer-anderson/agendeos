@@ -480,6 +480,15 @@ class OrdemServicosController extends Controller
             ->whereBetween('ordem_servicos.created_at', [$inicio . ' 00:00:00', $fim . ' 23:59:59'])
             ->groupBy('clientes.nome_f')
             ->get();
+        $receita_produtos = DB::table('fluxo_caixas')
+            ->select('produtos.nome', DB::raw('SUM(fluxo_caixas.valor) as total_valor'))
+            ->join('fluxo_caixas_produtos', 'fluxo_caixas_produtos.fluxo_caixas_id', '=', 'fluxo_caixas.id')
+            ->join('produtos', 'produtos.id', '=', 'fluxo_caixas_produtos.produto_id')
+            ->where('produtos.user_id', '=', $id)
+            ->where('fluxo_caixas.user_id', '=', $id)
+            ->whereBetween('fluxo_caixas.created_at', [$inicio . ' 00:00:00', $fim . ' 23:59:59'])
+            ->groupBy('produtos.nome')
+            ->get();
         $resultados = DB::table('ordem_servicos')
         ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')
         ->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
@@ -512,6 +521,7 @@ class OrdemServicosController extends Controller
         $data['receita_por_funcionario'] = $receita_funcionario;
         $data['quantidade_os_funcionario'] = $quantidade_os_funcionario;
         $data['receita_por_cliente'] = $receita_cliente;
+        $data['receita_por_produto'] = $receita_produtos;
         $data['faturamento'] = $resultadosFormatados;
         return response()->json([$data], 200);
     }

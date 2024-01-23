@@ -212,17 +212,7 @@ class OrdemServicosController extends Controller
 
             $post['id_servico'] = $os_servicos;
             $this->addReceita($post);
-    /*
-            if ($post['remarketing']) {
-                $this->remarketing($post);
-            }*/
-            //$this->notifyClient($os->id);
-            return [
-                "erro" => false,
-                'id' =>$os->id,
-                'zap' => $this->notifyClient($os->id),
-                "mensagem" => "Ordem de Servicos com  sucesso!"
-            ];
+            return response()->json( ["erro" => false, 'id' =>$os->id, 'zap' => $this->notifyClient($os->id), "mensagem" => "Ordem de Servicos com  sucesso!"], 200);
         }catch( Exception $e){
             echo ($e->getMessage()." linha ". $e->getLine(). " arquivo ". $e->getFile());
         }

@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/upload', [UploadController::class, 'upload']);
     Route::get('fluxo_caixa/getall/{id}/{inicio}/{fim}/{filter?}', [FluxoCaixaController::class, 'getall']);
     Route::get('fluxo_caixa/show/{fluxo_caixa}', [FluxoCaixaController::class, 'show']);
+    Route::get('fluxo_caixa/saldodia', [FluxoCaixaController::class, 'saldoDia']);
     Route::post('fluxo_caixa/insert', [FluxoCaixaController::class, 'store']);
     Route::put('fluxo_caixa/update/{fluxo_caixa}',[FluxoCaixaController::class, 'update']);
     Route::delete('fluxo_caixa/destroy{fluxo_caixa}', [FluxoCaixaController::class, 'destroy']);

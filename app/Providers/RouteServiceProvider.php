@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Laravel\Telescope\Telescope;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -60,4 +61,12 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });
     }
+
+    protected function telescopeMiddleware()
+    {
+        $this->app->make(\Laravel\Telescope\Http\Middleware\Authorize::class);
+
+    }
+
+
 }

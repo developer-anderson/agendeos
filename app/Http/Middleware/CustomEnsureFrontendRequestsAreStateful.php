@@ -20,11 +20,11 @@ class CustomEnsureFrontendRequestsAreStateful
     {
         $allowedRoutesWithoutToken = ['login', 'retornoPagamento', 'planosGetAll', 'agendamentosGetAll', 'planosShow', 'agendamentoShow','getHorariosDisponiveis',
             'empresacriar', 'empresaatualizar','token_senha' ,'cadastrar', 'password.reset.resetPassword', 'segmentoAll', 'segmentoShow', 'trocar_senha', 'criarAssinatura'];
-
+        $token = $request->bearerToken() ?: $request->header('X-Authorization');
         // Verifica se a rota está na lista de rotas permitidas sem token
         if (!in_array($request->route()->getName(), $allowedRoutesWithoutToken)) {
             // Verifica se o token está presente no cabeçalho Authorization ou X-Authorization
-            $token = $request->bearerToken() ?: $request->header('X-Authorization');
+
             if (!$token) {
                 return response()->json(['error' => true, 'message' => 'Token de autenticação ausente ou inválido.'], 401);
             }

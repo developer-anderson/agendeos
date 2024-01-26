@@ -18,9 +18,11 @@ class CustomEnsureFrontendRequestsAreStateful
      */
     public function handle(Request $request, Closure $next)
     {
+
         $allowedRoutesWithoutToken = ['login', 'retornoPagamento', 'planosGetAll', 'agendamentosGetAll', 'planosShow', 'agendamentoShow','getHorariosDisponiveis',
             'empresacriar', 'empresaatualizar','token_senha' ,'cadastrar', 'password.reset.resetPassword', 'segmentoAll', 'segmentoShow', 'trocar_senha', 'criarAssinatura'];
         $token = $request->bearerToken() ?: $request->header('X-Authorization');
+
         // Verifica se a rota está na lista de rotas permitidas sem token
         if (!in_array($request->route()->getName(), $allowedRoutesWithoutToken)) {
             // Verifica se o token está presente no cabeçalho Authorization ou X-Authorization
@@ -37,7 +39,6 @@ class CustomEnsureFrontendRequestsAreStateful
                 return response()->json(['error' => true, 'message' => 'Token expirado.'], 401);
             }
         }
-
         return $next($request);
     }
 }

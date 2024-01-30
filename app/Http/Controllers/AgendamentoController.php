@@ -40,8 +40,7 @@ class AgendamentoController extends Controller
                     ->orWhere('email', 'like', '%' . $filter . '%');
             });
         }
-
-        $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens')->orderBy('id', 'desc')->paginate();
+        $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens', 'agendamentoItens.funcionario', 'agendamentoItens.servico')->orderBy('id', 'desc')->paginate();
 
 
         return response()->json($result->load('cliente', 'situacao', 'formaPagamento', 'funcionario'), 200);
@@ -109,8 +108,8 @@ class AgendamentoController extends Controller
                     AgendamentoItem::create([
                         'servicos_id' => $item['servicos_id'],
                         'funcionarios_id' => $item['funcionarios_id'],
-                        'quantidade' => $item['quantidade'],
-                        'valor' => $item['valor'],
+                        'quantidade' => $item['quantidade'] ?? 1,
+                        'valor' => $item['valor'] ?? Servicos::query()->find($item['servicos_id'])->valor,
                         'agendamento_id' => $agendamento->id,
                     ]);
                 }
@@ -135,14 +134,23 @@ class AgendamentoController extends Controller
      * @param  \App\Models\Agendamento  $agendamento
      * @return \Illuminate\Http\Response
      */
-    public function show($id,$agendamento)
+    public function show($id, $agendamentoId)
     {
-        $data =  Agendamento::where('id', $agendamento)->where('user_id', $id)->first();
-        $itens = AgendamentoItem::where('agendamento_id', $data->id)
-        ->with('agendamento', 'funcionario', 'servico', 'funcionario')
-        ->get();
-        return response()->json(['agendamento' => $data->load('cliente', 'situacao', 'formaPagamento', 'funcionario'), 'itens'=> $itens], 200);
+        $agendamento = Agendamento::where('id', $agendamentoId)
+            ->where('user_id', $id)
+            ->with('cliente', 'situacao', 'formaPagamento', 'funcionario')
+            ->firstOrFail();
+
+        $itens = AgendamentoItem::where('agendamento_id', $agendamento->id)
+            ->with('funcionario', 'servico')
+            ->get();
+
+        return response()->json([
+            'agendamento' => $agendamento,
+            'itens' => $itens
+        ], 200);
     }
+
 
     public function updateStatusAgendamento(Agendamento $agendamento, $situacao_id){
         $agendamento->update(['situacao_id' => $situacao_id]);

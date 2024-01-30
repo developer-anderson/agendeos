@@ -40,10 +40,10 @@ class AgendamentoController extends Controller
                     ->orWhere('email', 'like', '%' . $filter . '%');
             });
         }
-        $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens', 'agendamentoItens.funcionario', 'agendamentoItens.servico')->orderBy('id', 'desc')->paginate();
+        $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens', 'agendamentoItens.servico')->orderBy('id', 'desc')->paginate();
 
 
-        return response()->json($result->load('cliente', 'situacao', 'formaPagamento', 'funcionario'), 200);
+        return response()->json($result, 200);
     }
     public function adicionarItens(Request $request, $agendamentoId)
     {
@@ -64,7 +64,7 @@ class AgendamentoController extends Controller
         foreach ($itens as $item) {
             AgendamentoItem::create([
                 'servicos_id' => $item['servicos_id'],
-                'funcionarios_id' => $item['funcionarios_id'],
+                'funcionarios_id' => $item['funcionarios_id'] ?? 0,
                 'agendamento_id' => $agendamento->id,
             ]);
         }
@@ -107,7 +107,7 @@ class AgendamentoController extends Controller
                 foreach ($itens as $item) {
                     AgendamentoItem::create([
                         'servicos_id' => $item['servicos_id'],
-                        'funcionarios_id' => $item['funcionarios_id'],
+                        'funcionarios_id' => $item['funcionarios_id'] ?? 0,
                         'quantidade' => $item['quantidade'] ?? 1,
                         'valor' => $item['valor'] ?? Servicos::query()->find($item['servicos_id'])->valor,
                         'agendamento_id' => $agendamento->id,

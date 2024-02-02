@@ -508,12 +508,12 @@ class OrdemServicosController extends Controller
                 return array_search($mes1, $mesesDoAno) - array_search($mes2, $mesesDoAno);
             });
         }
-        $fechamento_caixa = fluxo_caixa::select('forma_pagamento.nome as forma_pagamento', DB::raw('SUM(fluxo_caixa.valor) as valor_total'))
-            ->join('ordem_servicos', 'fluxo_caixa.os_id', '=', 'ordem_servicos.id')
+        $fechamento_caixa = fluxo_caixa::select('forma_pagamento.nome as forma_pagamento', DB::raw('SUM(fluxo_caixas.valor) as valor_total'))
+            ->join('ordem_servicos', 'fluxo_caixas.os_id', '=', 'ordem_servicos.id')
             ->join('forma_pagamento', 'ordem_servicos.id_forma_pagamento', '=', 'forma_pagamento.id')
             ->where('ordem_servicos.user_id', $id)
-            ->where('fluxo_caixa.user_id', $id)
-            ->whereBetween('fluxo_caixa.data', [$inicio, $fim])
+            ->where('fluxo_caixas.user_id', $id)
+            ->whereBetween('fluxo_caixas.data', [$inicio, $fim])
             ->groupBy('forma_pagamento.nome')
             ->get();
         $data['receita_por_funcionario'] = $receita_funcionario;

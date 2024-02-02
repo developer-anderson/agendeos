@@ -11,6 +11,8 @@ use App\Models\Tipo;
 use Illuminate\Http\Request;
 use App\Models\FormaPagamento;
 use App\Models\Situacao;
+use Prophecy\Exception\Exception;
+
 class FluxoCaixaController extends Controller
 {
 
@@ -52,14 +54,15 @@ class FluxoCaixaController extends Controller
         }
 
         $post['valor'] = $post['valor']  * $post['quantidade'];
-        $produtos_ids = $post['produtos_id'];
-        $post['produtos_id'] = 0;
+        $produtos_ids = $post['produto_id'];
+        $post['produto_id'] = 0;
         $fluxo_caixa = fluxo_caixa::create( $post);
-        foreach ($produtos_ids as $item) {
-            $produto = Produtos::query()->where('id', $item->produto_id)->first();
+
+        foreach ($produtos_ids as $produto_id) {
+            $produto = Produtos::query()->where('id', $produto_id)->first();
             $data = array(
                 "fluxo_caixas_id"      => $fluxo_caixa->id,
-                "produto_id" => $item->produto_id,
+                "produto_id" => $produto_id,
                 "valor" =>$produto->preco * $item->quantidade ?? 1
             );
             $produto->estoque = ($produto->estoque - ($item->quantidade ?? 1) );

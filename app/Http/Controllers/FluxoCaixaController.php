@@ -75,7 +75,8 @@ class FluxoCaixaController extends Controller
     {
         //
         $fluxo_caixa = fluxo_caixa::where('id',$fluxo_caixa)->first();
-        $ids_produtos = FluxoCaixasProdutos::where('fluxo_caixas_id', $fluxo_caixa)->select('produto_id')->get();
+        $ids_produtos = FluxoCaixasProdutos::where('fluxo_caixas_id', $fluxo_caixa->id)->pluck('produto_id');
+        $fluxo_caixa->ids_produtos = $ids_produtos;
         $fluxo_caixa['situacao'] = Situacao::where('referencia_id',$fluxo_caixa->situacao)->select("referencia_id as id", "nome")->first();
         $fluxo_caixa->forma_pagamento = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first() ?? null;
         $fluxo_caixa->valor_final = $fluxo_caixa->valor - ($fluxo_caixa->desconto ?? 0.00);

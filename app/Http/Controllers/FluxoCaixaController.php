@@ -52,15 +52,17 @@ class FluxoCaixaController extends Controller
         }
 
         $post['valor'] = $post['valor']  * $post['quantidade'];
+        $produtos_ids = $post['produtos_id'];
+        $post['produtos_id'] = 0;
         $fluxo_caixa = fluxo_caixa::create( $post);
-        foreach ($post['produtos_id'] as $item) {
+        foreach ($produtos_ids as $item) {
             $produto = Produtos::query()->where('id', $item->produto_id)->first();
             $data = array(
                 "fluxo_caixas_id"      => $fluxo_caixa->id,
                 "produto_id" => $item->produto_id,
-                "valor" =>$produto->preco * $item->quantidade
+                "valor" =>$produto->preco * $item->quantidade ?? 1
             );
-            $produto->estoque = ($produto->estoque -$item->quantidade );
+            $produto->estoque = ($produto->estoque - ($item->quantidade ?? 1) );
             $produto->save();
             FluxoCaixasProdutos::create($data);
         }
@@ -70,10 +72,12 @@ class FluxoCaixaController extends Controller
     {
         //
         $fluxo_caixa = fluxo_caixa::where('id',$fluxo_caixa)->first();
+        $ids_produtos = FluxoCaixasProdutos::where('fluxo_caixas_id', $fluxo_caixa)->select('produto_id')->get();
         $fluxo_caixa['situacao'] = Situacao::where('referencia_id',$fluxo_caixa->situacao)->select("referencia_id as id", "nome")->first();
         $fluxo_caixa->forma_pagamento = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first() ?? null;
         $fluxo_caixa->valor_final = $fluxo_caixa->valor - ($fluxo_caixa->desconto ?? 0.00);
         $fluxo_caixa->cliente = Clientes::where('id', $fluxo_caixa->cliente_id)->first();
+        $fluxo_caixa->produtos =  Produtos::whereIn('id',$ids_produtos)->get();
         $fluxo_caixa->os = OrdemServicos::where('id', $fluxo_caixa->os_id)->first();
         $fluxo_caixa->tipo = Tipo::where('id', $fluxo_caixa->tipo_id)->first();
         if($fluxo_caixa->os and !$fluxo_caixa->forma_pagamento){

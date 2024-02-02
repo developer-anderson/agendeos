@@ -65,7 +65,7 @@ class FluxoCaixaController extends Controller
                 "produto_id" => $produto_id,
                 "valor" =>$produto->preco * $item->quantidade ?? 1
             );
-            $produto->estoque = ($produto->estoque - ($item->quantidade ?? 1) );
+            $produto->estoque = ($produto->estoque - 1);
             $produto->save();
             FluxoCaixasProdutos::create($data);
         }

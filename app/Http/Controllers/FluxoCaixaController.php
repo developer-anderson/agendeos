@@ -63,7 +63,7 @@ class FluxoCaixaController extends Controller
             $data = array(
                 "fluxo_caixas_id"      => $fluxo_caixa->id,
                 "produto_id" => $produto_id,
-                "valor" =>$produto->preco * $item->quantidade ?? 1
+                "valor" =>$produto->preco
             );
             $produto->estoque = ($produto->estoque - 1);
             $produto->save();

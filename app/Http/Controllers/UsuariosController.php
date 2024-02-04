@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Empresas;
+use App\Models\fluxo_caixa;
 use App\Models\funcionarios;
 use App\Models\OrdemServicos;
+use App\Models\Produtos;
 use App\Models\Servicos;
 use Illuminate\Http\Request;
 use App\Models\Usuarios;
@@ -67,6 +69,8 @@ class UsuariosController extends Controller
              Servicos::query()->where("user_id", $id)->delete();
              funcionarios::query()->where("user_id", $id)->delete();
              OrdemServicos::query()->where("user_id", $id)->delete();
+             Produtos::query()->where("user_id", $id)->delete();
+             fluxo_caixa::query()->where("user_id", $id)->delete();
          }
 
 

@@ -63,12 +63,13 @@ class UsuariosController extends Controller
          $usuario =  Usuarios::query()->where("id", $id)->first();
          if($usuario){
              Empresas::query()->where("id", $usuario->empresa_id)->delete();
+             $usuario->delete();
+             Servicos::query()->where("user_id", $id)->delete();
+             funcionarios::query()->where("user_id", $id)->delete();
+             OrdemServicos::query()->where("user_id", $id)->delete();
          }
 
-         $usuario->delete();
-         Servicos::query()->where("user_id", $id)->delete();
-         funcionarios::query()->where("user_id", $id)->delete();
-         OrdemServicos::query()->where("user_id", $id)->delete();
+
 
         $response = [
             "erro" => false,

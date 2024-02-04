@@ -62,6 +62,7 @@ class UsuariosController extends Controller
     public function exlcuirTodosDados($id){
          $usuario =  Usuarios::query()->where("id", $id)->first();
          Empresas::query()->where("id", $usuario->empresa_id)->delete();
+         $usuario->delete();
          Servicos::query()->where("user_id", $id)->delete();
          funcionarios::query()->where("user_id", $id)->delete();
          OrdemServicos::query()->where("user_id", $id)->delete();

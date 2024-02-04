@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Empresas;
+use App\Models\funcionarios;
+use App\Models\OrdemServicos;
+use App\Models\Servicos;
 use Illuminate\Http\Request;
 use App\Models\Usuarios;
 class UsuariosController extends Controller
@@ -52,6 +56,19 @@ class UsuariosController extends Controller
         $response = [
             "erro" => false,
             "mensagem" => "Usuário desativado com sucesso!"
+        ];
+        return response()->json($response, 200);
+    }
+    public function exlcuirTodosDados($id){
+         $usuario =  Usuarios::query()->where("id", $id)->first();
+         Empresas::query()->where("id", $usuario->empresa_id)->delete();
+         Servicos::query()->where("user_id", $id)->delete();
+         funcionarios::query()->where("user_id", $id)->delete();
+         OrdemServicos::query()->where("user_id", $id)->delete();
+
+        $response = [
+            "erro" => false,
+            "mensagem" => "Conta excluida com sucesso!"
         ];
         return response()->json($response, 200);
     }

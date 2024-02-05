@@ -516,12 +516,21 @@ class OrdemServicosController extends Controller
             ->whereBetween('fluxo_caixas.data', [$inicio, $fim])
             ->groupBy('forma_pagamento.nome')
             ->get();
+        $receita = fluxo_caixa::where('tipo_id', 1)->where('user_id', $id)->where('situacao', '<>', 6)
+            ->whereBetween('data', [$inicio, $fim])->sum('valor');
+        $desconto = fluxo_caixa::where('tipo_id', 1)->where('user_id', $id)->where('situacao', '<>', 6)
+            ->whereBetween('data', [$inicio, $fim])->sum('desconto');
+        $despesa = fluxo_caixa::where('tipo_id', 2)->where('user_id', $id)->where('situacao', '<>', 6)
+            ->whereBetween('data', [$inicio, $fim])->sum('valor');
         $data['receita_por_funcionario'] = $receita_funcionario;
         $data['quantidade_os_funcionario'] = $quantidade_os_funcionario;
         $data['receita_por_cliente'] = $receita_cliente;
         $data['receita_por_produto'] = $receita_produtos;
         $data['faturamento'] = $resultadosFormatados;
         $data['fechamento_caixa'] = $fechamento_caixa;
+        $data['receita'] = $receita;
+        $data['desconto'] = $desconto;
+        $data['despesa'] = $despesa;
         return response()->json([$data], 200);
     }
     /**

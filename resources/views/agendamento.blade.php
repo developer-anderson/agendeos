@@ -2451,12 +2451,12 @@ be a descendant of the grid when it is being dragged.
                     <div class="card">
                         <h3>Contato</h3>
                         <div class="botoes-contato">
-                            <a href="tel:5571981575883" class="btn-telefone"><i class="fa fa-phone"></i> ({{$estabelecimento->telefone}}</a>
+                            <a href="tel:5571981575883" class="btn-telefone"><i class="fa fa-phone"></i> {{$estabelecimento->telefone}}</a>
                             <a href="{{str_replace(array("-", "(", ")"), "",$estabelecimento->telefone)}}" class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
                                 {{$estabelecimento->telefone}}</a>
                             <a href="{{str_replace(array("-", "(", ")"), "",$estabelecimento->telefone)}}" class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
                                 {{$estabelecimento->telefone}}</a>
-                            <a href="https://instagram.com" class="btn-instagram"><i class="fa fa-instagram"></i>
+                            <a href="{{$estabelecimento->instagram}}" class="btn-instagram"><i class="fa fa-instagram"></i>
                                 Instagram</a>
                             <a href="https://maps.google.com" class="btn-maps"><i class="fa fa-map"></i> Traçar
                                 Rota</a>

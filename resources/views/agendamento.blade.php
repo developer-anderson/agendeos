@@ -2420,27 +2420,27 @@ be a descendant of the grid when it is being dragged.
                             <ul>
                                 <li>
                                     <span class="dia">Seg.</span>
-                                    <span class="horario">08h30 - 15h30</span>
+                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->segunda_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->segunda_horario_fim))}}</span>
                                 </li>
                                 <li>
                                     <span class="dia">Ter.</span>
-                                    <span class="horario">08h30 - 15h30</span>
+                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->terca_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->terca_horario_fim))}}</span>
                                 </li>
                                 <li>
                                     <span class="dia">Qua.</span>
-                                    <span class="horario">08h30 - 15h30</span>
+                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->quarta_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->quarta_horario_fim))}}</span>
                                 </li>
                                 <li>
                                     <span class="dia">Qui.</span>
-                                    <span class="horario">08h30 - 15h30</span>
+                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->quinta_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->quinta_horario_fim))}}</span>
                                 </li>
                                 <li>
                                     <span class="dia">Sex.</span>
-                                    <span class="horario">08h30 - 15h30</span>
+                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->sexta_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->sexta_horario_fim))}}</span>
                                 </li>
                                 <li>
                                     <span class="dia">Sab.</span>
-                                    <span class="horario">08h30 - 15h30</span>
+                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->sabado_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->sabado_horario_fim))}}</span>
                                 </li>
                             </ul>
                         </div>
@@ -2451,12 +2451,11 @@ be a descendant of the grid when it is being dragged.
                     <div class="card">
                         <h3>Contato</h3>
                         <div class="botoes-contato">
-                            <a href="tel:5571981575883" class="btn-telefone"><i class="fa fa-phone"></i> (71)
-                                98157-5883</a>
-                            <a href="https://wa.me/5571981575883" class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
-                                (71) 98157-5883</a>
-                            <a href="https://wa.me/5571981575883" class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
-                                (71) 98157-5883</a>
+                            <a href="tel:5571981575883" class="btn-telefone"><i class="fa fa-phone"></i> ({{$estabelecimento->telefone}}</a>
+                            <a href="{{str_replace(array("-", "(", ")"), "",$estabelecimento->telefone)}}" class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
+                                {{$estabelecimento->telefone}}</a>
+                            <a href="{{str_replace(array("-", "(", ")"), "",$estabelecimento->telefone)}}" class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
+                                {{$estabelecimento->telefone}}</a>
                             <a href="https://instagram.com" class="btn-instagram"><i class="fa fa-instagram"></i>
                                 Instagram</a>
                             <a href="https://maps.google.com" class="btn-maps"><i class="fa fa-map"></i> Traçar

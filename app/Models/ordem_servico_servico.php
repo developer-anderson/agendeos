@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class ordem_servico_servico extends Model
 {
-    protected $fillable = ['os_id', 'id_servico', 'valor'];
+    protected $fillable = ['os_id', 'id_servico', 'valor',"quantidade"];
 }

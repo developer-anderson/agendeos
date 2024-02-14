@@ -237,7 +237,7 @@ class AgendamentoController extends Controller
      */
     public function getHorariosDisponiveis(Request $request, $user_id, $funcionario_id, $data)
     {
-
+        $quantidade = $request->input('quantidade') ?? 1;
         $proprietario = Usuarios::where('id', $user_id)->first();
         $empresa = Empresas::where('id',$proprietario->empresa_id)->first();
         $carbonDate = Carbon::parse($data);
@@ -267,6 +267,9 @@ class AgendamentoController extends Controller
         $intervalo = $horaInicial->diff(new DateTime('00:00:00'));
         $representacaoFormatada = 'PT' . $intervalo->format('%H') . 'H' . $intervalo->format('%I') . 'M';
         $horasASomar = new DateInterval($representacaoFormatada);
+        $horasASomar->h *= $quantidade;
+        $horasASomar->i *= $quantidade;
+        $horasASomar->s *= $quantidade;
         $mediador = $ultimo_horario->format('H:i:s');
         if(isset($agenda_atual_funcionario) && !$agenda_atual_funcionario->isEmpty()){
             foreach ($agenda_atual_funcionario as $agenda){

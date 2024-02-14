@@ -90,8 +90,6 @@ class AgendamentoController extends Controller
 
         $request->validate([
             'nome' => 'required',
-            'email' => 'required|email',
-            'telefone' => 'required',
             'data_agendamento' => 'required',
             'forma_pagamento_id' => 'required',
         ]);
@@ -117,15 +115,16 @@ class AgendamentoController extends Controller
                     ->with('agendamento', 'funcionario', 'servico')
                     ->get();
             }
-
+            return response()->json([
+                "erro" => false,
+                "mensagem" => "Agendamento cadastrado com sucesso!",
+                'id' => $agendamento->id
+            ], 200);
         }
         return response()->json([
-            "erro" => false,
-            "mensagem" => "Agendamento cadastrado com sucesso!",
-            'id' => $agendamento->id,
-            'itens' => $itens,
-            'agendamento' => $agendamento->load('cliente', 'situacao', 'formaPagamento')
-        ], 200);
+            "erro" => true,
+            "mensagem" => "Error",
+        ], 500);
     }
 
     /**

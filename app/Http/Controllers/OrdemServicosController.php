@@ -562,7 +562,7 @@ class OrdemServicosController extends Controller
             );
             ordem_servico_servico::create($data);
         }
-        $caixa = fluxo_caixa::where('os_id', $ordemServicos)->first();
+        $caixa = fluxo_caixa::where('os_id', $OrdemServicos->id)->first();
         if($caixa){
             $caixa->valor = $valor_total;
             $caixa->save();

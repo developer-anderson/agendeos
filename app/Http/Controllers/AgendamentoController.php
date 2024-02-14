@@ -138,17 +138,10 @@ class AgendamentoController extends Controller
     {
         $agendamento = Agendamento::where('id', $agendamentoId)
             ->where('user_id', $id)
-            ->with('cliente', 'situacao', 'formaPagamento', 'funcionario')
-            ->firstOrFail();
+            ->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens', 'agendamentoItens.servico')->orderBy('id', 'desc')
+            ->first();
 
-        $itens = AgendamentoItem::where('agendamento_id', $agendamento->id)
-            ->with('funcionario', 'servico')
-            ->get();
-
-        return response()->json([
-            'agendamento' => $agendamento,
-            'itens' => $itens
-        ], 200);
+        return response()->json($agendamento, 200);
     }
 
 

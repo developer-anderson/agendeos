@@ -31,7 +31,12 @@ class LoginController extends Controller
             $token = $user->createToken('api-token')->plainTextToken;
             $data = [];
             $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')
-            ->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao', 'planos.recursos'])->first();
+            ->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao',
+                    'segunda_horario_inicio', 'segunda_horario_fim', 'terca_horario_inicio', 'terca_horario_fim',
+                    'quarta_horario_inicio', 'quarta_horario_fim','quinta_horario_inicio', 'quinta_horario_fim',
+                    'sexta_horario_inicio', 'sexta_horario_fim', 'sabado_horario_inicio', 'sabado_horario_fim',
+                    'domingo_horario_inicio', 'domingo_horario_fim', "segunda", "terca", "quarta", "quinta","sexta","sabado", "domingo",
+                    'planos.recursos'])->first();
             $data = $vetor;
             $data['recursos'] = json_decode( $data['recursos'] , true);
             $data['receita'] = fluxo_caixa::getAllMoney();

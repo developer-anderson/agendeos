@@ -40,7 +40,7 @@ class AgendamentoController extends Controller
                     ->orWhere('email', 'like', '%' . $filter . '%');
             });
         }
-        $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens', 'agendamentoItens.servico')->orderBy('id', 'desc')->paginate();
+        $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens', 'agendamentoItens.servico')->orderBy('id', 'desc')->get();
 
 
         return response()->json($result, 200);

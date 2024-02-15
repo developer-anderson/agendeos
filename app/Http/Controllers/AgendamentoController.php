@@ -250,10 +250,10 @@ class AgendamentoController extends Controller
             ->select(DB::raw('SEC_TO_TIME(SUM(TIME_TO_SEC(tempo_estimado))) as tempo_total'))
             ->first();
         $horarios = [];
-        $agenda_atual_funcionario = OrdemServicos::where("id_funcionario", $funcionario_id)
+        $agenda_atual_funcionario = Agendamento::where("funcionario_id", $funcionario_id)
             ->where("user_id", $user_id)
-            ->whereDate('inicio_os', '=', $data)
-            ->orderBy("inicio_os", "asc")
+            ->whereDate('data_agendamento', '=', $data)
+            ->orderBy("data_agendamento", "asc")
             ->get();
         $horaInicial = DateTime::createFromFormat('H:i:s', $tempoTotal->tempo_total);
         $intervalo = $horaInicial->diff(new DateTime('00:00:00'));
@@ -270,13 +270,13 @@ class AgendamentoController extends Controller
             }
             while ($ultimo_horario < $horarioFim) {
                 $ultimo_horario->add($horasASomar);
-                $verificadorUm = date("Y-m-d H:i:s", strtotime($data." ".$mediador));
-                $verificadorDois = date("Y-m-d H:i:s", strtotime($data." ".$ultimo_horario->format("H:i:s")));
-                $ordensServicoExists = OrdemServicos::where('user_id', $user_id)
-                    ->where('id_funcionario', $funcionario_id)
-                    ->whereBetween('inicio_os', [$verificadorUm, $verificadorDois])
+                $verificadorUm = date("H:i:s", strtotime($data." ".$mediador));
+                $verificadorDois = date("H:i:s", strtotime($data." ".$ultimo_horario->format("H:i:s")));
+                $agendamentoExists = Agendamento::where('user_id', $user_id)
+                    ->where('funcionario_id', $funcionario_id)
+                    ->whereBetween('hora_agendamento', [$verificadorUm, $verificadorDois])
                     ->exists();
-                if(!$ordensServicoExists ){
+                if(!$agendamentoExists ){
                     $horarios[] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
                 }
                 $mediador = $ultimo_horario->format("H:i:s");

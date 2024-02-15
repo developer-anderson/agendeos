@@ -41,7 +41,7 @@ class Agendamento extends Model
     // Relacionamento com a tabela de situações
     public function situacao()
     {
-        return $this->belongsTo(Situacao::class, 'situacao_id');
+        return $this->belongsTo(Situacao::class, 'situacao_id', 'referencia_id');
     }
     public function funcionario()
     {

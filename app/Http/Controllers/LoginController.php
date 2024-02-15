@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Empresas;
 use App\Models\UsuarioAssinatura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,15 +31,14 @@ class LoginController extends Controller
             $user = Auth::user();
             $token = $user->createToken('api-token')->plainTextToken;
             $data = [];
+
             $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')
             ->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao',
-                    'segunda_horario_inicio', 'segunda_horario_fim', 'terca_horario_inicio', 'terca_horario_fim',
-                    'quarta_horario_inicio', 'quarta_horario_fim','quinta_horario_inicio', 'quinta_horario_fim',
-                    'sexta_horario_inicio', 'sexta_horario_fim', 'sabado_horario_inicio', 'sabado_horario_fim',
-                    'domingo_horario_inicio', 'domingo_horario_fim', "segunda", "terca", "quarta", "quinta","sexta","sabado", "domingo",
                     'planos.recursos'])->first();
+            $empresa = Empresas::query()->where("id", $vetor->empresa_id)->first();
             $data = $vetor;
             $data['recursos'] = json_decode( $data['recursos'] , true);
+            $data["horarios_funcionamento"] = $this->formatarHorariosFuncionamento($empresa);
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
             $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
@@ -55,7 +55,51 @@ class LoginController extends Controller
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
-
+    public function formatarHorariosFuncionamento($empresas){
+        $data = [
+            "domingo" => [
+                "disponivel" => $empresas->domingo,
+                "horario_fim" => $empresas->domingo_horario_fim,
+                "horario_inicio" => $empresas->domingo_horario_inicio
+            ],
+            "domingo" => [
+                "disponivel" => $empresas->domingo,
+                "horario_fim" => $empresas->domingo_horario_fim,
+                "horario_inicio" => $empresas->domingo_horario_inicio
+            ],
+            "segunda" => [
+                "disponivel" => $empresas->segunda,
+                "horario_fim" => $empresas->segunda_horario_fim,
+                "horario_inicio" => $empresas->segunda_horario_inicio
+            ],
+            "terca" => [
+                "disponivel" => $empresas->terca,
+                "horario_fim" => $empresas->terca_horario_fim,
+                "horario_inicio" => $empresas->terca_horario_inicio
+            ],
+            "quarta" => [
+                "disponivel" => $empresas->quarta,
+                "horario_fim" => $empresas->quarta_horario_fim,
+                "horario_inicio" => $empresas->quarta_horario_inicio
+            ],
+            "quinta" => [
+                "disponivel" => $empresas->quinta,
+                "horario_fim" => $empresas->quinta_horario_fim,
+                "horario_inicio" => $empresas->quinta_horario_inicio
+            ],
+            "sexta" => [
+                "disponivel" => $empresas->sexta,
+                "horario_fim" => $empresas->sexta_horario_fim,
+                "horario_inicio" => $empresas->sexta_horario_inicio
+            ],
+            "sabado" => [
+                "disponivel" => $empresas->sabado,
+                "horario_fim" => $empresas->sabado_horario_fim,
+                "horario_inicio" => $empresas->sabado_horario_inicio
+            ],
+        ];
+        return $data;
+    }
     public function logout(Request $request)
     {
         Auth::logout();

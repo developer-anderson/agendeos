@@ -35,9 +35,12 @@ class AgendamentoController extends Controller
                 $q->where('nome', 'like', '%' . $filter . '%')
                     ->orWhere('telefone', 'like', '%' . $filter . '%')
                     ->orWhere('data_agendamento', 'like', '%' . $filter . '%')
-                    ->orWhere('funcionario_id', 'like', '%' . $filter . '%')
                     ->orWhere('clientes_id', 'like', '%' . $filter . '%')
                     ->orWhere('email', 'like', '%' . $filter . '%');
+                $q->orWhereHas('funcionario', function ($query) use ($filter) {
+                    $query->where('funcionario_id', 'like', '%' . $filter . '%')
+                        ->orWhere('nome', 'like', '%' . $filter . '%');
+                });
             });
         }
         $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens', 'agendamentoItens.servico')->orderBy('id', 'desc')->get();
@@ -161,47 +164,34 @@ class AgendamentoController extends Controller
     {
         $request->validate([
             'nome' => 'required',
-            'email' => 'required|email',
-            'telefone' => 'required',
             'data_agendamento' => 'required',
             'forma_pagamento_id' => 'required',
-
         ]);
 
         $agendamento = Agendamento::find($id);
-
         if (!$agendamento) {
-            return [
-                "erro" => true,
-                "mensagem" => "Agendamento não encontrado!"
-            ];
-        }
-        if($agendamento){
-            $itens = $request->input('itens');
-            if($itens){
-                if (!$itens || !is_array($itens)) {
-                    return response()->json(["erro" => true, "mensagem" => "Itens não fornecidos ou no formato incorreto!"], 400);
-                }
-                else{
-                    AgendamentoItem::where("agendamento_id",$agendamento->id )->delete();
-                    foreach ($itens as $item) {
-                        AgendamentoItem::create([
-                            'servicos_id' => $item['servicos_id'],
-                            'funcionarios_id' => $item['funcionarios_id'],
-                            'quantidade' => $item['quantidade'],
-                            'valor' => $item['valor'],
-                            'agendamento_id' => $agendamento->id,
-                        ]);
-                    }
-                }
-
-                $itens = AgendamentoItem::where('agendamento_id', $agendamento->id)
-                    ->with('agendamento', 'funcionario', 'servico')
-                    ->get();
-            }
-
+            return response()->json(["erro" => true, "mensagem" => "não encontrado!"], 404);
         }
         $agendamento->update($request->all());
+
+        $itens = $request->input('itens');
+        if($itens){
+            if (!$itens || !is_array($itens)) {
+                return response()->json(["erro" => true, "mensagem" => "Itens não fornecidos ou no formato incorreto!"], 400);
+            }
+            else{
+                AgendamentoItem::where("agendamento_id",$agendamento->id )->delete();
+                foreach ($itens as $item) {
+                    AgendamentoItem::create([
+                        'servicos_id' => $item['servicos_id'],
+                        'funcionarios_id' =>$item['funcionarios_id'] ?? 0,
+                        'quantidade' => $item['quantidade'],
+                        'valor' => $item['valor'],
+                        'agendamento_id' => $agendamento->id,
+                    ]);
+                }
+            }
+        }
 
         return [
             "erro" => false,

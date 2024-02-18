@@ -235,9 +235,9 @@ class AgendamentoController extends Controller
         $carbonDate = Carbon::parse($data);
         $diaSemana = $carbonDate->format('l');
         $diaSemana = $this->getDiaSemana(strtolower($diaSemana));
-        $horarioInicio = new DateTime($empresa->{$diaSemana. '_horario_inicio'});
-        $horarioFim = new DateTime($empresa->{$diaSemana. '_horario_fim'});
-        $ultimo_horario = $horarioInicio;
+        $horarioInicio = $empresa->{$diaSemana. '_horario_inicio'};
+        $horarioFim = $empresa->{$diaSemana. '_horario_fim'};
+        $ultimo_horario = $horarioFim;
         if(!$empresa->{$diaSemana}){
             return response()->json(['error' => true, 'message' => "Estabelecimento Fechado"]);
         }
@@ -249,38 +249,39 @@ class AgendamentoController extends Controller
             ->whereIn('id', $idsServicos)
             ->select(DB::raw('SEC_TO_TIME(SUM(TIME_TO_SEC(tempo_estimado))) as tempo_total'))
             ->first();
+
         $horarios = [];
         $agenda_atual_funcionario = Agendamento::where("funcionario_id", $funcionario_id)
             ->where("user_id", $user_id)
             ->whereDate('data_agendamento', '=', $data)
-            ->orderBy("data_agendamento", "asc")
+            ->orderBy("hora_agendamento", "asc")
             ->get();
-        $horaInicial = DateTime::createFromFormat('H:i:s', $tempoTotal->tempo_total);
-        $intervalo = $horaInicial->diff(new DateTime('00:00:00'));
-        $representacaoFormatada = 'PT' . $intervalo->format('%H') . 'H' . $intervalo->format('%I') . 'M';
-        $horasASomar = new DateInterval($representacaoFormatada);
-        $horasASomar->h *= $quantidade;
-        $horasASomar->i *= $quantidade;
-        $horasASomar->s *= $quantidade;
-        $mediador = $ultimo_horario->format('H:i:s');
+
+        $horasASomar = Carbon::createFromFormat('H:i:s', $tempoTotal->tempo_total);
+        $horasASomar->addHours($horasASomar->hour * ($quantidade - 1));
+        $horasASomar->addMinutes($horasASomar->minute * ($quantidade - 1));
+        $horasASomar->addSeconds($horasASomar->second * ($quantidade - 1));
         if(isset($agenda_atual_funcionario) && !$agenda_atual_funcionario->isEmpty()){
             foreach ($agenda_atual_funcionario as $agenda){
-                $horario = date("H:i", strtotime($agenda->inicio_os));
+                $horario = date("H:i", strtotime($agenda->hora_agendamento));
                 $horarios[] = ["horario" => $horario, "disponivel" => 0];
+                $horarioFim = $agenda->hora_agendamento;
             }
-            while ($ultimo_horario < $horarioFim) {
-                $ultimo_horario->add($horasASomar);
-                $verificadorUm = date("H:i:s", strtotime($data." ".$mediador));
-                $verificadorDois = date("H:i:s", strtotime($data." ".$ultimo_horario->format("H:i:s")));
+            $horarioFim = Carbon::createFromFormat('H:i:s', $horarioFim);
+            while ($horarioFim->lessThan($ultimo_horario)) {
                 $agendamentoExists = Agendamento::where('user_id', $user_id)
                     ->where('funcionario_id', $funcionario_id)
-                    ->whereBetween('hora_agendamento', [$verificadorUm, $verificadorDois])
+                    ->where('hora_agendamento', $horarioFim->format("H:i:s"))
                     ->exists();
-                if(!$agendamentoExists ){
-                    $horarios[] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
+
+                if (!$agendamentoExists) {
+                    $horarios[] = ["horario" => $horarioFim->format('H:i'), "disponivel" => 1];
                 }
-                $mediador = $ultimo_horario->format("H:i:s");
+                $horarioFim->addHours($horasASomar->hour);
+                $horarioFim->addMinutes($horasASomar->minute);
+                $horarioFim->addSeconds($horasASomar->second);
             }
+
             ksort($horarios);
         }
         else{

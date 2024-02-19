@@ -201,7 +201,7 @@ class OrdemServicosController extends Controller
             $post['os_id'] = $os->id;
             foreach ($os_servicos as $id_servico) {
                 $valor_temp = Servicos::query()->where('id', $id_servico)->first()->valor;
-                $post['valor'] = $valor_temp;
+                $post['valor'] += $valor_temp;
                 $data = array(
                     "os_id"      => $os->id,
                     "id_servico" => $id_servico,

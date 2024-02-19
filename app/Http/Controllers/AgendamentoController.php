@@ -273,12 +273,12 @@ class AgendamentoController extends Controller
             }
         }
         else{
-            $horarioFim = Carbon::createFromFormat('H:i:s', $horarioFim);
-            while ($horarioFim->lessThan($ultimo_horario)) {
-                $horarios[] = ["horario" => $ultimo_horario->format('H:i'), "disponivel" => 1];
-                $horarioFim->addHours($horasASomar->hour);
-                $horarioFim->addMinutes($horasASomar->minute);
-                $horarioFim->addSeconds($horasASomar->second);
+            $horarioInicio = Carbon::createFromFormat('H:i:s', $horarioInicio);
+            while ($horarioInicio->lessThan($ultimo_horario)) {
+                $horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 1];
+                $horarioInicio->addHours($horasASomar->hour);
+                $horarioInicio->addMinutes($horasASomar->minute);
+                $horarioInicio->addSeconds($horasASomar->second);
             }
         }
         ksort($horarios);

@@ -257,6 +257,8 @@ class AgendamentoController extends Controller
                 ->where('hora_agendamento', ">=", $anterior->format('H:i'))
                 ->where('hora_agendamento', "<=", $horarioInicio->format('H:i'))
                 ->first();
+
+
             if (!$agendamentoExists) {
                 $horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 1];
             }
@@ -267,12 +269,12 @@ class AgendamentoController extends Controller
             $horarioInicio->addHours($horasASomar->hour);
             $horarioInicio->addMinutes($horasASomar->minute);
             $horarioInicio->addSeconds($horasASomar->second);
-            $anterior->subHours($horasASomar->hour);
-            $anterior->subMinutes($horasASomar->minute);
-            $anterior->subSeconds($horasASomar->second);
+            $anterior->addHours($horasASomar->hour);
+            $anterior->addMinutes($horasASomar->minute);
+            $anterior->addSeconds($horasASomar->second);
         }
         ksort($horarios);
-       return $horarios;
+        return $horarios;
     }
     public function compararHorarios($a, $b) {
         return strtotime($a) - strtotime($b);

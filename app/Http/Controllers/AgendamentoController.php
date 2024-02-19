@@ -250,13 +250,13 @@ class AgendamentoController extends Controller
 
         $horarioInicio = Carbon::createFromFormat('H:i:s', $horarioInicio);
         $anterior = $horarioInicio;
-        $proximo  = $horarioInicio ;
         while ($horarioInicio->lessThan($ultimo_horario)) {
             $agendamentoExists = Agendamento::where('user_id', $user_id)
                 ->where('funcionario_id', $funcionario_id)
                 ->where('data_agendamento', $data)
-                ->whereBetween('hora_agendamento', [$anterior->format('H:i'), $proximo->format('H:i')])
-                ->exists();
+                ->where('hora_agendamento', ">=", $anterior->format('H:i'))
+                ->where('hora_agendamento', "<=", $horarioInicio->format('H:i'))
+                ->first();
             if (!$agendamentoExists) {
                 $horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 1];
             }
@@ -267,10 +267,12 @@ class AgendamentoController extends Controller
             $horarioInicio->addHours($horasASomar->hour);
             $horarioInicio->addMinutes($horasASomar->minute);
             $horarioInicio->addSeconds($horasASomar->second);
-            $proximo = $horarioInicio;
+            $anterior->subHours($horasASomar->hour);
+            $anterior->subMinutes($horasASomar->minute);
+            $anterior->subSeconds($horasASomar->second);
         }
         ksort($horarios);
-        return $horarios;
+       return $horarios;
     }
     public function compararHorarios($a, $b) {
         return strtotime($a) - strtotime($b);

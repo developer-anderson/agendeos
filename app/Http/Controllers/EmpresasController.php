@@ -40,7 +40,7 @@ class EmpresasController extends Controller
         $user = Auth::user();
 
         $post = $request->all();
-
+        $post["slug"] = trim(strtolower($post["razao_social"]));
         $Empresas = Empresas::create( $post);
         return response()->json([
             "erro" => false,
@@ -75,6 +75,7 @@ class EmpresasController extends Controller
     public function update(Request $request, $Empresas)
     {
         $dados = $request->all();
+
         $Empresas = Empresas::find($Empresas);
 
         if (!$Empresas) {
@@ -83,7 +84,7 @@ class EmpresasController extends Controller
                 "mensagem" => "Empresas não encontrado!"
             ];
         }
-
+        $dados["slug"] = trim(strtolower($dados["razao_social"]));
         $Empresas->fill($dados);
         $Empresas->save();
 

@@ -20,6 +20,6 @@ class Empresas extends Model
         'sexta_horario_inicio', 'sexta_horario_fim',
         'sabado_horario_inicio', 'sabado_horario_fim',
         'domingo_horario_inicio', 'domingo_horario_fim',
-        "segunda", "terca", "quarta", "quinta","sexta","sabado", "domingo", "instagram"
+        "segunda", "terca", "quarta", "quinta","sexta","sabado", "domingo", "instagram", "slug"
     ];
 }

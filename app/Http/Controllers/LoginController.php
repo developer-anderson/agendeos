@@ -34,9 +34,10 @@ class LoginController extends Controller
 
             $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')
             ->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao',
-                    'planos.recursos'])->first();
+                    'planos.recursos', 'empresas.slug'])->first();
             $empresa = Empresas::query()->where("id", $vetor->empresa_id)->first();
             $data = $vetor;
+            $data["link_agendamento"] = "https://agendos.com.br/agendamento/".$vetor->slug;
             $data['recursos'] = json_decode( $data['recursos'] , true);
             $data["horarios_funcionamento"] = $this->formatarHorariosFuncionamento($empresa);
             $data['receita'] = fluxo_caixa::getAllMoney();

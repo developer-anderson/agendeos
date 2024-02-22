@@ -126,9 +126,24 @@ class FluxoCaixaController extends Controller
                 "mensagem" => "Transação  não encontrado!"
             ];
         }
-
+        $produtos = $post['produto_id'];
+        $post['produto_id'] = 0;
         $fluxo_caixa->fill($post);
         $fluxo_caixa->save();
+
+        FluxoCaixasProdutos::where('fluxo_caixas_id', $fluxo_caixa->id)->delete();
+        foreach ($produtos as $item) {
+            $produto = Produtos::query()->where('id', $item["produto_id"])->first();
+            $data = array(
+                "fluxo_caixas_id"      => $fluxo_caixa->id,
+                "produto_id" => $item["produto_id"],
+                "quantidade" => isset($item["quantidade"]) ? $item["quantidade"] : 1,
+                "valor" =>$produto->preco
+            );
+            $produto->estoque = ($produto->estoque - 1);
+            $produto->save();
+            FluxoCaixasProdutos::create($data);
+        }
         return [
             "erro" => false,
             "mensagem" => "Transação editada com  sucesso!"

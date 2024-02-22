@@ -14,7 +14,7 @@ class FluxoCaixasProdutos extends Model
     protected $primaryKey = 'id';
 
     // Colunas que podem ser preenchidas em massa (se for o caso)
-    protected $fillable = ['fluxo_caixas_id', 'produto_id', 'valor'];
+    protected $fillable = ['fluxo_caixas_id', 'produto_id', 'valor', "quantidade"];
 
     // Campos de data
     protected $dates = ['created_at', 'updated_at'];

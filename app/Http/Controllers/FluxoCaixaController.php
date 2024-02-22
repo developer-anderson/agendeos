@@ -54,15 +54,15 @@ class FluxoCaixaController extends Controller
         }
 
         $post['valor'] = $post['valor']  * $post['quantidade'];
-        $produtos_ids = $post['produto_id'];
+        $produtos = $post['produto_id'];
         $post['produto_id'] = 0;
         $fluxo_caixa = fluxo_caixa::create( $post);
-
-        foreach ($produtos_ids as $produto_id) {
-            $produto = Produtos::query()->where('id', $produto_id)->first();
+        foreach ($produtos as $item) {
+            $produto = Produtos::query()->where('id', $item["produto_id"])->first();
             $data = array(
                 "fluxo_caixas_id"      => $fluxo_caixa->id,
-                "produto_id" => $produto_id,
+                "produto_id" => $item["produto_id"],
+                "quantidade" => isset($item["quantidade"]) ? $item["quantidade"] : 1,
                 "valor" =>$produto->preco
             );
             $produto->estoque = ($produto->estoque - 1);
@@ -77,7 +77,7 @@ class FluxoCaixaController extends Controller
         $fluxo_caixa = fluxo_caixa::where('id',$fluxo_caixa)->first();
         $ids_produtos = FluxoCaixasProdutos::where('fluxo_caixas_id', $fluxo_caixa->id)->pluck('produto_id');
         $fluxo_caixa->ids_produtos = $ids_produtos;
-        $fluxo_caixa['situacao'] = Situacao::where('referencia_id',$fluxo_caixa->situacao)->select("referencia_id as id", "nome")->first();
+        $fluxo_caixa->situacao = Situacao::where('referencia_id',$fluxo_caixa->situacao)->select("referencia_id as id", "nome")->first();
         $fluxo_caixa->forma_pagamento = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first() ?? null;
         $fluxo_caixa->valor_final = $fluxo_caixa->valor - ($fluxo_caixa->desconto ?? 0.00);
         $fluxo_caixa->cliente = Clientes::where('id', $fluxo_caixa->cliente_id)->first();

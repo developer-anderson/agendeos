@@ -28,6 +28,7 @@ use App\Http\Controllers\UploadController;
 Route::get('/agendamento/{slug}', [OrdemServicosController::class, 'getEstabelecimento'])->name('getEstabelecimentoWeb');
 
 Route::permanentRedirect('/', 'https://site.agendos.com.br/');
+Route::get('/pedido_pagamento/{os}', [OrdemServicosController::class, 'pedidoPagamento']);
 
 Route::post('/cadastrar', [App\Http\Controllers\RegisterController::class, 'store'])->name('cadastrarWeb');
 Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_recuperar_SenhaWeb');

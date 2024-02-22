@@ -62,6 +62,7 @@ class OrdemServicosController extends Controller
        return view('agendamento')->with($data);
 
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -257,10 +258,43 @@ class OrdemServicosController extends Controller
         if($os->id_forma_pagamento){
             $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first();
         }
+
         if($tipo){
             return $os;
         }
         return response()->json($os, 200);
+    }
+    public function pedidoPagamento($ordemServicos)
+    {
+
+
+        $os = OrdemServicos::where('id',$ordemServicos)->first();
+        $ids_servicos = ordem_servico_servico::where('os_id', $ordemServicos)->select('id_servico')->get();
+
+        $inicio_os = explode(" ",  $os["inicio_os"]);
+        $previsao_os = explode(" ",  $os["previsao_os"]);
+        $os["inicio_os"] = $inicio_os[0];
+        $os["inicio_os_time"] =$inicio_os[1];
+        $os["previsao_os"] =$previsao_os[0];
+        $os["previsao_os_time"] =$previsao_os[1];
+
+
+        $os['servicos'] =  Servicos::whereIn('id',$ids_servicos)->get();
+        $os['total'] = Servicos::whereIn('id', $ids_servicos)->sum('valor');
+        $os["taxa"] = 100;
+        $os['cliente'] = Clientes::where('id', $os->id_cliente)->get();
+        if($os->id_funcionario){
+            $os['funcionario'] = funcionarios::where('id', $os->id_funcionario)->get();
+        }
+        if($os->id_veiculo){
+            $os['veiculo'] = Veiculos::where('id', $os->id_veiculo)->get();
+        }
+        $os['situacao'] = Situacao::where('referencia_id',$os->situacao)->first();
+
+        if($os->id_forma_pagamento){
+            $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first();
+        }
+        return view('pagamento', compact('os'));
     }
     public function addReceita($data)
     {

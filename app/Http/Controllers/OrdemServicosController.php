@@ -594,7 +594,7 @@ class OrdemServicosController extends Controller
         $OrdemServicos->save();
         $valor_total = 0;
         foreach ($os_servicos as $item) {
-            $valor_total += $item->valor;
+            $valor_total += $item['valor'];
             $data = array(
                 "os_id"      => $ordemServicos,
                 "id_servico" => $item['servicos_id'],

@@ -81,7 +81,14 @@ class FluxoCaixaController extends Controller
         $fluxo_caixa->forma_pagamento = FormaPagamento::where('id', $fluxo_caixa->pagamento_id)->first() ?? null;
         $fluxo_caixa->valor_final = $fluxo_caixa->valor - ($fluxo_caixa->desconto ?? 0.00);
         $fluxo_caixa->cliente = Clientes::where('id', $fluxo_caixa->cliente_id)->first();
-        $fluxo_caixa->produtos =  Produtos::whereIn('id',$ids_produtos)->get();
+        $fluxo_caixa->produtos =
+            Produtos::whereIn('produtos.id',$ids_produtos)
+                ->leftJoin("fluxo_caixas_produtos", function($join) use ($fluxo_caixa) {
+                    $join->on('produtos.id', '=', 'fluxo_caixas_produtos.produto_id')
+                        ->where('fluxo_caixas_produtos.fluxo_caixas_id', '=', $fluxo_caixa->id);
+                })
+                ->select("produtos.id", "produtos.nome", "fluxo_caixas_produtos.quantidade", "fluxo_caixas_produtos.valor")
+                ->get();
         $fluxo_caixa->os = OrdemServicos::where('id', $fluxo_caixa->os_id)->first();
         $fluxo_caixa->tipo = Tipo::where('id', $fluxo_caixa->tipo_id)->first();
         if($fluxo_caixa->os and !$fluxo_caixa->forma_pagamento){

@@ -593,13 +593,13 @@ class OrdemServicosController extends Controller
         $OrdemServicos->fill($dados);
         $OrdemServicos->save();
         $valor_total = 0;
-        foreach ($os_servicos as $id_servico) {
-            $servico = $this->getServico($id_servico);
-            $valor_total += $servico->valor;
+        foreach ($os_servicos as $item) {
+            $valor_total += $item->valor;
             $data = array(
                 "os_id"      => $ordemServicos,
-                "id_servico" => $id_servico,
-                'valor' => $servico->valor
+                "id_servico" => $item->id_servico,
+                "quantidade" => $item->quantidade ?? 1,
+                'valor' => $item->valor
             );
             ordem_servico_servico::create($data);
         }

@@ -597,7 +597,7 @@ class OrdemServicosController extends Controller
             $valor_total += $item->valor;
             $data = array(
                 "os_id"      => $ordemServicos,
-                "id_servico" => $item->id_servico,
+                "id_servico" => $item->servicos_id,
                 "quantidade" => $item->quantidade ?? 1,
                 'valor' => $item->valor
             );

@@ -19,7 +19,12 @@ class AuthenticateToken
     {
         $allowedRoutesWithoutToken = ['login', 'retornoPagamento', 'planosGetAll', 'agendamentosGetAll', 'planosShow', 'agendamentoShow','getHorariosDisponiveis',
             'empresacriar', 'empresaatualizar','token_senha' ,'cadastrar', 'password.reset.resetPassword', 'segmentoAll', 'segmentoShow', 'trocar_senha', 'criarAssinatura'];
-        $token = $request->bearerToken() ?: $request->header('X-Authorization');
+        if($request->header('X-Authorization')){
+            $token = $request->bearerToken() ?: $request->header('X-Authorization');
+        }
+        else{
+            $token = $request->bearerToken() ?: $request->header('Authorization');
+        }
         if (!in_array($request->route()->getName(), $allowedRoutesWithoutToken)) {
             if (!$token) {
                 return response()->json(['error' => true, 'message' => 'Token de autenticação ausente ou inválido.'], 401);

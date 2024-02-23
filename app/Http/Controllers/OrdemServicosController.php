@@ -201,7 +201,7 @@ class OrdemServicosController extends Controller
             $os =  OrdemServicos::create($post);
             $post['os_id'] = $os->id;
             foreach ($os_servicos as $item) {
-                $valor_temp = Servicos::query()->where('id', $item['servicos_id'])->first()->valor;
+                $valor_temp = $item['valor'];
                 $post['valor'] += $valor_temp;
                 $data = array(
                     "os_id"      => $os->id,
@@ -597,10 +597,11 @@ class OrdemServicosController extends Controller
             $valor_total += $item->valor;
             $data = array(
                 "os_id"      => $ordemServicos,
-                "id_servico" => $item->servicos_id,
-                "quantidade" => $item->quantidade ?? 1,
-                'valor' => $item->valor
+                "id_servico" => $item['servicos_id'],
+                "quantidade" => $item['quantidade'] ?? 1,
+                "valor" => $item['valor']
             );
+
             ordem_servico_servico::create($data);
         }
         $caixa = fluxo_caixa::where('os_id', $OrdemServicos->id)->first();

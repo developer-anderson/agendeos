@@ -246,7 +246,13 @@ class OrdemServicosController extends Controller
         $os["previsao_os_time"] =$previsao_os[1];
 
 
-        $os['servicos'] =  Servicos::whereIn('id',$ids_servicos)->get();
+        $os['servicos'] =   Servicos::whereIn('id', $ids_servicos)
+            ->leftJoin("ordem_servico_servicos", function($join) use ($os) {
+                $join->on('servicos.id', '=', 'ordem_servico_servicos.id_servico')
+                    ->where('ordem_servico_servicos.os_id', '=', $os->id);
+            })
+            ->select("servicos.id", "servicos.nome", "ordem_servico_servicos.quantidade", "ordem_servico_servicos.valor")
+            ->get();
         $os['cliente'] = Clientes::where('id', $os->id_cliente)->get();
         if($os->id_funcionario){
             $os['funcionario'] = funcionarios::where('id', $os->id_funcionario)->get();

@@ -246,7 +246,7 @@ class OrdemServicosController extends Controller
         $os["previsao_os_time"] =$previsao_os[1];
 
 
-        $os['servicos'] =   Servicos::whereIn('id', $ids_servicos)
+        $os['servicos'] =   Servicos::whereIn('servicos.id', $ids_servicos)
             ->leftJoin("ordem_servico_servicos", function($join) use ($os) {
                 $join->on('servicos.id', '=', 'ordem_servico_servicos.id_servico')
                     ->where('ordem_servico_servicos.os_id', '=', $os->id);

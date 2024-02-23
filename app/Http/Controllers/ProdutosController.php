@@ -22,7 +22,7 @@ class ProdutosController extends Controller
     public function getAll($id, $filter = null)
     {
 
-        $query =   Produtos::where('user_id',$id)->select("id", "nome", "preco as valor", "descricao");
+        $query =   Produtos::where('user_id',$id)->select("id", "nome", "preco as valor", "descricao", "user_id", "estoque");
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {
@@ -59,7 +59,7 @@ class ProdutosController extends Controller
      */
     public function show($id)
     {
-        $registro = Produtos::where('id',$id)->select("id", "nome", "preco as valor", "descricao")->first();
+        $registro = Produtos::where('id',$id)->select("id", "nome", "preco as valor", "descricao", "user_id", "estoque")->first();
         return response()->json($registro, 200);
     }
 

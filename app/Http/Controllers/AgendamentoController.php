@@ -234,7 +234,20 @@ class AgendamentoController extends Controller
         if(!$horarioInicio or !$horarioFim){
             return response()->json(['error' => true, 'message' => "Estabelecimento não informou horário de funcionamento."]);
         }
-        $idsServicos = $request->input('servicos');
+        $dadosServicos = $request->input('servicos'); // Obtém os dados dos serviços do request
+        $idsServicos = []; // Inicializa um array para armazenar os IDs dos serviços
+
+// Verifica se os dados dos serviços foram fornecidos e se é um array
+        if ($dadosServicos && is_array($dadosServicos)) {
+            // Itera sobre cada serviço
+            foreach ($dadosServicos as $servico) {
+                // Verifica se o serviço contém a chave 'id' e se é um número
+                if (isset($servico['id']) && is_numeric($servico['id'])) {
+                    // Adiciona o ID do serviço ao array de IDs
+                    $idsServicos[] = $servico['id'];
+                }
+            }
+        }
         $tempoTotal = DB::table('servicos')
             ->whereIn('id', $idsServicos)
             ->select(DB::raw('SEC_TO_TIME(SUM(TIME_TO_SEC(tempo_estimado))) as tempo_total'))

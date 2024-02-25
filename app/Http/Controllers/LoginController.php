@@ -63,11 +63,6 @@ class LoginController extends Controller
                 "horario_fim" => $empresas->domingo_horario_fim,
                 "horario_inicio" => $empresas->domingo_horario_inicio
             ],
-            "domingo" => [
-                "disponivel" => $empresas->domingo,
-                "horario_fim" => $empresas->domingo_horario_fim,
-                "horario_inicio" => $empresas->domingo_horario_inicio
-            ],
             "segunda" => [
                 "disponivel" => $empresas->segunda,
                 "horario_fim" => $empresas->segunda_horario_fim,

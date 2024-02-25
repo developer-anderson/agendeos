@@ -20,6 +20,10 @@ class PagBankController extends Controller
         $apiKey = $dadosPagBank->token_producao;
         $user = User::query()->where('id', $data['user_id'])->first();
         $empresaUser = Empresas::query()->where("id", $user->empresa_id)->first();
+
+        if(empty($data["cartaoHash"]) or !isset($data["cartaoHash"])){
+            return response()->json(["message" => "Informe o cartão de crédito", error => true], 401);
+        }
         $dados = [
             'address' => [
                 'country' => 'BRA',
@@ -72,7 +76,7 @@ class PagBankController extends Controller
             $user->save();
             return $decodedResponse['id'];
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage(), "status" => 500], 500);
+            return response()->json(['error' => $e->getMessage(), "status" => 500, "dados" => $dados], 500);
         }
     }
     public function buscarAssinante($id)
@@ -104,6 +108,9 @@ class PagBankController extends Controller
             $cliente_id = $this->buscarAssinante($user->gateway_assinante_id);
         }else{
             $cliente_id = $this->criarAssinante($request->all());
+        }
+        if(empty($request->cartaoHash) or !isset($request->cartaoHash)){
+            return response()->json(["message" => "Informe o cartão de crédito", "error" => true], 401);
         }
         if(isset($cliente_id->original))
             return response()->json($cliente_id->original, 500);

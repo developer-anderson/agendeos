@@ -57,6 +57,7 @@ class LoginController extends Controller
         ]);
     }
     public function formatarHorariosFuncionamento($empresas){
+        logger($empresas);
         $data = [
             "domingo" => [
                 "disponivel" => $empresas->domingo,

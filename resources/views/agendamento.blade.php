@@ -2137,7 +2137,7 @@ be a descendant of the grid when it is being dragged.
 
             <div class="row">
                 <div class="col-sm-12">
-                    <button class="btAgendar" disabled>Finalizar Agendamento</button>
+                    <button class="btAgendar" >Finalizar Agendamento</button>
                 </div>
             </div>
 

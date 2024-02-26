@@ -86,13 +86,12 @@
             // Verificar se todas as chaves têm dados em agendamentoData
             const dadosCompletos = chavesDesejadas.every(chave => agendamentoData[chave] !== undefined &&
                 agendamentoData[chave] !== null);
-
+            $(document).on('click', '.btAgendar', (e) => {
+                agendarServico(agendamentoData);
+            })
             if (dadosCompletos) {
                 $(".btAgendar").attr("disabled", false);
-                $(document).on('click', '.btAgendar', (e) => {
-                    e.preventDefault();
-                    agendarServico(agendamentoData);
-                })
+
                 console.log('Todos os dados necessários estão presentes em agendamentoData:', agendamentoData);
             } else {
                 console.log('Faltam alguns dados em agendamentoData:', agendamentoData);
@@ -112,8 +111,19 @@
 
             $.ajax(settings).done(function(response) {
                 console.log(response);
-                console.log('agendou palhaço');
+                if (response.erro === false) {
+                    $("#msgModalLabel").html("Sucesso!");
+                    $(".modal-body").html(
+                        response.mensagem
+                    );
+                    $('#msgModal').modal('show');
+                    location.reload();
+                } else {
+                    // Se houver erro, você pode tratar de acordo com sua lógica
+                    console.error('Erro ao cadastrar:', response.mensagem);
+                }
             });
+
         }
 
         /////
@@ -169,15 +179,21 @@
 
             // Verifica se o checkbox foi marcado ou desmarcado
             if (checkbox.prop('checked')) {
-                // Adiciona o ID do serviço ao array
-                idServicos.push(servico_id);
+                let dados = {
+                    "servicos_id": servico_id,
+                    "quantidade": 1
+                };
+                idServicos.push(dados);
             } else {
                 // Remove o ID do serviço do array se desmarcado
-                var index = idServicos.indexOf(servico_id);
-                if (index !== -1) {
-                    idServicos.splice(index, 1);
+                for (let i = 0; i < idServicos.length; i++) {
+                    if (idServicos[i].servicos_id === servico_id) {
+                        idServicos.splice(i, 1);
+                        break; // Importante para interromper o loop após a remoção
+                    }
                 }
             }
+
 
             // Atualiza agendamentoData com o array de IDs
             agendamentoData['itens'] = idServicos;
@@ -345,11 +361,12 @@
                 } else {
                     let itens = agendamentoData["itens"];
 
-                    let objServicos = itens.map(id => {
+                    let objServicos = itens.map(item => {
                         return {
-                            "id": id
+                            "id": item.servicos_id
                         };
                     });
+
 
                     // Opções para a solicitação POST
                     const options = {

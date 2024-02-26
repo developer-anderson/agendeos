@@ -121,8 +121,8 @@ class AgendamentoController extends Controller
                     AgendamentoItem::create([
                         'servicos_id' => $item['servicos_id'],
                         'funcionarios_id' => $item['funcionarios_id'] ?? 0,
-                        'quantidade' => $item['quantidade'] ?? 1,
-                        'valor' => $item['valor'] ?? Servicos::query()->find($item['servicos_id'])->valor,
+                        'quantidade' => isset($item['quantidade']) ? $item['quantidade'] : 1,
+                        'valor' => isset($item['valor']) ? $item['valor'] : Servicos::query()->find($item['servicos_id'])->valor,
                         'agendamento_id' => $agendamento->id,
                     ]);
                 }

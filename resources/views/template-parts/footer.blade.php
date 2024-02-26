@@ -51,6 +51,19 @@
 
 
 <script>
+    var agendamentoData = {
+        "data_agendamento": "",
+        "hora_agendamento": "",
+        'funcionario_id': "",
+        'forma_pagamento_id': "",
+        'itens': "",
+        'telefone':"",
+        'email':"",
+        'nome': "",
+        "validar": 1,
+        "situacao_id": 1,
+        "user_id": {{ $administrador->id }}
+    };
     const swiper = new Swiper('.swiper', {
         slidesPerView: 1,
         spaceBetween: 10,
@@ -86,9 +99,7 @@
             // Verificar se todas as chaves têm dados em agendamentoData
             const dadosCompletos = chavesDesejadas.every(chave => agendamentoData[chave] !== undefined &&
                 agendamentoData[chave] !== null);
-            $(document).on('click', '.btAgendar', (e) => {
-                agendarServico(agendamentoData);
-            })
+
             if (dadosCompletos) {
                 $(".btAgendar").attr("disabled", false);
 
@@ -98,52 +109,11 @@
             }
         }
 
-        function agendarServico(data) {
-            var settings = {
-                "url": "https://homologacao.agendos.com.br/public/api/agendamentos",
-                "method": "POST",
-                "timeout": 0,
-                "headers": {
-                    "Content-Type": "application/json"
-                },
-                "data": JSON.stringify(data),
-            };
-
-            $.ajax(settings).done(function(response) {
-                console.log(response);
-                if (response.erro === false) {
-                    $("#msgModalLabel").html("Sucesso!");
-                    $(".modal-body").html(
-                        response.mensagem
-                    );
-                    $('#msgModal').modal('show');
-                    setTimeout(function() {
-                        location.reload();
-                    }, 2000);
-                } else {
-                    // Se houver erro, você pode tratar de acordo com sua lógica
-                    console.error('Erro ao cadastrar:', response.mensagem);
-                }
-            });
-
-        }
 
         /////
 
         const idServicos = [];
-        const agendamentoData = {
-            "data_agendamento": "",
-            "hora_agendamento": "",
-            'funcionario_id': "",
-            'forma_pagamento_id': "",
-            'itens': "",
-            'telefone':"",
-            'email':"",
-            'nome': "",
-            "validar": 1,
-            "situacao_id": 1,
-            "user_id": {{ $administrador->id }}
-        };
+
 
         // verifica os inputs preenchidos
         $(document).on('input', 'input[type="text"],input[type="email"],input[type="tel"], textarea', (e) => {
@@ -442,5 +412,34 @@
         generateDateButtons();
 
     });
+    function agendarServico() {
+        var settings = {
+            "url": "https://homologacao.agendos.com.br/public/api/agendamentos",
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify(agendamentoData),
+        };
+
+        $.ajax(settings).done(function(response) {
+            console.log(response);
+            if (response.erro === false) {
+                $("#msgModalLabel").html("Sucesso!");
+                $(".modal-body").html(
+                    response.mensagem
+                );
+                $('#msgModal').modal('show');
+                setTimeout(function() {
+                    location.reload();
+                }, 2000);
+            } else {
+                // Se houver erro, você pode tratar de acordo com sua lógica
+                console.error('Erro ao cadastrar:', response.mensagem);
+            }
+        });
+
+    }
 
 </script>

@@ -79,7 +79,7 @@
 
         function verificarDadosAgendamento() {
             // Lista das chaves que você deseja verificar
-            const chavesDesejadas = ['nome', 'email', 'forma_pagamento_id', 'funcionario_id', 'id_servico',
+            const chavesDesejadas = ['nome', 'email', 'forma_pagamento_id', 'funcionario_id', 'itens',
                 'data_agendamento', 'hora_agendamento', 'situacao', 'telefone', 'user_id'
             ];
 
@@ -174,7 +174,7 @@
             }
 
             // Atualiza agendamentoData com o array de IDs
-            agendamentoData['id_servico'] = idServicos;
+            agendamentoData['itens'] = idServicos;
 
             // Exibe o array atualizado no console
             verificarDadosAgendamento()
@@ -330,16 +330,16 @@
                 isLoading = true;
                 console.log('Carregando...');
 
-                if (!agendamentoData["id_servico"]) {
+                if (!agendamentoData["itens"]) {
                     $("#msgModalLabel").html("Ops... Você não selecionou um serviço!");
                     $(".modal-body").html(
                         "Para exibir os horários disponíveis, você precisa selecionar um serviço."
                     );
                     $('#msgModal').modal('show');
                 } else {
-                    let id_servico = agendamentoData["id_servico"];
+                    let itens = agendamentoData["itens"];
 
-                    let objServicos = id_servico.map(id => {
+                    let objServicos = itens.map(id => {
                         return {
                             "id": id
                         };

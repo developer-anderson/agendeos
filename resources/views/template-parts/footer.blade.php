@@ -79,8 +79,8 @@
 
         function verificarDadosAgendamento() {
             // Lista das chaves que você deseja verificar
-            const chavesDesejadas = ['nome', 'email', 'id_forma_pagamento', 'id_funcionario', 'id_servico',
-                'inicio_os', 'inicio_os_time', 'situacao', 'telefone', 'user_id'
+            const chavesDesejadas = ['nome', 'email', 'forma_pagamento_id', 'funcionario_id', 'id_servico',
+                'data_agendamento', 'hora_agendamento', 'situacao', 'telefone', 'user_id'
             ];
 
             // Verificar se todas as chaves têm dados em agendamentoData
@@ -101,7 +101,7 @@
 
         function agendarServico(data) {
             var settings = {
-                "url": "https://agendos.com.br/os/insert",
+                "url": "https://homologacao.agendos.com.br/public/api/agendamentos",
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
@@ -120,11 +120,10 @@
 
         const idServicos = [];
         const agendamentoData = {
-            "previsao_os": "",
-            "previsao_os_time": "",
+            "data_agendamento": "",
+            "hora_agendamento": "",
             "validar": 1,
-            "remarketing": "0",
-            "situacao": 9,
+            "situacao_id": 1,
             "user_id": {{ $administrador->id }}
         };
 
@@ -143,7 +142,7 @@
             $('.funcionario-item').removeClass('active');
             $(e.currentTarget).addClass("active")
 
-            agendamentoData['id_funcionario'] = $(e.currentTarget).data('id');
+            agendamentoData['funcionario_id'] = $(e.currentTarget).data('id');
             verificarDadosAgendamento();
         })
 
@@ -153,7 +152,7 @@
             $('.payment-button').removeClass('active');
             $(e.target).addClass('active');
 
-            agendamentoData['id_forma_pagamento'] = value;
+            agendamentoData['forma_pagamento_id'] = value;
             verificarDadosAgendamento()
         })
 
@@ -308,7 +307,7 @@
                     let value = $(e.currentTarget).data('hour');
                     $('.hour-item').removeClass('active');
                     $(e.target).addClass('active');
-                    agendamentoData['inicio_os_time'] = value;
+                    agendamentoData['hora_agendamento'] = value;
                     verificarDadosAgendamento()
                 })
             }
@@ -385,11 +384,11 @@
                 $(".button-list button").removeClass("active")
 
                 if ($(this).data("data")) {
-                    agendamentoData["inicio_os"] = $(this).data("data");
+                    agendamentoData["data_agendamento"] = $(this).data("data");
                     verificarDadosAgendamento()
                 }
 
-                if (!agendamentoData['id_funcionario']) {
+                if (!agendamentoData['funcionario_id']) {
                     $("#msgModalLabel").html("Ops... Você não selecionou um funcionário!");
                     $(".modal-body").html(
                         "Para exibir os horários disponíveis, você precisa selecionar um funcionário."
@@ -398,7 +397,7 @@
                 } else {
                     $(this).addClass("active")
 
-                    checkHours(agendamentoData['user_id'], agendamentoData['id_funcionario'], $(this)
+                    checkHours(agendamentoData['user_id'], agendamentoData['funcionario_id'], $(this)
                         .data(
                             "data"));
                 }
@@ -419,199 +418,4 @@
 
     });
 
-    // function agendar() {
-    //     //showLoading()
-    //     var data = {
-    //         nome_f: $("#nome").val(),
-    //         tipo_cliente: "PF",
-    //         email_f: $("#email").val(),
-    //         telefone_f: $("#whatsapp").val(),
-    //         celular_f: $("#whatsapp").val(),
-    //         observacoes: $("#observacoes").val(),
-    //         user_id: {{ $administrador->id }}
-    //     };
-
-    //     var settings = {
-    //         url: "https://agendos.com.br/clientes/insert",
-    //         method: "POST",
-    //         timeout: 0,
-    //         contentType: "application/json",
-    //         data: JSON.stringify(data)
-    //     };
-
-    //     $.ajax(settings).done(function(response) {
-    //         orderForm.id_cliente = response.id;
-    //         if (!response.id) {
-    //             // //hideLoading()
-    //             alert(
-    //                 "Ocorreu um erro ao realizar o seu agendamento. Favor entrar, tente novamente em alguns instantes. Caso ainda não consiga, entrar em contato com o estabeleciomento."
-    //             )
-    //         }
-    //         var orderFormSettings = {
-    //             url: "https://agendos.com.br/os/insert",
-    //             method: "POST",
-    //             timeout: 0,
-    //             contentType: "application/json",
-    //             data: JSON.stringify(orderForm)
-    //         };
-
-    //         $.ajax(orderFormSettings).done(function(response) {
-    //             console.log(response);
-    //             if (!response.id) {
-    //                 //hideLoading()
-    //                 alert(
-    //                     "Ocorreu um erro ao realizar o seu agendamento. Favor entrar, tente novamente em alguns instantes. Caso ainda não consiga, entrar em contato com o estabeleciomento."
-    //                 )
-    //             } else {
-    //                 alert(
-    //                     "Agendamento realizado com sucesso, em alguns minutos você receberá uma confirmação via Whatsapp."
-    //                 )
-    //                 window.location.href = "https://site.agendos.com.br/";
-    //             }
-    //         });
-    //     });
-    // }
-
-    // (function() {
-    //     'use strict';
-    //     // ------------------------------------------------------- //
-    //     // Calendar
-    //     // ------------------------------------------------------ //
-    //     jQuery(function() {
-    //         // page is ready
-    //         jQuery('#calendar').fullCalendar({
-    //             themeSystem: 'bootstrap4',
-    //             // emphasizes business hours
-    //             businessHours: false,
-    //             defaultView: 'agendaWeek',
-    //             // event dragging & resizing
-    //             editable: true,
-    //             // header
-    //             header: {
-    //                 left: 'title',
-    //                 center: 'month,agendaWeek,agendaDay',
-    //                 right: 'today prev,next'
-    //             },
-    //             events: [{
-    //                     title: 'Barber',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-07-07',
-    //                     end: '2019-07-07',
-    //                     className: 'fc-bg-default',
-    //                     icon: "circle"
-    //                 },
-    //                 {
-    //                     title: 'Flight Paris',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-08-08T14:00:00',
-    //                     end: '2019-08-08T20:00:00',
-    //                     className: 'fc-bg-deepskyblue',
-    //                     icon: "cog",
-    //                     allDay: false
-    //                 },
-    //                 {
-    //                     title: 'Team Meeting',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-07-10T13:00:00',
-    //                     end: '2019-07-10T16:00:00',
-    //                     className: 'fc-bg-pinkred',
-    //                     icon: "group",
-    //                     allDay: false
-    //                 },
-    //                 {
-    //                     title: 'Meeting',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-08-12',
-    //                     className: 'fc-bg-lightgreen',
-    //                     icon: "suitcase"
-    //                 },
-    //                 {
-    //                     title: 'Conference',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-08-13',
-    //                     end: '2019-08-15',
-    //                     className: 'fc-bg-blue',
-    //                     icon: "calendar"
-    //                 },
-    //                 {
-    //                     title: 'Baby Shower',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-08-13',
-    //                     end: '2019-08-14',
-    //                     className: 'fc-bg-default',
-    //                     icon: "child"
-    //                 },
-    //                 {
-    //                     title: 'Birthday',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-09-13',
-    //                     end: '2019-09-14',
-    //                     className: 'fc-bg-default',
-    //                     icon: "birthday-cake"
-    //                 },
-    //                 {
-    //                     title: 'Restaurant',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-10-15T09:30:00',
-    //                     end: '2019-10-15T11:45:00',
-    //                     className: 'fc-bg-default',
-    //                     icon: "glass",
-    //                     allDay: false
-    //                 },
-    //                 {
-    //                     title: 'Dinner',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-11-15T20:00:00',
-    //                     end: '2019-11-15T22:30:00',
-    //                     className: 'fc-bg-default',
-    //                     icon: "cutlery",
-    //                     allDay: false
-    //                 },
-    //                 {
-    //                     title: 'Shooting',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-08-25',
-    //                     end: '2019-08-25',
-    //                     className: 'fc-bg-blue',
-    //                     icon: "camera"
-    //                 },
-    //                 {
-    //                     title: 'Go Space :)',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-12-27',
-    //                     end: '2019-12-27',
-    //                     className: 'fc-bg-default',
-    //                     icon: "rocket"
-    //                 },
-    //                 {
-    //                     title: 'Dentist',
-    //                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-    //                     start: '2019-12-29T11:30:00',
-    //                     end: '2019-12-29T012:30:00',
-    //                     className: 'fc-bg-blue',
-    //                     icon: "medkit",
-    //                     allDay: false
-    //                 }
-    //             ],
-    //             eventRender: function(event, element) {
-    //                 if (event.icon) {
-    //                     element.find(".fc-title").prepend("<i class='fa fa-" + event.icon +
-    //                         "'></i>");
-    //                 }
-    //             },
-    //             dayClick: function() {
-    //                 jQuery('#modal-view-event-add').modal();
-    //             },
-    //             eventClick: function(event, jsEvent, view) {
-    //                 jQuery('.event-icon').html("<i class='fa fa-" + event.icon + "'></i>");
-    //                 jQuery('.event-title').html(event.title);
-    //                 jQuery('.event-body').html(event.description);
-    //                 jQuery('.eventUrl').attr('href', event.url);
-    //                 jQuery('#modal-view-event').modal();
-    //             },
-    //         })
-    //     });
-
-    // })(jQuery);
-    //hideLoading()
 </script>

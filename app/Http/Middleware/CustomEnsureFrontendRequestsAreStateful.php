@@ -20,7 +20,7 @@ class CustomEnsureFrontendRequestsAreStateful
     {
 
         $allowedRoutesWithoutToken = ['login', 'retornoPagamento', 'planosGetAll', 'agendamentosGetAll', 'planosShow', 'agendamentoShow','getHorariosDisponiveis',
-            'empresacriar', 'empresaatualizar','token_senha' ,'cadastrar', 'password.reset.resetPassword', 'segmentoAll', 'segmentoShow', 'trocar_senha', 'criarAssinatura'];
+            'empresacriar', 'empresaatualizar','token_senha' , 'adicionarAgendamento' ,'cadastrar', 'password.reset.resetPassword', 'segmentoAll', 'segmentoShow', 'trocar_senha', 'criarAssinatura'];
         if($request->header('X-Authorization')){
             $token = $request->bearerToken() ?: $request->header('X-Authorization');
         }

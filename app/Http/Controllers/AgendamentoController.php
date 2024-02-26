@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agendamento;
 use App\Models\AgendamentoItem;
+use App\Models\Clientes;
 use App\Models\Empresas;
 use App\Models\OrdemServicos;
 use App\Models\Servicos;
@@ -96,8 +97,19 @@ class AgendamentoController extends Controller
             'data_agendamento' => 'required',
             'forma_pagamento_id' => 'required',
         ]);
+        $post = $request->all();
+        if(isset($post["validar"])){
+            $cliente = Clientes::where('email_f', $post['email'])->first();
+            if($cliente and !empty($post['email'])){
+                $post["clientes_id"] = $cliente->id;
+            }
+            else{
+                $cliente = Clientes::create(["nome_f" => $post["nome"], "email_f" =>$post["email"], "telefone_f" =>$post["telefone"], "celular_f" =>$post["telefone"] ]);
+                $post["clientes_id"] = $cliente->id;
+            }
+        }
 
-        $agendamento = Agendamento::create($request->all());
+        $agendamento = Agendamento::create($post);
 
         if($agendamento){
             $itens = $request->input('itens');

@@ -11,6 +11,6 @@ class VerifyCsrfToken extends Middleware
      *
      * @var array<int, string>
      */
-    protected $except = ['reset-password-token', 'retorno_pagamento', "getHorariosDisponiveis"];
+    protected $except = ['reset-password-token', 'retorno_pagamento', 'adicionarAgendamento' ,"getHorariosDisponiveis"];
 
 }

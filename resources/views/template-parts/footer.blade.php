@@ -117,7 +117,9 @@
                         response.mensagem
                     );
                     $('#msgModal').modal('show');
-                    location.reload();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
                 } else {
                     // Se houver erro, você pode tratar de acordo com sua lógica
                     console.error('Erro ao cadastrar:', response.mensagem);

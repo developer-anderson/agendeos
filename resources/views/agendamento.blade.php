@@ -2468,7 +2468,7 @@ be a descendant of the grid when it is being dragged.
                     <div class="card">
                         <h3>Localização</h3>
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3889.667184133234!2d-38.47784792413805!3d-12.86475975767161!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x71611d396e97eed%3A0x54d637f2f0e8e018!2sWcriarte%20-%20Cria%C3%A7%C3%A3o%20de%20Sites%20e%20Marketing%20Digital%20em%20Salvador!5e0!3m2!1spt-BR!2sbr!4v1688487061207!5m2!1spt-BR!2sbr"
+                            src="https://www.google.com.br/maps?q={{$estabelecimento->cep}},%20Brasil&output=embed"
                             width="600" height="450" style="border:0; width: 100%; height: 250px"
                             allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>

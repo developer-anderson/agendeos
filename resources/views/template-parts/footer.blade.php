@@ -137,7 +137,7 @@
         $(document).on('input', 'input[type="text"],input[type="email"],input[type="tel"], textarea', (e) => {
             let value = e.target.value;
             let id = e.target.id;
-
+            console.log(e)
             agendamentoData[id] = value;
             console.log(agendamentoData)
         })

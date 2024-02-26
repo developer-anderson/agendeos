@@ -122,6 +122,12 @@
         const agendamentoData = {
             "data_agendamento": "",
             "hora_agendamento": "",
+            'funcionario_id': "",
+            'forma_pagamento_id': "",
+            'itens': "",
+            'telefone':"",
+            'email':"",
+            'nome': "",
             "validar": 1,
             "situacao_id": 1,
             "user_id": {{ $administrador->id }}

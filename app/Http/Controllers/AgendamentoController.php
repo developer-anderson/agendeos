@@ -373,7 +373,7 @@ class AgendamentoController extends Controller
             ,
             "7" => [
                 "type" => "text",
-                "text" =>  date("d/m/Y H:i", strtotime($data->data_agendamento." ".$data->hora_agendamento))
+                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento
             ]
         ];
         $vetor = array(

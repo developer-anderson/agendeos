@@ -80,6 +80,9 @@ class PagBankController extends Controller
             $decodedResponse = json_decode($body, true);
             $user->gateway_assinante_id = $decodedResponse['id'];
             $user->save();
+            logger($url);
+            logger(json_encode($dados));
+            logger($body);
             return $decodedResponse['id'];
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage(), "status" => 500, "dados" => $dados], 500);

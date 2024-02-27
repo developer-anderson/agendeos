@@ -106,7 +106,12 @@ class PagBankController extends Controller
             ]);
             $body = $response->getBody()->getContents();
             $decodedResponse = json_decode($body, true);
-            return $decodedResponse['id'];
+            logger($url);
+            logger('GET');
+            logger($body);
+            logger("__");
+            logger($decodedResponse["customers"]);
+            return $decodedResponse["customers"]['id'];
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -115,11 +120,7 @@ class PagBankController extends Controller
     {
         $user = User::query()->where('id',$request->user_id)->first();
 
-        if(isset($user->gateway_assinante_id) and !empty($user->gateway_assinante_id)){
-            $cliente_id = $this->buscarAssinante($user->gateway_assinante_id);
-        }else{
-            $cliente_id = $this->criarAssinante($request->all());
-        }
+        $cliente_id = $user->gateway_assinante_id ? $user->gateway_assinante_id : $this->criarAssinante($request->all());
         if(empty($request->cartaoHash) or !isset($request->cartaoHash)){
             return response()->json(["message" => "Informe o cartão de crédito", "error" => true], 401);
         }
@@ -131,7 +132,7 @@ class PagBankController extends Controller
             $apiKey = $dadosPagBank->token_producao;
         }
         else{
-            $url = $dadosPagBank->endpoint_homologacao.'customers';
+            $url = $dadosPagBank->endpoint_homologacao.'subscriptions';
             $apiKey = $dadosPagBank->token_homologacao;
         }
         $empresaUser = Empresas::query()->where("id", $user->empresa_id)->first();
@@ -196,6 +197,9 @@ class PagBankController extends Controller
             $statusCode = $response->getStatusCode();
             $body = $response->getBody()->getContents();
             $decodedResponse = json_decode($body, true);
+            logger($url);
+            logger(json_encode($data));
+            logger($body);
             if($statusCode >= 200 and $statusCode <= 299){
                 $dataAtual = Carbon::now();
                 $dataFutura = $dataAtual->addDays(30);

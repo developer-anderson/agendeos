@@ -134,10 +134,15 @@ class AgendamentoController extends Controller
                     ->with('agendamento', 'funcionario', 'servico')
                     ->get();
             }
+            $administrador  = User::where('id', $agendamento->user_id)->first();
+            $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
+
+
             return response()->json([
                 "erro" => false,
                 "mensagem" => "Agendamento cadastrado com sucesso!",
                 "zap" => $this->notifyClient($agendamento->id),
+                "zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento->telefone),
                 'id' => $agendamento->id
             ], 200);
         }
@@ -327,7 +332,7 @@ class AgendamentoController extends Controller
         }
         return array("nomes" => $nomes, "total" => $total);
     }
-    public function notifyClient($id)
+    public function notifyClient($id, $telefone_empresa = null)
     {
         $data = Agendamento::query()->where("id", $id)->first();
         $itens = AgendamentoItem::where('agendamento_id', $id)
@@ -336,7 +341,7 @@ class AgendamentoController extends Controller
         $extras = $this->getServicosNotifyClint($itens->servico);
 
 
-        $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
+        $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $telefone_empresa ?? $data->telefone);
         $nome_cliente = $data->nome;
         $situacao = Situacao::where('referencia_id',$data->situacao_id)->first()->nome;
 

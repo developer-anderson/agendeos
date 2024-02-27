@@ -67,6 +67,7 @@ class PagBankController extends Controller
                 ],
             ],
         ];
+        logger(json_encode($dados));
         $client = new Client();
         try {
             $response = $client->request('POST', $url, [

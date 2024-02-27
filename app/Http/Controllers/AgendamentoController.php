@@ -6,10 +6,14 @@ use App\Models\Agendamento;
 use App\Models\AgendamentoItem;
 use App\Models\Clientes;
 use App\Models\Empresas;
+use App\Models\FormaPagamento;
 use App\Models\OrdemServicos;
 use App\Models\Servicos;
+use App\Models\Situacao;
+use App\Models\token;
 use App\Models\User;
 use App\Models\Usuarios;
+use App\Models\whatsapp;
 use Carbon\Carbon;
 use DateInterval;
 use DateTime;
@@ -104,7 +108,7 @@ class AgendamentoController extends Controller
                 $post["clientes_id"] = $cliente->id;
             }
             else{
-                $cliente = Clientes::create(["nome_f" => $post["nome"], "email_f" =>$post["email"], "telefone_f" =>$post["telefone"], "celular_f" =>$post["telefone"] ]);
+                $cliente = Clientes::create(["nome_f" => $post["nome"], "email_f" =>$post["email"], "telefone_f" =>$post["telefone"], "celular_f" =>$post["telefone"], "user_id" => $post["user_id"] ]);
                 $post["clientes_id"] = $cliente->id;
             }
         }
@@ -133,6 +137,7 @@ class AgendamentoController extends Controller
             return response()->json([
                 "erro" => false,
                 "mensagem" => "Agendamento cadastrado com sucesso!",
+                "zap" => $this->notifyClient($agendamento->id),
                 'id' => $agendamento->id
             ], 200);
         }
@@ -310,4 +315,86 @@ class AgendamentoController extends Controller
             "mensagem" => "Agendamento apagado com sucesso!"
         ];
     }
+    public function getServicosNotifyClint($dados)
+    {
+        $data = array();
+        $nomes = "";
+        $total = 0;
+        foreach ($dados as $item) {
+
+            $nomes .= " | " . $item->nome;
+            $total += ($item->valor/100);
+        }
+        return array("nomes" => $nomes, "total" => $total);
+    }
+    public function notifyClient($id)
+    {
+        $data = Agendamento::query()->where("id", $id)->first();
+        $itens = AgendamentoItem::where('agendamento_id', $id)
+            ->with('servico')
+            ->get();
+        $extras = $this->getServicosNotifyClint($itens->servico);
+
+
+        $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
+        $nome_cliente = $data->nome;
+        $situacao = Situacao::where('referencia_id',$data->situacao_id)->first()->nome;
+
+        $values = [
+            "1" => [
+                "type" => "text",
+                "text" => $nome_cliente
+            ],
+            "2" => [
+                "type" => "text",
+                "text" => $id
+            ],
+            "3" => [
+                "type" => "text",
+                "text" => $extras['nomes']
+            ],
+            "4" => [
+                "type" => "text",
+                "text" => number_format($extras['total'], 2, ".", ",")
+            ],
+            "5" => [
+                "type" => "text",
+                "text" => $situacao
+            ],
+            "6" => [
+                "type" => "text",
+                "text" =>  FormaPagamento::where('id', $data->forma_pagamento_id)->first()->nome
+            ]
+            ,
+            "7" => [
+                "type" => "text",
+                "text" =>  date("d/m/Y H:i", strtotime($data->data_agendamento." ".$data->hora_agendamento))
+            ]
+        ];
+        $vetor = array(
+            "messaging_product" => "whatsapp",
+            "to"           => $telefone,
+            "type"         => 'template',
+            "template"     => array(
+                "name"     => "agendamento",
+                "language" => array(
+                    "code" => "pt_BR",
+                    "policy" => "deterministic"
+                ),
+                "components"     =>
+                    array(
+                        array(
+                            "type"       => "body",
+                            "parameters" => $values
+                        )
+                    )
+            ),
+
+
+        );
+
+        $zap =  whatsapp::sendMessage($vetor, token::token());
+        return [$vetor,$zap];
+    }
+
 }

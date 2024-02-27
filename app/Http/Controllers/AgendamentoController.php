@@ -325,9 +325,9 @@ class AgendamentoController extends Controller
         $data = array();
         $nomes = "";
         $total = 0;
-        foreach ($dados as $item) {
 
-            $nomes .= " | " . $item->nome;
+        foreach ($dados as $item) {
+            $nomes .= " | " . $item->servico->nome;
             $total += ($item->valor/100);
         }
         return array("nomes" => $nomes, "total" => $total);

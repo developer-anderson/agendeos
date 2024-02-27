@@ -338,7 +338,7 @@ class AgendamentoController extends Controller
         $itens = AgendamentoItem::where('agendamento_id', $id)
             ->with('servico')
             ->get();
-        $extras = $this->getServicosNotifyClint($itens->servico);
+        $extras = $this->getServicosNotifyClint($itens);
 
 
         $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $telefone_empresa ?? $data->telefone);

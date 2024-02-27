@@ -16,8 +16,14 @@ class PagBankController extends Controller
     public function criarAssinante($data)
     {
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
-        $url = $dadosPagBank->endpoint_producao.'customers';
-        $apiKey = $dadosPagBank->token_producao;
+        if($dadosPagBank->producao){
+            $apiKey = $dadosPagBank->token_producao;
+            $url = $dadosPagBank->endpoint_producao.'customers';
+        }
+        else{
+            $url = $dadosPagBank->endpoint_homologacao.'customers';
+            $apiKey = $dadosPagBank->token_homologacao;
+        }
         $user = User::query()->where('id', $data['user_id'])->first();
         $empresaUser = Empresas::query()->where("id", $user->empresa_id)->first();
 
@@ -82,9 +88,14 @@ class PagBankController extends Controller
     public function buscarAssinante($id)
     {
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
-        $url = $dadosPagBank->endpoint_producao.'customers/'.$id;
-        $apiKey = $dadosPagBank->token_producao;
-
+        if($dadosPagBank->producao){
+            $url = $dadosPagBank->endpoint_producao.'customers/'.$id;
+            $apiKey = $dadosPagBank->token_producao;
+        }
+        else{
+            $url = $dadosPagBank->endpoint_homologacao.'customers';
+            $apiKey = $dadosPagBank->token_homologacao;
+        }
         $client = new Client();
         try {
             $response = $client->request('GET', $url, [
@@ -115,9 +126,14 @@ class PagBankController extends Controller
         if(isset($cliente_id->original))
             return response()->json($cliente_id->original, 500);
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
-        $url = $dadosPagBank->endpoint_producao.'subscriptions';
-        $apiKey = $dadosPagBank->token_producao;
-
+        if($dadosPagBank->producao){
+            $url = $dadosPagBank->endpoint_producao.'subscriptions';
+            $apiKey = $dadosPagBank->token_producao;
+        }
+        else{
+            $url = $dadosPagBank->endpoint_homologacao.'customers';
+            $apiKey = $dadosPagBank->token_homologacao;
+        }
         $empresaUser = Empresas::query()->where("id", $user->empresa_id)->first();
         $planoAssinado = Planos::query()->where("id", $empresaUser->plano_id)->first();
         $assinatura = UsuarioAssinatura::query()->where("user_id", $user->id)
@@ -199,8 +215,14 @@ class PagBankController extends Controller
     public function criarPEdidoPagamentoComCartaoCredito($data)
     {
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
-        $url = $dadosPagBank->endpoint_producao.'subscriptions';
-        $apiKey = $dadosPagBank->token_producao;
+        if($dadosPagBank->producao){
+            $url = $dadosPagBank->endpoint_producao.'subscriptions';
+            $apiKey = $dadosPagBank->token_producao;
+        }
+        else{
+            $url = $dadosPagBank->endpoint_homologacao.'customers';
+            $apiKey = $dadosPagBank->token_homologacao;
+        }
         $client = new Client();
         try {
             $response = $client->request('POST', $url, [

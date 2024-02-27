@@ -15,6 +15,7 @@ class PagBankController extends Controller
 {
     public function criarAssinante($data)
     {
+        logger($data);
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
         if($dadosPagBank->producao){
             $apiKey = $dadosPagBank->token_producao;
@@ -58,7 +59,7 @@ class PagBankController extends Controller
                     'card' => [
                         'encrypted' => $data["cartaoHash"],
                         "holder"=> [
-                            "name"=> $user->name,
+                            "name"=> $data["nome_titular"] ?? $user->name,
                               "birth_date"=> $data["aniversario"],
                               "tax_id"=> str_replace(array(".", "-"), "", $data["cpf"])
                         ],

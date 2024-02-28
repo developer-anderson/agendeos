@@ -344,11 +344,7 @@ class AgendamentoController extends Controller
             ->with('servico')
             ->get();
         $extras = $this->getServicosNotifyClint($itens);
-        $cancelar = "";
-        if(!$cancelando_agendamento){
-            $cancelar = "<a href='https://agendos.com.br/cancelar_agendamento/{$id}'>Quero cancelar meu agendamento</a>";
 
-        }
         if($empresa){
             $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone ?? $data->telefone);
         }
@@ -356,13 +352,8 @@ class AgendamentoController extends Controller
             $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
         }
 
-        if($cancelando_agendamento){
-            $nome_cliente = $data->nome.", esta é uma confirmação do cancelamento do seu agendamento realizado na empresa ".$empresa->razao_social;
+        $nome_cliente = $data->nome.", esta é uma confirmação do agendamento realizado na empresa ".$empresa->razao_social;
 
-        }else{
-            $nome_cliente = $data->nome.", esta é uma confirmação do agendamento realizado na empresa ".$empresa->razao_social;
-
-        }
         $situacao = Situacao::where('referencia_id',$data->situacao_id)->first()->nome;
 
         $values = [
@@ -393,7 +384,7 @@ class AgendamentoController extends Controller
             ,
             "7" => [
                 "type" => "text",
-                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento."\n".$cancelar
+                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento
             ]
         ];
         $vetor = array(
@@ -419,6 +410,7 @@ class AgendamentoController extends Controller
         );
 
         $zap =  whatsapp::sendMessage($vetor, token::token());
+        logger($zap);
         return [$vetor,$zap];
     }
 

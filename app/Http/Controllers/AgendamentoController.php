@@ -130,6 +130,9 @@ class AgendamentoController extends Controller
                         'agendamento_id' => $agendamento->id,
                     ]);
                 }
+                $itens = AgendamentoItem::where('agendamento_id', $agendamento->id)
+                    ->with('agendamento', 'funcionario', 'servico')
+                    ->get();
             }
             $administrador  = User::where('id', $agendamento->user_id)->first();
             $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
@@ -138,8 +141,8 @@ class AgendamentoController extends Controller
             return response()->json([
                 "erro" => false,
                 "mensagem" => "Agendamento cadastrado com sucesso!",
-                "zap" => $this->notifyClient($agendamento->id, $estabelecimento),
-                "zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento),
+                "zap" => $this->notifyClient($agendamento->id, $estabelecimento, false, false),
+                "zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento, false, true ),
                 'id' => $agendamento->id
             ], 200);
         }
@@ -172,8 +175,8 @@ class AgendamentoController extends Controller
         $agendamento->save();
         $administrador  = User::where('id', $agendamento->user_id)->first();
         $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
-        $this->notifyClient($agendamento->id, $estabelecimento);
-        $this->notifyClient($agendamento->id, $estabelecimento);
+        $this->notifyClient($agendamento->id, $estabelecimento, true);
+        $this->notifyClient($agendamento->id, $estabelecimento, true);
         return response()->json($agendamento, 200);
     }
 
@@ -334,23 +337,31 @@ class AgendamentoController extends Controller
         }
         return array("nomes" => $nomes, "total" => $total);
     }
-    public function notifyClient($id, $empresa )
+    public function notifyClient($id, $empresa , $cancelando_agendamento = null, $notificar_empresa)
     {
         $data = Agendamento::query()->where("id", $id)->first();
         $itens = AgendamentoItem::where('agendamento_id', $id)
             ->with('servico')
             ->get();
         $extras = $this->getServicosNotifyClint($itens);
-
-        if($empresa){
-            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone ?? $data->telefone);
+        $cancelar = "";
+        if(!$cancelando_agendamento){
+            $cancelar = "<a href='https://agendos.com.br/cancelar_agendamento/{$id}'>Quero cancelar meu agendamento</a>";
+        }
+        if($notificar_empresa){
+            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone );
         }
         else{
             $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
         }
 
-        $nome_cliente = $data->nome.", esta é uma confirmação do agendamento realizado na empresa ".$empresa->razao_social;
+        if($cancelando_agendamento){
+            $nome_cliente = $data->nome.", esta é uma confirmação do cancelamento do seu agendamento realizado na empresa ".$empresa->razao_social;
 
+        }else{
+            $nome_cliente = $data->nome.", esta é uma confirmação do agendamento realizado na empresa ".$empresa->razao_social;
+
+        }
         $situacao = Situacao::where('referencia_id',$data->situacao_id)->first()->nome;
 
         $values = [
@@ -381,7 +392,7 @@ class AgendamentoController extends Controller
             ,
             "7" => [
                 "type" => "text",
-                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento
+                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento."\n".$cancelar
             ]
         ];
         $vetor = array(
@@ -407,7 +418,6 @@ class AgendamentoController extends Controller
         );
 
         $zap =  whatsapp::sendMessage($vetor, token::token());
-        logger($zap);
         return [$vetor,$zap];
     }
 

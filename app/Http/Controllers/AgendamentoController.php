@@ -142,7 +142,7 @@ class AgendamentoController extends Controller
                 "erro" => false,
                 "mensagem" => "Agendamento cadastrado com sucesso!",
                 "zap" => $this->notifyClient($agendamento->id),
-                "zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento),
+                //"zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento),
                 'id' => $agendamento->id
             ], 200);
         }

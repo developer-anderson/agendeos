@@ -346,7 +346,7 @@ class AgendamentoController extends Controller
         $extras = $this->getServicosNotifyClint($itens);
         $cancelar = "";
         if(!$cancelando_agendamento){
-            $cancelar = "<a href='https://agendos.com.br/cancelar_agendamento/{$id}'>Quero cancelar meu agendamento</a>";
+            $cancelar = "Para cancelar este agendamento acesse: https://agendos.com.br/cancelar_agendamento/{$id}";
         }
         if($notificar_empresa){
             $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone );
@@ -392,7 +392,7 @@ class AgendamentoController extends Controller
             ,
             "7" => [
                 "type" => "text",
-                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento."\n".$cancelar
+                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento."  ".$cancelar
             ]
         ];
         $vetor = array(

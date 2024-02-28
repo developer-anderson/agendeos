@@ -344,8 +344,11 @@ class AgendamentoController extends Controller
             ->with('servico')
             ->get();
         $extras = $this->getServicosNotifyClint($itens);
+        $cancelar = "";
+        if(!$cancelando_agendamento){
+            $cancelar = "<a href='https://agendos.com.br/cancelar_agendamento/{$id}'>Quero cancelar meu agendamento</a>";
 
-        $cancelar = "<a href='https://agendos.com.br/cancelar_agendamento/{$id}'>Quero cancelar meu agendamento</a>";
+        }
         if($empresa){
             $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone ?? $data->telefone);
         }

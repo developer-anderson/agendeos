@@ -170,13 +170,13 @@ class AgendamentoController extends Controller
 
 
     public function cancelarAgendamneto($id){
-        $agendamento =Agendamento::query()->where("id", $id)->first();
+        $agendamento = Agendamento::query()->where("id", $id)->first();
         $agendamento->situacao_id = 9;
         $agendamento->save();
         $administrador  = User::where('id', $agendamento->user_id)->first();
         $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
-        $this->notifyClient($agendamento->id);
-        $this->notifyClient($agendamento->id, $estabelecimento);
+        $this->notifyClient($agendamento->id, $estabelecimento, true);
+        $this->notifyClient($agendamento->id, $estabelecimento, true);
         return response()->json($agendamento, 200);
     }
 
@@ -346,8 +346,13 @@ class AgendamentoController extends Controller
         $extras = $this->getServicosNotifyClint($itens);
 
         $cancelar = "<a href='https://agendos.com.br/cancelar_agendamento/{$id}'>Quero cancelar meu agendamento</a>";
+        if($empresa){
+            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone ?? $data->telefone);
+        }
+        else{
+            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
+        }
 
-        $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone ?? $data->telefone);
         if($cancelando_agendamento){
             $nome_cliente = $data->nome.", esta é uma confirmação do cancelamento do seu agendamento realizado na empresa ".$empresa->razao_social;
 

@@ -189,6 +189,8 @@ class PagBankController extends Controller
             ),
             "pro_rata" => false
         );
+        logger($url);
+        logger(json_encode($data));
         $client = new Client();
         try {
             $response = $client->request('POST', $url, [
@@ -202,8 +204,7 @@ class PagBankController extends Controller
             $statusCode = $response->getStatusCode();
             $body = $response->getBody()->getContents();
             $decodedResponse = json_decode($body, true);
-            logger($url);
-            logger(json_encode($data));
+
             logger($body);
             if($statusCode >= 200 and $statusCode <= 299){
                 $dataAtual = Carbon::now();
@@ -218,7 +219,8 @@ class PagBankController extends Controller
             return response()->json(['error' => true, 'status' => $statusCode], 500);
         } catch (\Exception $e) {
             // Tratar erros, se necessário
-            return response()->json(['error' => $e->getMessage()], 500);
+            logger($body);
+            return response()->json(['error' => $e->getMessage(), "dados" => $data], 500);
         }
     }
     public function criarPEdidoPagamentoComCartaoCredito($data)

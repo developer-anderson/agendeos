@@ -142,7 +142,7 @@ class AgendamentoController extends Controller
                 "erro" => false,
                 "mensagem" => "Agendamento cadastrado com sucesso!",
                 "zap" => $this->notifyClient($agendamento->id),
-                "zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento->telefone),
+                "zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento),
                 'id' => $agendamento->id
             ], 200);
         }
@@ -169,9 +169,14 @@ class AgendamentoController extends Controller
     }
 
 
-    public function updateStatusAgendamento(Agendamento $agendamento, $situacao_id){
-        $agendamento->update(['situacao_id' => $situacao_id]);
-
+    public function cancelarAgendamneto($id){
+        $agendamento =Agendamento::query()->where("id", $id)->first();
+        $agendamento->situacao_id = 9;
+        $agendamento->save();
+        $administrador  = User::where('id', $agendamento->user_id)->first();
+        $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
+        $this->notifyClient($agendamento->id);
+        $this->notifyClient($agendamento->id, $estabelecimento);
         return response()->json($agendamento, 200);
     }
 
@@ -332,7 +337,7 @@ class AgendamentoController extends Controller
         }
         return array("nomes" => $nomes, "total" => $total);
     }
-    public function notifyClient($id, $telefone_empresa = null)
+    public function notifyClient($id, $empresa, $cancelando_agendamento = null)
     {
         $data = Agendamento::query()->where("id", $id)->first();
         $itens = AgendamentoItem::where('agendamento_id', $id)
@@ -340,9 +345,16 @@ class AgendamentoController extends Controller
             ->get();
         $extras = $this->getServicosNotifyClint($itens);
 
+        $cancelar = "<a href='https://agendos.com.br/cancelar_agendamento/{$id}'>Quero cancelar meu agendamento</a>";
 
-        $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $telefone_empresa ?? $data->telefone);
-        $nome_cliente = $data->nome;
+        $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone ?? $data->telefone);
+        if($cancelando_agendamento){
+            $nome_cliente = $data->nome.", esta é uma confirmação do cancelamento do seu agendamento realizado na empresa ".$empresa->razao_social;
+
+        }else{
+            $nome_cliente = $data->nome.", esta é uma confirmação do agendamento realizado na empresa ".$empresa->razao_social;
+
+        }
         $situacao = Situacao::where('referencia_id',$data->situacao_id)->first()->nome;
 
         $values = [
@@ -373,7 +385,7 @@ class AgendamentoController extends Controller
             ,
             "7" => [
                 "type" => "text",
-                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento
+                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento."\n".$cancelar
             ]
         ];
         $vetor = array(

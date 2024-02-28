@@ -35,6 +35,8 @@ Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetControll
 Route::post('/password/reset', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('password.reset.form');
 Route::post('/retorno_pagamento', [App\Http\Controllers\OrdemServicosController::class, 'retornoPagamento'])->name('retornoPagamento');
 
+Route::get('/cancelar_agendamento/{id}', [App\Http\Controllers\AgendamentoController::class, 'cancelarAgendamneto'])->name('cancelaragendamento');
+
 Route::post('/reset-password', [App\Http\Controllers\PasswordResetController::class, 'resetPassword'])->name('trocar_senhaWeb');
 Route::post('logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logoutWeb');
 Route::get('/politica-de-privacidade', function () {

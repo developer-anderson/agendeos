@@ -141,7 +141,7 @@ class AgendamentoController extends Controller
             return response()->json([
                 "erro" => false,
                 "mensagem" => "Agendamento cadastrado com sucesso!",
-                "zap" => $this->notifyClient($agendamento->id),
+                "zap" => $this->notifyClient($agendamento->id, $estabelecimento),
                 //"zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento),
                 'id' => $agendamento->id
             ], 200);
@@ -337,7 +337,7 @@ class AgendamentoController extends Controller
         }
         return array("nomes" => $nomes, "total" => $total);
     }
-    public function notifyClient($id, $empresa, $cancelando_agendamento = null)
+    public function notifyClient($id, $empresa , $cancelando_agendamento = null)
     {
         $data = Agendamento::query()->where("id", $id)->first();
         $itens = AgendamentoItem::where('agendamento_id', $id)

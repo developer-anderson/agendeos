@@ -130,9 +130,6 @@ class AgendamentoController extends Controller
                         'agendamento_id' => $agendamento->id,
                     ]);
                 }
-                $itens = AgendamentoItem::where('agendamento_id', $agendamento->id)
-                    ->with('agendamento', 'funcionario', 'servico')
-                    ->get();
             }
             $administrador  = User::where('id', $agendamento->user_id)->first();
             $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
@@ -175,8 +172,8 @@ class AgendamentoController extends Controller
         $agendamento->save();
         $administrador  = User::where('id', $agendamento->user_id)->first();
         $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
-        $this->notifyClient($agendamento->id, $estabelecimento, true);
-        $this->notifyClient($agendamento->id, $estabelecimento, true);
+        $this->notifyClient($agendamento->id, $estabelecimento);
+        $this->notifyClient($agendamento->id, $estabelecimento);
         return response()->json($agendamento, 200);
     }
 
@@ -337,7 +334,7 @@ class AgendamentoController extends Controller
         }
         return array("nomes" => $nomes, "total" => $total);
     }
-    public function notifyClient($id, $empresa , $cancelando_agendamento = null)
+    public function notifyClient($id, $empresa )
     {
         $data = Agendamento::query()->where("id", $id)->first();
         $itens = AgendamentoItem::where('agendamento_id', $id)

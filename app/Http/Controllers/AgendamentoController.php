@@ -264,7 +264,6 @@ class AgendamentoController extends Controller
         $dadosServicos = $request->input('servicos'); // Obtém os dados dos serviços do request
         $idsServicos = []; // Inicializa um array para armazenar os IDs dos serviços
 
-// Verifica se os dados dos serviços foram fornecidos e se é um array
         if ($dadosServicos && is_array($dadosServicos)) {
             // Itera sobre cada serviço
             foreach ($dadosServicos as $servico) {
@@ -275,15 +274,20 @@ class AgendamentoController extends Controller
                 }
             }
         }
-        $tempoTotal = DB::table('servicos')
-            ->whereIn('id', $idsServicos)
-            ->select(DB::raw('SEC_TO_TIME(SUM(TIME_TO_SEC(tempo_estimado))) as tempo_total'))
-            ->first();
+        if($empresa->somar_tempo_servicos){
+            $tempoTotal = DB::table('servicos')
+                ->whereIn('id', $idsServicos)
+                ->select(DB::raw('SEC_TO_TIME(SUM(TIME_TO_SEC(tempo_estimado))) as tempo_total'))
+                ->first()->tempo_total;
+        }
+        else{
+            $tempoTotal = $empresa->intervalo_tempo_agendamento;
+        }
 
         $horarios = [];
 
 
-        $horasASomar = Carbon::createFromFormat('H:i:s', $tempoTotal->tempo_total);
+        $horasASomar = Carbon::createFromFormat('H:i:s', $tempoTotal);
         $horasASomar->addHours($horasASomar->hour * ($quantidade - 1));
         $horasASomar->addMinutes($horasASomar->minute * ($quantidade - 1));
         $horasASomar->addSeconds($horasASomar->second * ($quantidade - 1));

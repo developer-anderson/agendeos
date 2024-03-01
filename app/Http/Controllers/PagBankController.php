@@ -6,6 +6,7 @@ use App\Models\GatewayPagamento;
 use App\Models\Planos;
 use App\Models\User;
 use App\Models\UsuarioAssinatura;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -15,7 +16,6 @@ class PagBankController extends Controller
 {
     public function criarAssinante($data)
     {
-        logger($data);
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
         if($dadosPagBank->producao){
             $apiKey = $dadosPagBank->token_producao;
@@ -68,7 +68,6 @@ class PagBankController extends Controller
                 ],
             ],
         ];
-        logger(json_encode($dados));
         $client = new Client();
         try {
             $response = $client->request('POST', $url, [
@@ -82,12 +81,18 @@ class PagBankController extends Controller
             $decodedResponse = json_decode($body, true);
             $user->gateway_assinante_id = $decodedResponse['id'];
             $user->save();
-            logger($url);
-            logger(json_encode($dados));
-            logger($body);
+
             return $decodedResponse['id'];
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage(), "status" => 500, "dados" => $dados], 500);
+        } catch (RequestException $e) {
+            // Verifica se a exceção tem uma resposta HTTP associada
+            if ($e->hasResponse()) {
+                $responseBody = $e->getResponse()->getBody()->getContents();
+                $responseData = json_decode($responseBody, true);
+                $errorMessage = $responseData['error_messages'][0]['description'];
+                return response()->json(['error' => $errorMessage, "status" => 500, "dados" => $dados, "url" => $url, "response_pagbank" => $responseData], 500);
+            } else {
+                return response()->json(['error' => $e->getMessage(), "status" => 500, "dados" => $dados], 500);
+            }
         }
     }
     public function buscarAssinante($id)
@@ -189,8 +194,7 @@ class PagBankController extends Controller
             ),
             "pro_rata" => false
         );
-        logger($url);
-        logger(json_encode($data));
+
         $client = new Client();
         try {
             $response = $client->request('POST', $url, [
@@ -205,7 +209,6 @@ class PagBankController extends Controller
             $body = $response->getBody()->getContents();
             $decodedResponse = json_decode($body, true);
 
-            logger($body);
             if($statusCode >= 200 and $statusCode <= 299){
                 $dataAtual = Carbon::now();
                 $dataFutura = $dataAtual->addDays(30);
@@ -217,10 +220,11 @@ class PagBankController extends Controller
 
             }
             return response()->json(['error' => true, 'status' => $statusCode], 500);
-        } catch (\Exception $e) {
-            // Tratar erros, se necessário
-            logger($body);
-            return response()->json(['error' => $e->getMessage(), "dados" => $data], 500);
+        } catch (RequestException $e) {
+            $responseBody = $e->getResponse()->getBody()->getContents();
+            $responseData = json_decode($responseBody, true);
+            $errorMessage = $responseData['error_messages'][0]['description'];
+            return response()->json(['error' => $errorMessage], 500);
         }
     }
     public function criarPEdidoPagamentoComCartaoCredito($data)

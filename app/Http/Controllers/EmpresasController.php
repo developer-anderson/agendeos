@@ -53,15 +53,26 @@ class EmpresasController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Empresas  $Empresas
+     * @param  \App\Models\Empresas  $empresas
      * @return \Illuminate\Http\Response
      */
-    public function show(Empresas $Empresas)
+    public function show(Empresas $empresas)
     {
         //
-        $registro = Empresas::where('empresas.id',$Empresas)->join('segmento', 'segmento.id', '=', 'empresas.segmento_id')->join('planos', 'planos.id', '=', 'empresas.plano_id')->select(['empresas.*', 'planos.plano', 'segmento.segmento'])->first();
+        if($empresas->somar_tempo_servicos){
+            $empresas->somar_tempo_servicos = [
+                "id" => $empresas->somar_tempo_servicos,
+                "nome" => "Somar Tempo dos Serviços"
+            ];
+        }
+        else {
+            $empresas->somar_tempo_servicos = [
+                "id" => $empresas->somar_tempo_servicos,
+                "nome" => "Calcular com base em horas fixas"
+            ];
+        }
         return response()->json(
-            $Empresas
+            $empresas
         , 200);
     }
 

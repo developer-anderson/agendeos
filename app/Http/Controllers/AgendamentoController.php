@@ -171,7 +171,7 @@ class AgendamentoController extends Controller
 
     public function cancelarAgendamneto($id){
         $agendamento = Agendamento::query()->where("id", $id)->first();
-        $agendamento->situacao_id = 9;
+        $agendamento->situacao_id = 7;
         $agendamento->save();
         $administrador  = User::where('id', $agendamento->user_id)->first();
         $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
@@ -299,6 +299,8 @@ class AgendamentoController extends Controller
             $agendamentoExists = Agendamento::where('user_id', $user_id)
                 ->where('funcionario_id', $funcionario_id)
                 ->where('data_agendamento', $data)
+                ->where('situacao_id', "<>", 7)
+                ->where('situacao_id', "<>", 9)
                 ->where('hora_agendamento', ">=", $anterior->format('H:i'))
                 ->where('hora_agendamento', "<=", $proximo->format('H:i'))
                 ->exists();

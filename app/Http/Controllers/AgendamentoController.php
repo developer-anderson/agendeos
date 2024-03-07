@@ -48,6 +48,7 @@ class AgendamentoController extends Controller
                 });
             });
         }
+        $query->orderBy("hora_agendamento", "asc");
         $result = $query->with('cliente', 'situacao', 'formaPagamento', 'funcionario', 'agendamentoItens', 'agendamentoItens.servico')->orderBy('id', 'desc')->get();
 
 

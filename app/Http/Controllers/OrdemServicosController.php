@@ -277,14 +277,12 @@ class OrdemServicosController extends Controller
 
         $os = OrdemServicos::where('id',$ordemServicos)->first();
         $ids_servicos = ordem_servico_servico::where('os_id', $ordemServicos)->select('id_servico')->get();
-
         $inicio_os = explode(" ",  $os["inicio_os"]);
         $previsao_os = explode(" ",  $os["previsao_os"]);
         $os["inicio_os"] = $inicio_os[0];
         $os["inicio_os_time"] =$inicio_os[1];
         $os["previsao_os"] =$previsao_os[0];
         $os["previsao_os_time"] =$previsao_os[1];
-
 
         $os['servicos'] =  Servicos::whereIn('id',$ids_servicos)->get();
         $os['total'] = Servicos::whereIn('id', $ids_servicos)->sum('valor');
@@ -643,17 +641,6 @@ class OrdemServicosController extends Controller
         $dataAtualFormatada = $dataAtual->format('Y-m-d');
         $dataFuturaFormatada = $dataFutura->format('Y-m-d');
         $dados = $request->all();
-        if(str_contains($dados["event"], 'subscription')){
-            $assinatura = UsuarioAssinatura::query()->where("id", $dados["resource"]["reference_id"])->first();
-            if($dados["resource"]["current_invoice"]["payments"]["status"] == "DENIED"){
-                $assinatura->ativo = false;
-            }
-            else{
-                $assinatura->ativo = true;
-                $assinatura->data_renovacao = $dataFuturaFormatada;
-            }
-            $assinatura->save();
-        }
-        RetornoPagamento::query()->create(["retorno" => $request->all()]);
+        RetornoPagamento::query()->create(["retorno" => json_encode($dados)]);
     }
 }

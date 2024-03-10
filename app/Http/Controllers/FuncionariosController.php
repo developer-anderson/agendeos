@@ -53,6 +53,7 @@ class FuncionariosController extends Controller
         $user = Auth::user();
 
         $post = $request->all();
+        $telefone = "";
         if($post['celular']){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular']);
         }

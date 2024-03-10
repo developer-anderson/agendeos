@@ -88,14 +88,19 @@ class EmpresasController extends Controller
         $dados = $request->all();
 
         $Empresas = Empresas::find($Empresas);
-
+        if (is_numeric($dados["somar_tempo_servicos"])) {
+            $dados["somar_tempo_servicos"] = $dados["somar_tempo_servicos"];
+        } elseif (is_array($dados["somar_tempo_servicos"])) {
+            $dados["somar_tempo_servicos"] = $dados["somar_tempo_servicos"]["id"];
+        } else {
+            $dados["somar_tempo_servicos"] = 1;
+        }
         if (!$Empresas) {
             return [
                 "erro" => true,
                 "mensagem" => "Empresas não encontrado!"
             ];
         }
-        $dados["slug"] = trim(strtolower($dados["razao_social"]));
         $Empresas->fill($dados);
         $Empresas->save();
 

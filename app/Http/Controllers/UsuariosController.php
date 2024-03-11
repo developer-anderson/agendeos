@@ -30,15 +30,22 @@ class UsuariosController extends Controller
     public function store(Request $request)
     {
         $dados = $request->all();
-        $user = Usuarios::create($dados);
-        $assinatura = UsuarioAssinatura::create(
-            [
-                "plano_id" => 1,
-                "user_id" => $user->id, "ativo" => 1,
-                "teste" => 1,
-                "data_assinatura" => date("Y-m-d")
-            ]
-        );
+        $user = Usuarios::where("email", $dados["email"])->first();
+        if(!$user){
+            $user = Usuarios::create($dados);
+        }
+        $assinatura = UsuarioAssinatura::where("user_id", $user->id)->first();
+        if(!$assinatura){
+            $assinatura = UsuarioAssinatura::create(
+                [
+                    "plano_id" => 1,
+                    "user_id" => $user->id, "ativo" => 1,
+                    "teste" => 1,
+                    "data_assinatura" => date("Y-m-d")
+                ]
+            );
+        }
+
 
         return [
             "erro" => false,

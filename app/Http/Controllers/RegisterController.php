@@ -41,10 +41,9 @@ class RegisterController extends Controller
         else
         {
             $data['password'] = bcrypt( $data['password']);
-            $dados = $request->all();
-            $user = Usuarios::where("email", $dados["email"])->first();
+            $user = Usuarios::where("email", $data["email"])->first();
             if(!$user){
-                $user = Usuarios::create($dados);
+                $user = Usuarios::create($data);
             }
             $assinatura = UsuarioAssinatura::where("user_id", $user->id)->first();
             if(!$assinatura){
@@ -69,7 +68,7 @@ class RegisterController extends Controller
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
             $data['token'] = $user->createToken('api-token')->plainTextToken;
-            $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
+            $data["assinatura"] = $assinatura;
             return response()->json($vetor, 200);
 
         }

@@ -17,6 +17,7 @@ class UsuarioAssinatura extends Model
         'data_renovacao',
         'usuario_pagamento_id',
         'referencia_id',
+        'teste',
         'ativo'
     ];
 

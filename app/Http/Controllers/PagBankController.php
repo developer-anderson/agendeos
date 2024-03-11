@@ -214,7 +214,7 @@ class PagBankController extends Controller
                 $dataFutura = $dataAtual->addDays(30);
                 $dataAtualFormatada = $dataAtual->format('Y-m-d');
                 $dataFuturaFormatada = $dataFutura->format('Y-m-d');
-                $assinatura->update(["referencia_id" => $decodedResponse["id"], "ativo"  => 1,
+                $assinatura->update(["referencia_id" => $decodedResponse["id"], "ativo"  => 1,"teste"  => 1,
                     "data_assinatura" =>date("Y-m-d"), "data_renovacao" => $dataFuturaFormatada  ]);
                 return response()->json(['error' => false, 'response' => $decodedResponse], 200);
 

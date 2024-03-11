@@ -9,6 +9,7 @@ use App\Models\funcionarios;
 use App\Models\OrdemServicos;
 use App\Models\Produtos;
 use App\Models\Servicos;
+use App\Models\UsuarioAssinatura;
 use Illuminate\Http\Request;
 use App\Models\Usuarios;
 class UsuariosController extends Controller
@@ -29,7 +30,16 @@ class UsuariosController extends Controller
     public function store(Request $request)
     {
         $dados = $request->all();
-        Usuarios::create($dados);
+        $user = Usuarios::create($dados);
+        $assinatura = UsuarioAssinatura::create(
+            [
+                "plano_id" => 1,
+                "user_id" => $user->id, "ativo" => 1,
+                "teste" => 1,
+                "data_assinatura" => date("Y-m-d")
+            ]
+        );
+
         return [
             "erro" => false,
             "mensagem" => "Usuário cadastrado com  sucesso!"

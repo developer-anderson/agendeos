@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agendamento;
 use App\Models\Clientes;
 use App\Models\Empresas;
 use App\Models\funcionarios;
@@ -43,6 +44,7 @@ class LoginController extends Controller
             $data["totalClientes"] = $this->totalClientes();
             $data["totalFuncionarios"] = $this->totalFuncionarios();
             $data["comissaoPorFuncionario"] = $this->comissaoFuncionarios();
+            $data["totalAgendamentos"] = $this->totalAgendamentos();
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
             $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
@@ -106,6 +108,10 @@ class LoginController extends Controller
     public function totalFuncionarios()
     {
         return funcionarios::query()->where("user_id", Auth::id())->count();
+    }
+    public function totalAgendamentos()
+    {
+        return Agendamento::query()->where("user_id", Auth::id())->where("data_agendamento", date("Y-m-d"))->count();
     }
     public function comissaoFuncionarios()
     {

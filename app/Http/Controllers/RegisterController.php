@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Empresas;
 use App\Models\UsuarioAssinatura;
+use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -40,7 +41,22 @@ class RegisterController extends Controller
         else
         {
             $data['password'] = bcrypt( $data['password']);
-            $user = User::create($data);
+            $dados = $request->all();
+            $user = Usuarios::where("email", $dados["email"])->first();
+            if(!$user){
+                $user = Usuarios::create($dados);
+            }
+            $assinatura = UsuarioAssinatura::where("user_id", $user->id)->first();
+            if(!$assinatura){
+                $assinatura = UsuarioAssinatura::create(
+                    [
+                        "plano_id" => 1,
+                        "user_id" => $user->id, "ativo" => 1,
+                        "teste" => 1,
+                        "data_assinatura" => date("Y-m-d")
+                    ]
+                );
+            }
             $empresa = $this->criarEmpresa($user);
             $this->vincularEmpresaUsuario($empresa, $user);
             Auth::attempt(['email' => $request->email, 'password' => $request->password]);

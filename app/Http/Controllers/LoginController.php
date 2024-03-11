@@ -47,7 +47,7 @@ class LoginController extends Controller
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
             $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
             $data['token'] =  $token ;
-
+            $data['atualizacao'] =  1 ;
             return response()->json($data, 200);
         } else {
             return response()->json(["error" => "true", "msg" => "Dados inválidos"],401);

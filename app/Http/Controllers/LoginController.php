@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clientes;
 use App\Models\Empresas;
+use App\Models\funcionarios;
 use App\Models\UsuarioAssinatura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Password;
+
 use App\Models\fluxo_caixa;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 class LoginController extends Controller
 {
     /**
@@ -30,8 +32,6 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('api-token')->plainTextToken;
-            $data = [];
-
             $vetor  = User::leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')->leftJoin('planos', 'planos.id', '=', 'empresas.plano_id')
             ->where('users.id',Auth::id())->select(['users.*', 'empresas.razao_social', 'empresas.plano_id', 'empresas.segmento_id', 'empresas.situacao',
                     'planos.recursos', 'empresas.slug'])->first();
@@ -40,6 +40,9 @@ class LoginController extends Controller
             $data["link_agendamento"] = "https://agendos.com.br/agendamento/".$vetor->slug;
             $data['recursos'] = json_decode( $data['recursos'] , true);
             $data["horarios_funcionamento"] = $this->formatarHorariosFuncionamento($empresa);
+            $data["totalClientes"] = $this->totalClientes();
+            $data["totalFuncionarios"] = $this->totalFuncionarios();
+            $data["comissaoPorFuncionario"] = $this->comissaoFuncionarios();
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
             $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
@@ -57,7 +60,6 @@ class LoginController extends Controller
         ]);
     }
     public function formatarHorariosFuncionamento($empresas){
-        logger($empresas);
         $data = [
             "domingo" => [
                 "disponivel" => $empresas->domingo,
@@ -97,6 +99,30 @@ class LoginController extends Controller
         ];
         return $data;
     }
+    public function totalClientes()
+    {
+        return Clientes::query()->where("user_id", Auth::id())->count();
+    }
+    public function totalFuncionarios()
+    {
+        return funcionarios::query()->where("user_id", Auth::id())->count();
+    }
+    public function comissaoFuncionarios()
+    {
+        $inicio  = date("Y-m-01");
+        $fim     = date("Y-m-31");
+        return
+            DB::table('funcionarios')->select('funcionarios.nome', 'funcionarios.id', DB::raw('SUM(servicos.valor) as receita_total'),
+                DB::raw('SUM(CASE WHEN ordem_servicos.situacao = 1 THEN servicos.valor * funcionarios.comissao / 100 ELSE 0 END) as comissao_funcionario'))
+            ->join('ordem_servicos', 'funcionarios.id', '=', 'ordem_servicos.id_funcionario')
+            ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')
+            ->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
+            ->where('ordem_servicos.user_id', '=', Auth::id())
+            ->where('ordem_servicos.situacao', '=', 1)
+            ->whereBetween('ordem_servicos.created_at', ["$inicio 00:00:00", "$fim 23:59:59"])
+            ->groupBy('funcionarios.nome', 'funcionarios.id')
+            ->get();
+    }
     public function logout(Request $request)
     {
         Auth::logout();
@@ -106,4 +132,5 @@ class LoginController extends Controller
 
         return redirect('/login');
     }
+
 }

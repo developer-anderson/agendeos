@@ -89,9 +89,6 @@ class UsuariosController extends Controller
              Produtos::query()->where("user_id", $id)->delete();
              fluxo_caixa::query()->where("user_id", $id)->delete();
          }
-
-
-
         $response = [
             "erro" => false,
             "mensagem" => "Conta excluida com sucesso!"

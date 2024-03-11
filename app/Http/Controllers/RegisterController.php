@@ -5,6 +5,7 @@ use App\Models\Empresas;
 use App\Models\UsuarioAssinatura;
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Password;
@@ -47,12 +48,16 @@ class RegisterController extends Controller
             }
             $assinatura = UsuarioAssinatura::where("user_id", $user->id)->first();
             if(!$assinatura){
+                $dataAtual = Carbon::now();
+                $dataFutura = $dataAtual->addDays(30);
+                $dataFuturaFormatada = $dataFutura->format('Y-m-d');
                 $assinatura = UsuarioAssinatura::create(
                     [
                         "plano_id" => 1,
                         "user_id" => $user->id, "ativo" => 1,
                         "teste" => 1,
-                        "data_assinatura" => date("Y-m-d")
+                        "data_assinatura" => date("Y-m-d"),
+                        "data_renovacao" => $dataFuturaFormatada
                     ]
                 );
             }

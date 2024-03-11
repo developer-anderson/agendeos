@@ -41,9 +41,9 @@ class RegisterController extends Controller
         else
         {
             $data['password'] = bcrypt( $data['password']);
-            $user = Usuarios::where("email", $data["email"])->first();
+            $user = User::where("email", $data["email"])->first();
             if(!$user){
-                $user = Usuarios::create($data);
+                $user = User::create($data);
             }
             $assinatura = UsuarioAssinatura::where("user_id", $user->id)->first();
             if(!$assinatura){

@@ -118,7 +118,7 @@ class LoginController extends Controller
         $inicio  = date("Y-m-01");
         $fim     = date("Y-m-31");
         return
-            DB::table('funcionarios')->select('funcionarios.nome', 'funcionarios.id', DB::raw('SUM(servicos.valor) as receita_total'),
+            DB::table('funcionarios')->select('funcionarios.nome', 'funcionarios.id', 'funcionarios.foto', DB::raw('SUM(servicos.valor) as receita_total'),
                 DB::raw('SUM(CASE WHEN ordem_servicos.situacao = 1 THEN servicos.valor * funcionarios.comissao / 100 ELSE 0 END) as comissao_funcionario'))
             ->join('ordem_servicos', 'funcionarios.id', '=', 'ordem_servicos.id_funcionario')
             ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')
@@ -126,7 +126,7 @@ class LoginController extends Controller
             ->where('ordem_servicos.user_id', '=', Auth::id())
             ->where('ordem_servicos.situacao', '=', 1)
             ->whereBetween('ordem_servicos.created_at', ["$inicio 00:00:00", "$fim 23:59:59"])
-            ->groupBy('funcionarios.nome', 'funcionarios.id')
+            ->groupBy('funcionarios.nome', 'funcionarios.id', 'funcionarios.foto')
             ->get();
     }
     public function logout(Request $request)

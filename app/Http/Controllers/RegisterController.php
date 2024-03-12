@@ -49,7 +49,7 @@ class RegisterController extends Controller
             $assinatura = UsuarioAssinatura::where("user_id", $user->id)->first();
             if(!$assinatura){
                 $dataAtual = Carbon::now();
-                $dataFutura = $dataAtual->addDays(30);
+                $dataFutura = $dataAtual->addDays(14);
                 $dataFuturaFormatada = $dataFutura->format('Y-m-d');
                 $assinatura = UsuarioAssinatura::create(
                     [

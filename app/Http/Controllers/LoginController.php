@@ -49,16 +49,23 @@ class LoginController extends Controller
             $data["faturamento"] = $this->faturamento();
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
-            $data["assinatura"]["teste"] = [
+            $assinaturaTeste = [
                 "ativo" => $assinatura->teste,
                 "inicio_teste" => $assinatura->teste,
                 "fim_teste" => $assinatura->teste
-            ] ;
-            $data["assinatura"]["plano"] = [
+            ];
+
+            $assinaturaPlano = [
                 "ativo" => $assinatura->ativo,
                 "inicio_plano" => $assinatura->data_assinatura,
                 "fim_plano" => $assinatura->data_renovacao
-            ] ;
+            ];
+
+            $data["assinatura"] = array_merge($data["assinatura"], [
+                "teste" => $assinaturaTeste,
+                "plano" => $assinaturaPlano
+            ]);
+
             $data['token'] =  $token ;
             $data['atualizacao'] =  1 ;
             return response()->json($data, 200);

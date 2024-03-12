@@ -138,13 +138,14 @@ class LoginController extends Controller
             ->selectRaw('YEAR(ordem_servicos.created_at) AS ano, MONTH(ordem_servicos.created_at) AS mes, SUM(servicos.valor) AS valor_total')
             ->where('ordem_servicos.user_id', Auth::id())
             ->where('ordem_servicos.situacao', 1)
+            ->whereYear('ordem_servicos.created_at', date("Y"))
             ->groupBy('ano', 'mes')
             ->orderBy('ano', 'asc')
             ->orderBy('mes', 'asc')
             ->get();
         $resultadosFormatados = [];
         $mesesDoAno = array(
-            'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+            'janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho',
             'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
         );
         foreach ($resultados as $resultado) {
@@ -156,7 +157,7 @@ class LoginController extends Controller
             }
             $resultadosFormatados[$ano][$mes] = $valorTotal;
         }
-        $resultadosFormatados;
+         return $resultadosFormatados[date("Y")];
     }
     public function logout(Request $request)
     {

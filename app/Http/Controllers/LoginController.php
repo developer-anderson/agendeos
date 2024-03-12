@@ -38,7 +38,6 @@ class LoginController extends Controller
                     'planos.recursos', 'empresas.slug'])->first();
             $empresa = Empresas::query()->where("id", $vetor->empresa_id)->first();
             $data = $vetor;
-            $data["assinatura"] = [];
             $assinatura =  UsuarioAssinatura::query()->where("user_id", $user->id)->first();
             $data["link_agendamento"] = "https://agendos.com.br/agendamento/".$vetor->slug;
             $data['recursos'] = json_decode( $data['recursos'] , true);
@@ -50,16 +49,27 @@ class LoginController extends Controller
             $data["faturamento"] = $this->faturamento();
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
-            $data["assinatura"]["teste"] = [
+            $assinaturaTeste = [
                 "ativo" => $assinatura->teste,
                 "inicio_teste" => $assinatura->teste,
                 "fim_teste" => $assinatura->teste
-            ] ;
-            $data["assinatura"]["plano"] = [
+            ];
+
+            $assinaturaPlano = [
                 "ativo" => $assinatura->ativo,
                 "inicio_plano" => $assinatura->data_assinatura,
                 "fim_plano" => $assinatura->data_renovacao
-            ] ;
+            ];
+            if ($data["assinatura"] === null) {
+                $data["assinatura"] = [];
+            }
+
+            $data["assinatura"] = array_merge($data["assinatura"], [
+                "teste" => $assinaturaTeste,
+                "plano" => $assinaturaPlano
+            ]);
+
+
             $data['token'] =  $token ;
             $data['atualizacao'] =  1 ;
             return response()->json($data, 200);

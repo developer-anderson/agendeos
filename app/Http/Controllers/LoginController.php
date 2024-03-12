@@ -48,7 +48,7 @@ class LoginController extends Controller
             $data["faturamento"] = $this->faturamento();
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
-            $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
+            $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->first();
             $data['token'] =  $token ;
             $data['atualizacao'] =  1 ;
             return response()->json($data, 200);

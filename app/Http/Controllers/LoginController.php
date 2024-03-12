@@ -38,6 +38,7 @@ class LoginController extends Controller
                     'planos.recursos', 'empresas.slug'])->first();
             $empresa = Empresas::query()->where("id", $vetor->empresa_id)->first();
             $data = $vetor;
+            $assinatura =  UsuarioAssinatura::query()->where("user_id", $user->id)->first();
             $data["link_agendamento"] = "https://agendos.com.br/agendamento/".$vetor->slug;
             $data['recursos'] = json_decode( $data['recursos'] , true);
             $data["horarios_funcionamento"] = $this->formatarHorariosFuncionamento($empresa);
@@ -48,7 +49,16 @@ class LoginController extends Controller
             $data["faturamento"] = $this->faturamento();
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
-            $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->first();
+            $data["assinatura"]["teste"] = [
+                "ativo" => $assinatura->teste,
+                "inicio_teste" => $assinatura->teste,
+                "fim_teste" => $assinatura->teste
+            ] ;
+            $data["assinatura"]["plano"] = [
+                "ativo" => $assinatura->ativo,
+                "inicio_plano" => $assinatura->data_assinatura,
+                "fim_plano" => $assinatura->data_renovacao
+            ] ;
             $data['token'] =  $token ;
             $data['atualizacao'] =  1 ;
             return response()->json($data, 200);

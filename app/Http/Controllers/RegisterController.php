@@ -57,8 +57,8 @@ class RegisterController extends Controller
                         "user_id" => $user->id,
                         "ativo" => 0,
                         "teste" => 1,
-                        "data_assinatura" => date("Y-m-d"),
-                        "data_renovacao" => $dataFuturaFormatada
+                        "inicio_teste" => date("Y-m-d"),
+                        "fim_teste" => $dataFuturaFormatada,
                     ]
                 );
             }

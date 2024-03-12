@@ -148,7 +148,7 @@ class PagBankController extends Controller
         $empresaUser = Empresas::query()->where("id", $user->empresa_id)->first();
         $planoAssinado = Planos::query()->where("id", $empresaUser->plano_id)->first();
         $assinatura = UsuarioAssinatura::query()->where("user_id", $user->id)
-            ->where("plano_id", $planoAssinado->id)->where("ativo", 0)
+            ->where("plano_id", $planoAssinado->id)
             ->whereNull("referencia_id")
             ->first();
         if(!$assinatura){
@@ -214,7 +214,7 @@ class PagBankController extends Controller
                 $dataFutura = $dataAtual->addDays(30);
                 $dataAtualFormatada = $dataAtual->format('Y-m-d');
                 $dataFuturaFormatada = $dataFutura->format('Y-m-d');
-                $assinatura->update(["referencia_id" => $decodedResponse["id"], "ativo"  => 1,"teste"  => 1,
+                $assinatura->update(["referencia_id" => $decodedResponse["id"], "ativo"  => 1,"teste"  => 0,
                     "data_assinatura" =>date("Y-m-d"), "data_renovacao" => $dataFuturaFormatada  ]);
                 return response()->json(['error' => false, 'response' => $decodedResponse], 200);
 

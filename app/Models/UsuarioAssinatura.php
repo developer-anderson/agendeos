@@ -19,6 +19,7 @@ class UsuarioAssinatura extends Model
         'referencia_id',
         'teste',
         'inicio_teste',
+        'data_pagamento',
         'fim_teste',
         'ativo'
     ];

@@ -81,6 +81,7 @@ class LoginController extends Controller
         $diasRestantesPlano = $fimPlano->diffInDays($inicioPlano);
         $assinaturaPlano = [
             "ativo" => $assinatura->ativo,
+            "data_pagamento" => $assinatura->data_pagamento,
             "inicio_plano" => $assinatura->data_assinatura,
             "diasRestantes" => $diasRestantesPlano,
             "fim_plano" => $assinatura->data_renovacao

@@ -38,7 +38,6 @@ class LoginController extends Controller
                     'planos.recursos', 'empresas.slug'])->first();
             $empresa = Empresas::query()->where("id", $vetor->empresa_id)->first();
             $data = $vetor;
-            $assinatura =  UsuarioAssinatura::query()->where("user_id", $user->id)->first();
             $data["link_agendamento"] = "https://agendos.com.br/agendamento/".$vetor->slug;
             $data['recursos'] = json_decode( $data['recursos'] , true);
             $data["horarios_funcionamento"] = $this->formatarHorariosFuncionamento($empresa);
@@ -49,31 +48,7 @@ class LoginController extends Controller
             $data["faturamento"] = $this->faturamento();
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
-            $inicioTeste = Carbon::parse($assinatura->inicio_teste);
-            $fimTeste = Carbon::parse($assinatura->fim_teste);
-
-            $diasRestantes = $fimTeste->diffInDays($inicioTeste);
-            $assinaturaTeste = [
-                "ativo" => $assinatura->teste,
-                "inicio_teste" => $assinatura->inicio_teste,
-                "diasRestantes" => $diasRestantes,
-                "fim_teste" => $assinatura->fim_teste
-            ];
-
-            $assinaturaPlano = [
-                "ativo" => $assinatura->ativo,
-                "inicio_plano" => $assinatura->data_assinatura,
-                "fim_plano" => $assinatura->data_renovacao
-            ];
-            if ($data["assinatura"] === null) {
-                $data["assinatura"] = [];
-            }
-
-            $data["assinatura"] = array_merge($data["assinatura"], [
-                "teste" => $assinaturaTeste,
-                "plano" => $assinaturaPlano
-            ]);
-
+            $data["assinatura"] = $this->assinatura();
 
             $data['token'] =  $token ;
             $data['atualizacao'] =  1 ;
@@ -87,6 +62,35 @@ class LoginController extends Controller
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
+    }
+    public function assinatura()
+    {
+        $assinatura =  UsuarioAssinatura::query()->where("user_id", Auth::id())->first();
+        $inicioTeste = Carbon::parse($assinatura->inicio_teste);
+        $fimTeste = Carbon::parse($assinatura->fim_teste);
+        $data = [];
+        $diasRestantes = $fimTeste->diffInDays($inicioTeste);
+        $assinaturaTeste = [
+            "ativo" => $assinatura->teste,
+            "inicio_teste" => $assinatura->inicio_teste,
+            "diasRestantes" => $diasRestantes,
+            "fim_teste" => $assinatura->fim_teste
+        ];
+        $inicioPlano = Carbon::parse($assinatura->data_assinatura);
+        $fimPlano = Carbon::parse($assinatura->data_renovacao);
+        $diasRestantesPlano = $fimPlano->diffInDays($inicioPlano);
+        $assinaturaPlano = [
+            "ativo" => $assinatura->ativo,
+            "inicio_plano" => $assinatura->data_assinatura,
+            "diasRestantes" => $diasRestantesPlano,
+            "fim_plano" => $assinatura->data_renovacao
+        ];
+
+        return [
+            "teste" => $assinaturaTeste,
+            "plano" => $assinaturaPlano
+        ];
+
     }
     public function formatarHorariosFuncionamento($empresas){
         $data = [

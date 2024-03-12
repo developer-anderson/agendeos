@@ -51,8 +51,8 @@ class LoginController extends Controller
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
             $assinaturaTeste = [
                 "ativo" => $assinatura->teste,
-                "inicio_teste" => $assinatura->teste,
-                "fim_teste" => $assinatura->teste
+                "inicio_teste" => $assinatura->inicio_teste,
+                "fim_teste" => $assinatura->fim_teste
             ];
 
             $assinaturaPlano = [

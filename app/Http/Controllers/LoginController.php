@@ -9,7 +9,7 @@ use App\Models\funcionarios;
 use App\Models\UsuarioAssinatura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Carbon\Carbon;
 use App\Models\fluxo_caixa;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +45,7 @@ class LoginController extends Controller
             $data["totalFuncionarios"] = $this->totalFuncionarios();
             $data["comissaoPorFuncionario"] = $this->comissaoFuncionarios();
             $data["totalAgendamentos"] = $this->totalAgendamentos();
+            $data["faturamento"] = $this->faturamento();
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
             $data["assinatura"] = UsuarioAssinatura::query()->where("user_id", $user->id)->where("ativo", 1)->first();
@@ -128,6 +129,34 @@ class LoginController extends Controller
             ->whereBetween('ordem_servicos.created_at', ["$inicio 00:00:00", "$fim 23:59:59"])
             ->groupBy('funcionarios.nome', 'funcionarios.id', 'funcionarios.foto')
             ->get();
+    }
+    public function faturamento()
+    {
+        $resultados = DB::table('ordem_servicos')
+            ->join('ordem_servico_servicos', 'ordem_servicos.id', '=', 'ordem_servico_servicos.os_id')
+            ->join('servicos', 'ordem_servico_servicos.id_servico', '=', 'servicos.id')
+            ->selectRaw('YEAR(ordem_servicos.created_at) AS ano, MONTH(ordem_servicos.created_at) AS mes, SUM(servicos.valor) AS valor_total')
+            ->where('ordem_servicos.user_id', Auth::id())
+            ->where('ordem_servicos.situacao', 1)
+            ->groupBy('ano', 'mes')
+            ->orderBy('ano', 'asc')
+            ->orderBy('mes', 'asc')
+            ->get();
+        $resultadosFormatados = [];
+        $mesesDoAno = array(
+            'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+            'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+        );
+        foreach ($resultados as $resultado) {
+            $ano = $resultado->ano;
+            $mes = Carbon::createFromFormat('!m', $resultado->mes)->locale('pt_BR')->monthName;
+            $valorTotal = $resultado->valor_total;
+            if (!isset($resultadosFormatados[$ano])) {
+                $resultadosFormatados[$ano] = array_fill_keys($mesesDoAno, 0);
+            }
+            $resultadosFormatados[$ano][$mes] = $valorTotal;
+        }
+        $resultadosFormatados;
     }
     public function logout(Request $request)
     {

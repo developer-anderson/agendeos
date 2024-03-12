@@ -157,7 +157,7 @@ class LoginController extends Controller
             }
             $resultadosFormatados[$ano][$mes] = $valorTotal;
         }
-         return $resultadosFormatados;
+        return isset($resultadosFormatados[date("Y")]) ? $resultadosFormatados[date("Y")] : $resultadosFormatados ;
     }
     public function logout(Request $request)
     {

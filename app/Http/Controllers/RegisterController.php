@@ -54,7 +54,8 @@ class RegisterController extends Controller
                 $assinatura = UsuarioAssinatura::create(
                     [
                         "plano_id" => 1,
-                        "user_id" => $user->id, "ativo" => 1,
+                        "user_id" => $user->id,
+                        "ativo" => 0,
                         "teste" => 1,
                         "data_assinatura" => date("Y-m-d"),
                         "data_renovacao" => $dataFuturaFormatada

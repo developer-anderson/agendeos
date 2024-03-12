@@ -49,9 +49,14 @@ class LoginController extends Controller
             $data["faturamento"] = $this->faturamento();
             $data['receita'] = fluxo_caixa::getAllMoney();
             $data['token_expiracao'] = now()->addMinutes(config('sanctum.expiration'));
+            $inicioTeste = Carbon::parse($assinatura->inicio_teste);
+            $fimTeste = Carbon::parse($assinatura->fim_teste);
+
+            $diasRestantes = $fimTeste->diffInDays($inicioTeste);
             $assinaturaTeste = [
                 "ativo" => $assinatura->teste,
                 "inicio_teste" => $assinatura->inicio_teste,
+                "diasRestantes" => $diasRestantes,
                 "fim_teste" => $assinatura->fim_teste
             ];
 

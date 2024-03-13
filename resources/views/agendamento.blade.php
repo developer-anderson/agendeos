@@ -4,14 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento de Serviços | AgendOS</title>
+    <title>Agende seu horário | {{ $estabelecimento['razao_social'] }}</title>
+    <meta name="title" content="Agende seu horário | {{ $estabelecimento['razao_social'] }}" />
+    <meta name="description"
+          content="Chegou a hora de agendar o seu horário de atendimento no {{ $estabelecimento['razao_social'] }}. Clique para iniciar." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Agende seu horário | {{ $estabelecimento['razao_social'] }}" />
+    <meta property="og:description"
+          content="Chegou a hora de agendar o seu horário de atendimento no {{ $estabelecimento['razao_social'] }}. Clique para iniciar." />
+    <meta property="og:image"
+          content="{{ $estabelecimento->link_banner ? $estabelecimento->link_banner : 'https://placehold.it/1140x399' }}" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Agende seu horário | {{ $estabelecimento['razao_social'] }}" />
+    <meta property="twitter:description"
+          content="Chegou a hora de agendar o seu horário de atendimento no {{ $estabelecimento['razao_social'] }}. Clique para iniciar." />
+    <meta property="twitter:image"
+          content="{{ $estabelecimento->link_banner ? $estabelecimento->link_banner : 'https://placehold.it/1140x399' }}" />
+
+    <!-- Meta Tags Generated with https://metatags.io -->
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css">
+    <link rel="stylesheet"
+          href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+          rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
@@ -1854,7 +1877,7 @@ be a descendant of the grid when it is being dragged.
 
         .slide-funcionarios a:hover,
         .slide-funcionarios a.active {
-            background: {{ $estabelecimento->cor_primaria }};
+            background: #CCCCCC;
         }
 
         .slide-funcionarios a figure {
@@ -1985,500 +2008,523 @@ be a descendant of the grid when it is being dragged.
 </head>
 
 <body class="antialiased sans-serif bg-gray-100">
-    @include('template-parts/header')
-    {{-- {{$estabelecimento}} --}}
-    <main>
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-sm-12 text-center">
-                    <h1>Informe seus dados:</h1>
-                </div>
+@include('template-parts/header')
 
-
-
-                <div class="col-12 py-3">
-                    <div class="form-group">
-                        <input name="nome" type="text" id="nome" placeholder="Digite seu nome..." required>
-                    </div>
-
-                    <div class="form-group">
-                        <input name="email" type="email" id="email" placeholder="Informe o seu e-mail..."
-                            required>
-                        <div class="invalid-feedback">Digite um e-mail válido.</div>
-                    </div>
-
-                    <div class="form-group">
-                        <input name="telefone" type="tel" id="telefone" placeholder="Digite seu WhatsApp ..."
-                            required>
-                        <small class="form-text text-muted">Apenas números</small>
-                    </div>
-                </div>
+<main>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h1>Informe seus dados:</h1>
             </div>
 
-            <div class="row" id="formAgendar">
-                <div class="col-sm-12 text-center">
-                    <h1>Escolha o funcionário:</h1>
+
+
+            <div class="col-12 py-3">
+                <div class="form-group">
+                    <input name="nome" type="text" id="nome" placeholder="Digite seu nome..." required>
                 </div>
 
-                <div class="col-12 py-3 pb-5">
-                    <!-- Slider main container -->
-                    <div class="swiper">
-                        <!-- Additional required wrapper -->
-                        <div class="swiper-wrapper">
-                            <!-- Slides -->
-                            @foreach ($funcionarios as $funcionario)
-                                <div class="swiper-slide slide-funcionarios">
-                                    <a href="#" class="funcionario-item" data-id="{{ $funcionario->id }}"
-                                        data-nome="{{ $funcionario->nome }}">
-                                        <figure class="rounded">
-                                            <img src="{{ $funcionario->foto ? $funcionario->foto : 'https://placehold.it/80x80' }}"
-                                                alt="">
-                                        </figure>
-                                        <span class="title-profissional">{{ $funcionario->nome }}</span>
-                                    </a>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <input name="email" type="email" id="email" placeholder="Informe o seu e-mail..."
+                           required>
+                    <div class="invalid-feedback">Digite um e-mail válido.</div>
+                </div>
+
+                <div class="form-group">
+                    <input name="telefone" type="tel" id="telefone" placeholder="Digite seu WhatsApp ..."
+                           required>
+                    <small class="form-text text-muted">Apenas números</small>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col-sm-12 text-center">
-                    <h1>Escolha o(s) serviço(s):</h1>
-                </div>
-                <div class="col-12 py-3 pb-5">
-                    <div class="form-buscar">
-                        <i class="fa fa-search" aria-hidden="true"></i>
-                        <input type="text" class="search-servico" placeholder="Digite para filtrar">
-                    </div>
-                    <div class="results-servico">
-                        @foreach ($servicos as $servico)
-                            <div class="servico-item" data-id="{{ $servico->id }}" data-name="{{ $servico->nome }}"
-                                data-price="{{ $servico->valor }}">
-                                <div>
-                                    <input type="checkbox" id="{{ $servico->id }}" name="servicos[]"
-                                        value="{{ $servico->id }}">
-                                    <label for="{{ $servico->id }}">{{ $servico->nome }} - R$
-                                        {{ number_format($servico->valor / 100, 2, ',', '.') }}</label>
-                                </div>
+        <div class="row" id="formAgendar">
+            <div class="col-sm-12 text-center">
+                <h1>Escolha o funcionário:</h1>
+            </div>
+
+            <div class="col-12 py-3 pb-5">
+                <!-- Slider main container -->
+                <div class="swiper">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper">
+                        <!-- Slides -->
+                        @foreach ($funcionarios as $funcionario)
+                            <div class="swiper-slide slide-funcionarios">
+                                <a href="#" class="funcionario-item" data-id="{{ $funcionario->id }}"
+                                   data-nome="{{ $funcionario->nome }}">
+                                    <figure class="rounded">
+                                        <img src="{{ $funcionario->foto ? $funcionario->foto : 'https://placehold.it/80x80' }}"
+                                             alt="">
+                                    </figure>
+                                    <span class="title-profissional">{{ $funcionario->nome }}</span>
+                                </a>
                             </div>
                         @endforeach
-                    </div>
-                    <div class="order-resume">
-                        Total: <strong>R$ 0,00</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12 text-center">
-                    <h1>Escolha a forma de pagamento:</h1>
-                </div>
-
-                <div class="col-12 py-3 pb-5 box-payment">
-                    <button class="payment-button" data-id="1" data-name="Pix">
-                        <svg width="29" height="26" viewBox="0 0 29 26" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <rect y="0.391357" width="28.3182" height="24.6522" fill="url(#pattern0)" />
-                            <defs>
-                                <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1"
-                                    height="1">
-                                    <use xlink:href="#image0_606_720"
-                                        transform="matrix(0.00195312 0 0 0.00224357 0 -0.0743547)" />
-                                </pattern>
-                                <image id="image0_606_720" width="512" height="512"
-                                    xlink:href="data:image/png;base64,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" />
-                            </defs>
-                        </svg>
-                        PIX
-                    </button>
-
-                    <button class="payment-button" data-id="2" data-name="Cartão de débito">
-                        <i class="fa fa-credit-card"></i>
-                        Débito
-                    </button>
-
-                    <button class="payment-button" data-id="3" data-name="Cartão de crédito">
-                        <i class="fa fa-credit-card"></i>
-                        Crédito
-                    </button>
-
-                    <button class="payment-button" data-id="4" data-name="Dinheiro">
-                        <i class="fa fa-money"></i>
-                        Dinheiro
-                    </button>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12 text-center">
-                    <h1>Escolha a data e horário do seu agendamento:</h1>
-                </div>
-
-                <div class="col-12 py-3 pb-5">
-                    <div class="grid-week">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12 text-center">
-                    <h1>Observações:</h1>
-                </div>
-
-                <div class="col-12 py-3 pb-5">
-                    <div class="form-group">
-                        <textarea name="observacoes" id="observacoes" cols="30" rows="10"></textarea>
-                        <small class="form-text text-muted">Escreva aqui caso tenha alguma observação.</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12">
-                    <button class="btAgendar" onclick="agendarServico()">Finalizar Agendamento</button>
-                </div>
-            </div>
-
-            <style>
-                .steps-header {
-                    display: grid;
-                    grid-template-columns: 50px 1fr 1fr 1fr;
-                    margin: 50px 0;
-                }
-
-                .steps-header .number {
-                    display: grid;
-                    grid-template-columns: 1fr 50px;
-                    align-items: center;
-                }
-
-                .steps-header .number span {
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 100%;
-                    background: #000;
-                    color: #FFFFFF;
-                    font-size: 20px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .steps-header .number:before {
-                    content: " ";
-                    width: 100%;
-                    height: 3px;
-                    background: #000;
-                    display: block;
-                }
-
-                .steps-header .number:first-child {
-                    grid-template-columns: 50px 1fr;
-                }
-
-                .steps-header .number:first-child:before {
-                    display: none;
-                }
-
-                .steps-header .number:last-child {
-                    grid-template-columns: 1fr 50px;
-                }
-
-                .steps-header .number:last-child:after {
-                    display: none;
-                }
-
-                .steps-header .number.active span {
-                    background: #02D07A;
-                    font-weight: bold;
-                }
-
-                .steps-header .number.active:before {
-                    background: #02D07A;
-                }
-
-                .lista-de-profissionais,
-                .lista-de-servicos {
-                    list-style-type: none;
-                    margin: 20px auto;
-                    padding: 0;
-                }
-
-                .lista-de-profissionais li,
-                .lista-de-servicos li {
-                    margin-bottom: 20px;
-                }
-
-                .lista-de-profissionais li a,
-                .lista-de-servicos li a {
-                    display: grid;
-                    grid-template-columns: 100px 1fr 20px;
-                    align-items: center;
-                    border-bottom: 2px solid #000;
-                    padding: 20px 0;
-                    color: #000000;
-                }
-
-                .lista-de-servicos li a {
-                    grid-template-columns: 100px 1fr 170px;
-                }
-
-                .lista-de-servicos li a.is-promotion .title-profissional:before {
-                    content: "Promoção";
-                    background: #ff047a;
-                    color: #FFF;
-                    font-weight: bold;
-                    font-size: 12px;
-                    text-transform: uppercase;
-                    border-radius: 20px;
-                    padding: 5px 15px;
-                }
-
-                .lista-de-profissionais li a:after {
-                    content: "+";
-                    font-weight: 900;
-                    font-size: 20px;
-                }
-
-                .lista-de-profissionais li a figure {
-                    margin: 0;
-                }
-
-                .lista-de-profissionais li a span {
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-
-                #step1,
-                #step2,
-                #step3,
-                #step4 {
-                    display: none;
-                }
-
-                .grid-week {
-                    width: 100%;
-                }
-
-                .grid-week>div {
-                    border: 1px solid #ccc;
-                    padding: 10px;
-                    text-align: center;
-                    display: grid;
-                    grid-template-columns: repeat(30, 1fr);
-                    overflow-x: scroll;
-                    gap: 1px;
-                    border-radius: 10px
-                }
-
-                .time-row {
-                    min-height: 50px;
-                }
-
-                .button-list {}
-
-                .button-list button {
-                    padding: 5px;
-                    border-radius: 10px;
-                    margin: 10px 4px;
-                    min-width: 91px;
-                    display: grid;
-                    cursor: pointer;
-                    background: linear-gradient(92deg, #ECECEC 1.13%, #D7D7D7 99.34%);
-                    border: 0;
-                }
-
-                .button-list button:hover,
-                .button-list button.active {
-                    background: linear-gradient(92deg, #29D27F 1.13%, #52ECA2 99.34%);
-                }
-
-                .button-list button.empty {
-                    background-color: #CCCCCC;
-                    color: #666666;
-                    cursor: not-allowed;
-                }
-
-                .button-list button .day {
-                    font-size: 12px;
-                }
-
-                .button-list button .date {
-                    font-size: 20px;
-                    font-weight: bold;
-                }
-
-                .button-list button .year {
-                    font-size: 12px;
-                }
-
-                .calendarResult {
-                    grid-template-columns: 1fr !important;
-                    padding: 30px !important;
-                }
-
-                .calendarResult button {
-                    border: 1px solid #202020;
-                    padding: 10px;
-                    border-radius: 10px;
-                    margin: 10px;
-                    display: grid;
-                    background: #F6F6F6;
-                    color: #202020;
-                    cursor: pointer;
-                    width: 100%;
-                    border-radius: 40px;
-                }
-
-                .calendarResult button:hover,
-                .calendarResult button.active {
-                    background-color: #02D07A;
-                    border-color: #02D07A;
-                }
-
-                .calendarResult button.empty {
-                    background-color: #CCCCCC;
-                    color: #666666;
-                    cursor: not-allowed;
-                }
-
-                #loading {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 9999;
-                }
-
-                .overlay {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background-color: rgba(0, 0, 0, 0.5);
-                }
-
-                .spinner {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                }
-
-                .spinner>div {
-                    width: 12px;
-                    height: 12px;
-                    margin-right: 4px;
-                    background-color: #ffffff;
-                    border-radius: 100%;
-                    display: inline-block;
-                    animation: bounce 1.4s infinite ease-in-out both;
-                }
-
-                .spinner .bounce1 {
-                    animation-delay: -0.32s;
-                }
-
-                .spinner .bounce2 {
-                    animation-delay: -0.16s;
-                }
-
-
-
-                @keyframes bounce {
-
-                    0%,
-                    80%,
-                    100% {
-                        transform: scale(0);
-                    }
-
-                    40% {
-                        transform: scale(1);
-                    }
-                }
-            </style>
-            {{-- <div id="loading">
-                <div class="overlay"></div>
-                <div class="spinner">
-                    <div class="bounce1"></div>
-                    <div class="bounce2"></div>
-                    <div class="bounce3"></div>
-                </div>
-            </div> --}}
-
-
-            <div class="row box-infos">
-                <div class="col-sm-4">
-                    <div class="card">
-                        <h3>Horário de Atendimento</h3>
-                        <div class="grid-atendimento">
-                            <ul>
-                                <li>
-                                    <span class="dia">Seg.</span>
-                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->segunda_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->segunda_horario_fim))}}</span>
-                                </li>
-                                <li>
-                                    <span class="dia">Ter.</span>
-                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->terca_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->terca_horario_fim))}}</span>
-                                </li>
-                                <li>
-                                    <span class="dia">Qua.</span>
-                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->quarta_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->quarta_horario_fim))}}</span>
-                                </li>
-                                <li>
-                                    <span class="dia">Qui.</span>
-                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->quinta_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->quinta_horario_fim))}}</span>
-                                </li>
-                                <li>
-                                    <span class="dia">Sex.</span>
-                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->sexta_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->sexta_horario_fim))}}</span>
-                                </li>
-                                <li>
-                                    <span class="dia">Sab.</span>
-                                    <span class="horario">{{date("H:i", strtotime($estabelecimento->sabado_horario_inicio))}} - {{date("H:i", strtotime($estabelecimento->sabado_horario_fim))}}</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-4">
-                    <div class="card">
-                        <h3>Contato</h3>
-                        <div class="botoes-contato">
-                            <a href="tel:5571981575883" class="btn-telefone"><i class="fa fa-phone"></i> {{$estabelecimento->telefone}}</a>
-                            <a href="{{str_replace(array("-", "(", ")"), "",$estabelecimento->telefone)}}" class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
-                                {{$estabelecimento->telefone}}</a>
-                            <a href="{{str_replace(array("-", "(", ")"), "",$estabelecimento->telefone)}}" class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
-                                {{$estabelecimento->telefone}}</a>
-                            <a href="{{$estabelecimento->instagram}}" class="btn-instagram"><i class="fa fa-instagram"></i>
-                                Instagram</a>
-                            <a href="https://maps.google.com" class="btn-maps"><i class="fa fa-map"></i> Traçar
-                                Rota</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-4">
-                    <div class="card">
-                        <h3>Localização</h3>
-                        <iframe
-                            src="https://www.google.com.br/maps?q={{$estabelecimento->cep}},%20Brasil&output=embed"
-                            width="600" height="450" style="border:0; width: 100%; height: 250px"
-                            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h1>Escolha o(s) serviço(s):</h1>
+            </div>
+            <div class="col-12 py-3 pb-5">
+                <div class="form-buscar">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    <input type="text" class="search-servico" placeholder="Digite para filtrar">
+                </div>
+                <div class="results-servico">
+                    @foreach ($servicos as $servico)
+                        <div class="servico-item" data-id="{{ $servico->id }}" data-name="{{ $servico->nome }}"
+                             data-price="{{ $servico->valor }}">
+                            <div>
+                                <input type="checkbox" id="{{ $servico->id }}" name="servicos[]"
+                                       value="{{ $servico->id }}">
+                                <label for="{{ $servico->id }}">{{ $servico->nome }} - R$
+                                    {{ number_format($servico->valor / 100, 2, ',', '.') }}</label>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="order-resume">
+                    Total: <strong>R$ 0,00</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h1>Escolha a forma de pagamento:</h1>
+            </div>
+
+            <div class="col-12 py-3 pb-5 box-payment">
+                <button class="payment-button" data-id="1" data-name="Pix">
+                    <svg width="29" height="26" viewBox="0 0 29 26" fill="none"
+                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <rect y="0.391357" width="28.3182" height="24.6522" fill="url(#pattern0)" />
+                        <defs>
+                            <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1"
+                                     height="1">
+                                <use xlink:href="#image0_606_720"
+                                     transform="matrix(0.00195312 0 0 0.00224357 0 -0.0743547)" />
+                            </pattern>
+                            <image id="image0_606_720" width="512" height="512"
+                                   xlink:href="data:image/png;base64,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" />
+                        </defs>
+                    </svg>
+                    PIX
+                </button>
+
+                <button class="payment-button" data-id="2" data-name="Cartão de débito">
+                    <i class="fa fa-credit-card"></i>
+                    Débito
+                </button>
+
+                <button class="payment-button" data-id="3" data-name="Cartão de crédito">
+                    <i class="fa fa-credit-card"></i>
+                    Crédito
+                </button>
+
+                <button class="payment-button" data-id="4" data-name="Dinheiro">
+                    <i class="fa fa-money"></i>
+                    Dinheiro
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h1>Escolha a data e horário do seu agendamento:</h1>
+            </div>
+
+            <div class="col-12 py-3 pb-5">
+                <div class="grid-week">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h1>Observações:</h1>
+            </div>
+
+            <div class="col-12 py-3 pb-5">
+                <div class="form-group">
+                    <textarea name="observacoes" id="observacoes" cols="30" rows="10"></textarea>
+                    <small class="form-text text-muted">Escreva aqui caso tenha alguma observação.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btAgendar" onclick="agendarServico()">Finalizar Agendamento</button>
+            </div>
+        </div>
+
+        <style>
+            .steps-header {
+                display: grid;
+                grid-template-columns: 50px 1fr 1fr 1fr;
+                margin: 50px 0;
+            }
+
+            .steps-header .number {
+                display: grid;
+                grid-template-columns: 1fr 50px;
+                align-items: center;
+            }
+
+            .steps-header .number span {
+                width: 50px;
+                height: 50px;
+                border-radius: 100%;
+                background: #000;
+                color: #FFFFFF;
+                font-size: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .steps-header .number:before {
+                content: " ";
+                width: 100%;
+                height: 3px;
+                background: #000;
+                display: block;
+            }
+
+            .steps-header .number:first-child {
+                grid-template-columns: 50px 1fr;
+            }
+
+            .steps-header .number:first-child:before {
+                display: none;
+            }
+
+            .steps-header .number:last-child {
+                grid-template-columns: 1fr 50px;
+            }
+
+            .steps-header .number:last-child:after {
+                display: none;
+            }
+
+            .steps-header .number.active span {
+                background: #02D07A;
+                font-weight: bold;
+            }
+
+            .steps-header .number.active:before {
+                background: #02D07A;
+            }
+
+            .lista-de-profissionais,
+            .lista-de-servicos {
+                list-style-type: none;
+                margin: 20px auto;
+                padding: 0;
+            }
+
+            .lista-de-profissionais li,
+            .lista-de-servicos li {
+                margin-bottom: 20px;
+            }
+
+            .lista-de-profissionais li a,
+            .lista-de-servicos li a {
+                display: grid;
+                grid-template-columns: 100px 1fr 20px;
+                align-items: center;
+                border-bottom: 2px solid #000;
+                padding: 20px 0;
+                color: #000000;
+            }
+
+            .lista-de-servicos li a {
+                grid-template-columns: 100px 1fr 170px;
+            }
+
+            .lista-de-servicos li a.is-promotion .title-profissional:before {
+                content: "Promoção";
+                background: #ff047a;
+                color: #FFF;
+                font-weight: bold;
+                font-size: 12px;
+                text-transform: uppercase;
+                border-radius: 20px;
+                padding: 5px 15px;
+            }
+
+            .lista-de-profissionais li a:after {
+                content: "+";
+                font-weight: 900;
+                font-size: 20px;
+            }
+
+            .lista-de-profissionais li a figure {
+                margin: 0;
+            }
+
+            .lista-de-profissionais li a span {
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            #step1,
+            #step2,
+            #step3,
+            #step4 {
+                display: none;
+            }
+
+            .grid-week {
+                width: 100%;
+            }
+
+            .grid-week>div {
+                border: 1px solid #ccc;
+                padding: 10px;
+                text-align: center;
+                display: grid;
+                grid-template-columns: repeat(30, 1fr);
+                overflow-x: scroll;
+                gap: 1px;
+                border-radius: 10px
+            }
+
+            .time-row {
+                min-height: 50px;
+            }
+
+            .button-list {}
+
+            .button-list button {
+                padding: 5px;
+                border-radius: 10px;
+                margin: 10px 4px;
+                min-width: 91px;
+                display: grid;
+                cursor: pointer;
+                background: linear-gradient(92deg, #ECECEC 1.13%, #D7D7D7 99.34%);
+                border: 0;
+            }
+
+            .button-list button:hover,
+            .button-list button.active {
+                background: linear-gradient(92deg, #29D27F 1.13%, #52ECA2 99.34%);
+            }
+
+            .button-list button.empty {
+                background-color: #CCCCCC;
+                color: #666666;
+                cursor: not-allowed;
+            }
+
+            .button-list button .day {
+                font-size: 12px;
+            }
+
+            .button-list button .date {
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            .button-list button .year {
+                font-size: 12px;
+            }
+
+            .calendarResult {
+                grid-template-columns: 1fr !important;
+                padding: 30px !important;
+            }
+
+            .calendarResult button {
+                border: 1px solid #202020;
+                padding: 10px;
+                border-radius: 10px;
+                margin: 10px;
+                display: grid;
+                background: #F6F6F6;
+                color: #202020;
+                cursor: pointer;
+                width: 100%;
+                border-radius: 40px;
+            }
+
+            .calendarResult button:hover,
+            .calendarResult button.active {
+                background-color: #02D07A;
+                border-color: #02D07A;
+            }
+
+            .calendarResult button.empty {
+                background-color: #CCCCCC;
+                color: #666666;
+                cursor: not-allowed;
+            }
+
+            #loading {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+            }
+
+            .overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+
+            .spinner {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .spinner>div {
+                width: 12px;
+                height: 12px;
+                margin-right: 4px;
+                background-color: #ffffff;
+                border-radius: 100%;
+                display: inline-block;
+                animation: bounce 1.4s infinite ease-in-out both;
+            }
+
+            .spinner .bounce1 {
+                animation-delay: -0.32s;
+            }
+
+            .spinner .bounce2 {
+                animation-delay: -0.16s;
+            }
+
+            button.hour-item[disabled] {
+                background: #CCC;
+                color: #a2a2a2;
+                border: #CCC;
+                cursor: not-allowed;
+            }
 
 
-    @include('template-parts/footer')
+
+            @keyframes bounce {
+
+                0%,
+                80%,
+                100% {
+                    transform: scale(0);
+                }
+
+                40% {
+                    transform: scale(1);
+                }
+            }
+        </style>
+        {{-- <div id="loading">
+            <div class="overlay"></div>
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+        </div> --}}
+
+
+        <div class="row box-infos">
+            <div class="col-sm-4">
+                <div class="card">
+                    <h3>Horário de Atendimento</h3>
+                    <div class="grid-atendimento">
+                        <ul>
+                            <li>
+                                <span class="dia">Seg.</span>
+                                <span
+                                    class="horario">{{ date('H:i', strtotime($estabelecimento->segunda_horario_inicio)) }}
+                                        - {{ date('H:i', strtotime($estabelecimento->segunda_horario_fim)) }}</span>
+                            </li>
+                            <li>
+                                <span class="dia">Ter.</span>
+                                <span
+                                    class="horario">{{ date('H:i', strtotime($estabelecimento->terca_horario_inicio)) }}
+                                        - {{ date('H:i', strtotime($estabelecimento->terca_horario_fim)) }}</span>
+                            </li>
+                            <li>
+                                <span class="dia">Qua.</span>
+                                <span
+                                    class="horario">{{ date('H:i', strtotime($estabelecimento->quarta_horario_inicio)) }}
+                                        - {{ date('H:i', strtotime($estabelecimento->quarta_horario_fim)) }}</span>
+                            </li>
+                            <li>
+                                <span class="dia">Qui.</span>
+                                <span
+                                    class="horario">{{ date('H:i', strtotime($estabelecimento->quinta_horario_inicio)) }}
+                                        - {{ date('H:i', strtotime($estabelecimento->quinta_horario_fim)) }}</span>
+                            </li>
+                            <li>
+                                <span class="dia">Sex.</span>
+                                <span
+                                    class="horario">{{ date('H:i', strtotime($estabelecimento->sexta_horario_inicio)) }}
+                                        - {{ date('H:i', strtotime($estabelecimento->sexta_horario_fim)) }}</span>
+                            </li>
+                            <li>
+                                <span class="dia">Sab.</span>
+                                <span
+                                    class="horario">{{ date('H:i', strtotime($estabelecimento->sabado_horario_inicio)) }}
+                                        - {{ date('H:i', strtotime($estabelecimento->sabado_horario_fim)) }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="card">
+                    <h3>Contato</h3>
+                    <div class="botoes-contato">
+                        <a href="tel:5571981575883" class="btn-telefone"><i class="fa fa-phone"></i>
+                            {{ $estabelecimento->telefone }}</a>
+                        <a href="{{ str_replace(['-', '(', ')'], '', $estabelecimento->telefone) }}"
+                           class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
+                            {{ $estabelecimento->telefone }}</a>
+                        <a href="{{ str_replace(['-', '(', ')'], '', $estabelecimento->telefone) }}"
+                           class="btn-whatsapp"><i class="fa fa-whatsapp"></i>
+                            {{ $estabelecimento->telefone }}</a>
+                        <a href="{{ $estabelecimento->instagram }}" class="btn-instagram"><i
+                                class="fa fa-instagram"></i>
+                            Instagram</a>
+                        <a href="https://maps.google.com" class="btn-maps"><i class="fa fa-map"></i> Traçar
+                            Rota</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="card">
+                    <h3>Localização</h3>
+                    <iframe
+                        src="https://www.google.com.br/maps?q={{ $estabelecimento->cep }},%20Brasil&output=embed"
+                        width="600" height="450" style="border:0; width: 100%; height: 250px"
+                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+@include('template-parts/footer')
 </body>
 
 </html>

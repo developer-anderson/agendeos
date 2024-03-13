@@ -7,6 +7,7 @@ use App\Models\AgendamentoItem;
 use App\Models\Clientes;
 use App\Models\Empresas;
 use App\Models\FormaPagamento;
+use App\Models\funcionarios;
 use App\Models\OrdemServicos;
 use App\Models\Servicos;
 use App\Models\Situacao;
@@ -131,13 +132,15 @@ class AgendamentoController extends Controller
                         'agendamento_id' => $agendamento->id,
                     ]);
                 }
-                $itens = AgendamentoItem::where('agendamento_id', $agendamento->id)
-                    ->with('agendamento', 'funcionario', 'servico')
-                    ->get();
             }
             $administrador  = User::where('id', $agendamento->user_id)->first();
             $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
-
+            if($agendamento->funcionario_id){
+                $funcionario = funcionarios::query()->where('id', $agendamento->funcionario_id)->first();
+                if($funcionario->celular){
+                    $estabelecimento->telefone = $funcionario->celular;
+                }
+            }
 
             return response()->json([
                 "erro" => false,

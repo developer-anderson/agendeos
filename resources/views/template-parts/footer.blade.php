@@ -41,7 +41,7 @@
 </style>
 
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-    crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 <script src="{{ asset('assets/js/popper.min.js') }}"></script>
 <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('assets/js/moment.js') }}"></script>
@@ -309,7 +309,7 @@
             // verificar os horários disponiveis e liberar na api
             function checkHours(empresa, funcionario, data) {
                 const url =
-                    `https://homologacao.agendos.com.br/public/api/agendamentos/agenda_funcionario/${empresa}/${funcionario}/${data}`;
+                    `https://producao.agendos.com.br/public/api/agendamentos/agenda_funcionario/${empresa}/${funcionario}/${data}`;
 
                 // Variável para rastrear o estado de carregamento
                 let isLoading = false;
@@ -414,7 +414,7 @@
     });
     function agendarServico() {
         var settings = {
-            "url": "https://homologacao.agendos.com.br/public/api/agendamentos",
+            "url": "https://producao.agendos.com.br/public/api/agendamentos",
             "method": "POST",
             "timeout": 0,
             "headers": {

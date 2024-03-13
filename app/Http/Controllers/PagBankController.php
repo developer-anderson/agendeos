@@ -1,8 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Agendamento;
+use App\Models\AgendamentoItem;
 use App\Models\Empresas;
+use App\Models\fluxo_caixa;
 use App\Models\GatewayPagamento;
+use App\Models\ordem_servico_servico;
+use App\Models\OrdemServicos;
 use App\Models\Planos;
 use App\Models\User;
 use App\Models\UsuarioAssinatura;
@@ -227,18 +232,111 @@ class PagBankController extends Controller
             return response()->json(['error' => $errorMessage], 500);
         }
     }
-    public function requestHook($data, $rota)
+    public function criarPagarPedidoPagamento(Request $request)
     {
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
+        $agendamento = Agendamento::query()->where("id", $request->agendamento_id)->first();
+
         if($dadosPagBank->producao){
-            $url = $dadosPagBank->endpoint_producao.$rota;
+            $url = $dadosPagBank->endpoint_producao."orders";
             $apiKey = $dadosPagBank->token_producao;
         }
         else{
-            $url = $dadosPagBank->endpoint_homologacao.$rota;
+            $url = $dadosPagBank->endpoint_homologacao."orders";
             $apiKey = $dadosPagBank->token_homologacao;
         }
+        $totalITens = $this->itensAgendamentoValorTotal($agendamento);
+        $taxa = 100;
+        $total = $totalITens + $taxa;
+        $itens = [];
+        foreach ($this->itensAgendamento($agendamento) as $item) {
+            $itens[] =  [
+                "reference_id" => " ",
+                "name" => "nome do item",
+                "quantity" => 1,
+                "unit_amount" => $item["valor"]
+            ];
+        }
         $client = new Client();
+        $data = [
+            "reference_id" => "agendamento",
+            "customer" => [
+                "name" => $request->nome,
+                "email" => $request->email,
+                "tax_id" => $request->cpf,
+                "phones" => [
+                    [
+                        "country" => "55",
+                        "area" => "11",
+                        "number" => "999999999",
+                        "type" => "MOBILE"
+                    ]
+                ]
+            ],
+            "items" => $itens,
+            "shipping" => [
+                "address" => [
+                    "street" => "Avenida Brigadeiro Faria Lima",
+                    "number" => "1384",
+                    "complement" => "apto 12",
+                    "locality" => "Pinheiros",
+                    "city" => "São Paulo",
+                    "region_code" => "SP",
+                    "country" => "BRA",
+                    "postal_code" => "01452002"
+                ]
+            ],
+            "notification_urls" => [
+                "https://agendos.com.br/retorno_pagamento"
+            ],
+            "charges" => [
+                [
+                    "reference_id" => $request->agendamento_id,
+                    "description" => "Pagamento dos serviçoes referentes ao agendamento",
+                    "amount" => [
+                        "value" => $total,
+                        "currency" => "BRL"
+                    ],
+                    "payment_method" => [
+                        "type" => "CREDIT_CARD",
+                        "installments" => 1,
+                        "capture" => true,
+                        "card" => [
+                            "number" => "4111111111111111",
+                            "exp_month" => "12",
+                            "exp_year" => "2026",
+                            "security_code" => "123",
+                            "holder" => [
+                                "name" => $request->nome,
+                                "tax_id" => $request->cpf
+                            ],
+                            "store" => false
+                        ]
+                    ],
+                    "splits" => [
+                        "method" => "FIXED",
+                        "receivers" => [
+                            [
+                                "account" => [
+                                    "id" => "ACCO_12345"
+                                ],
+                                "amount" => [
+                                    "value" => "6000"
+                                ]
+                            ],
+                            [
+                                "account" => [
+                                    "id" => "ACCO_67890"
+                                ],
+                                "amount" => [
+                                    "value" => "4000"
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
         try {
             $response = $client->request('POST', $url, [
                 'body' => json_encode($data),
@@ -251,7 +349,11 @@ class PagBankController extends Controller
 
             $statusCode = $response->getStatusCode();
             $body = $response->getBody()->getContents();
-
+            if($statusCode >= 200 and $statusCode <= 299){
+                $agendamento->situacao_id = 2;
+                $agendamento->forma_pagamento_id = 3;
+                $agendamento->save();
+            }
             return $body;
         } catch (\Exception $e) {
             // Tratar erros, se necessário
@@ -259,5 +361,54 @@ class PagBankController extends Controller
         }
     }
 
+    public function gerarComanda($agendamento)
+    {
+        $comanda = OrdemServicos::create(
+            [
+                "id_cliente" => $agendamento->clientes_id,
+                "id_funcionario" => $agendamento->funcionario_id,
+                "id_servico" => 0,
+                "situacao" => $agendamento->situacao_id,
+                "id_forma_pagamento" => $agendamento->forma_pagamento_id,
+                "inicio_os" => $agendamento->data_agendamento." ".$agendamento->hora_agendamento,
+                "previsao_os" => $agendamento->data_agendamento." ".$agendamento->hora_agendamento,
+                "user_id" => $agendamento->user_id,
+            ]
+        );
+        $comanda->valor = 0;
+        foreach ($this->itensAgendamento($agendamento->id) as $item) {
+            $valor_temp = $item['valor'];
+            $comanda->valor += $valor_temp;
+            $data = array(
+                "os_id"      => $comanda->id,
+                "id_servico" => $item['servicos_id'],
+                "quantidade" => $item['quantidade'] ?? 1,
+                "valor" => $valor_temp
+            );
+            ordem_servico_servico::create($data);
+        }
+        $this->gerarFluxoCaixa($comanda);
+    }
+    public function gerarFluxoCaixa($data)
+    {
+        $data['cliente_id'] = $data['id_cliente'];
+        $data['os_id'] = $data['id'];
+
+        $data['nome'] = "Ordem de Serviço #" . $data['os_id'];
+        $data['produto_id'] = null;
+        $data['pagamento_id'] = 3;
+        $data['data'] = date("Y-m-d");
+        $data['tipo_id'] = 1;
+        fluxo_caixa::create($data);
+        return true;
+    }
+    public function itensAgendamento($agendamento)
+    {
+        return AgendamentoItem::query()->where("agendamento_id", $agendamento->id)->get();
+    }
+    public function itensAgendamentoValorTotal($agendamento)
+    {
+        return AgendamentoItem::query()->where("agendamento_id", $agendamento->id)->sum('valor');
+    }
 
 }

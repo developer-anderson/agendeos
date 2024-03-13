@@ -180,6 +180,12 @@ class AgendamentoController extends Controller
             $agendamento->save();
             $administrador  = User::where('id', $agendamento->user_id)->first();
             $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
+            if($agendamento->funcionario_id){
+                $funcionario = funcionarios::query()->where('id', $agendamento->funcionario_id)->first();
+                if($funcionario->celular){
+                    $estabelecimento->telefone = $funcionario->celular;
+                }
+            }
             $this->notifyClient($agendamento->id, $estabelecimento, true);
             $this->notifyClient($agendamento->id, $estabelecimento, true);
             return response()->json($agendamento, 200);

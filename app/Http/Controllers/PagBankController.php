@@ -227,15 +227,15 @@ class PagBankController extends Controller
             return response()->json(['error' => $errorMessage], 500);
         }
     }
-    public function criarPEdidoPagamentoComCartaoCredito($data)
+    public function requestHook($data, $rota)
     {
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
         if($dadosPagBank->producao){
-            $url = $dadosPagBank->endpoint_producao.'subscriptions';
+            $url = $dadosPagBank->endpoint_producao.$rota;
             $apiKey = $dadosPagBank->token_producao;
         }
         else{
-            $url = $dadosPagBank->endpoint_homologacao.'customers';
+            $url = $dadosPagBank->endpoint_homologacao.$rota;
             $apiKey = $dadosPagBank->token_homologacao;
         }
         $client = new Client();
@@ -252,10 +252,10 @@ class PagBankController extends Controller
             $statusCode = $response->getStatusCode();
             $body = $response->getBody()->getContents();
 
-            return response()->json(['statusCode' => $statusCode, 'response' => $body]);
+            return $body;
         } catch (\Exception $e) {
             // Tratar erros, se necessário
-            return response()->json(['error' => $e->getMessage()], 500);
+            return null;
         }
     }
 

@@ -99,10 +99,7 @@
             // Verificar se todas as chaves têm dados em agendamentoData
             const dadosCompletos = chavesDesejadas.every(chave => agendamentoData[chave] !== undefined &&
                 agendamentoData[chave] !== null);
-
             if (dadosCompletos) {
-                $(".btAgendar").attr("disabled", false);
-
                 console.log('Todos os dados necessários estão presentes em agendamentoData:', agendamentoData);
             } else {
                 console.log('Faltam alguns dados em agendamentoData:', agendamentoData);
@@ -302,6 +299,8 @@
                     $('.hour-item').removeClass('active');
                     $(e.target).addClass('active');
                     agendamentoData['hora_agendamento'] = value;
+                    $(".btAgendar").attr("disabled", false);
+
                     verificarDadosAgendamento()
                 })
             }
@@ -413,6 +412,7 @@
 
     });
     function agendarServico() {
+        $(".btAgendar").attr("disabled", true);
         var settings = {
             "url": "https://producao.agendos.com.br/public/api/agendamentos",
             "method": "POST",
@@ -435,6 +435,7 @@
                     location.reload();
                 }, 2000);
             } else {
+                $(".btAgendar").attr("disabled", false);
                 // Se houver erro, você pode tratar de acordo com sua lógica
                 console.error('Erro ao cadastrar:', response.mensagem);
             }

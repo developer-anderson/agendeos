@@ -172,13 +172,16 @@ class AgendamentoController extends Controller
 
     public function cancelarAgendamneto($id){
         $agendamento = Agendamento::query()->where("id", $id)->first();
-        $agendamento->situacao_id = 7;
-        $agendamento->save();
-        $administrador  = User::where('id', $agendamento->user_id)->first();
-        $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
-        $this->notifyClient($agendamento->id, $estabelecimento, true);
-        $this->notifyClient($agendamento->id, $estabelecimento, true);
-        return response()->json($agendamento, 200);
+        if($agendamento->situacao_id <> 7){
+            $agendamento->situacao_id = 7;
+            $agendamento->save();
+            $administrador  = User::where('id', $agendamento->user_id)->first();
+            $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
+            $this->notifyClient($agendamento->id, $estabelecimento, true);
+            $this->notifyClient($agendamento->id, $estabelecimento, true);
+            return response()->json($agendamento, 200);
+        }
+
     }
 
     /**

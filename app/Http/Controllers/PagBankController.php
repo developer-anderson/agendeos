@@ -266,10 +266,10 @@ class PagBankController extends Controller
             ];
         }
         $itens[] =  [
-            "reference_id" => "Taxa de cancelamento",
-            "name" => "Calção Taxa de Cancelamento",
+            "reference_id" => "Taxa",
+            "name" => "Taxa",
             "quantity" => 1,
-            "unit_amount" => $taxaCancelamento + $taxa
+            "unit_amount" => $taxa
         ];
         $receivers =  [
             [

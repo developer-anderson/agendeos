@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\OrdemServicosController;
 use App\Http\Controllers\AgendamentoController;
 Route::get('/agendamento/{slug}', [OrdemServicosController::class, 'getEstabelecimento'])->name('getEstabelecimentoWeb');
+Route::get('/cron', [OrdemServicosController::class, 'cron']);
 
 Route::permanentRedirect('/', 'https://site.agendos.com.br/');
 Route::get('/pedido_pagamento/{os}', [OrdemServicosController::class, 'pedidoPagamento']);

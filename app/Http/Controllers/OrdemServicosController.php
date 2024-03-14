@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agendamento;
+use App\Models\AgendamentoItem;
 use App\Models\OrdemServicos;
 use App\Models\ordem_servico_servico;
 use App\Models\Empresas;
@@ -39,7 +41,16 @@ class OrdemServicosController extends Controller
     public function cron()
     {
         //
-        $os = OrdemServicos::where('inicio_os', '>=', date("Y-m-d") . ' 00:00:00')->where('inicio_os', '<=',   date("Y-m-d") . ' 23:59:59')->where('remarketing', 0)->orderBy('id', 'desc')->get();
+        $os =
+            OrdemServicos::where('inicio_os', '>=', date("Y-m-d") . ' 00:00:00')
+                ->where('inicio_os', '<=',   date("Y-m-d") . ' 23:59:59')
+                ->where('remarketing', 0)->orderBy('id', 'desc')
+                ->get();
+        $periodoTeste = UsuarioAssinatura::query()
+            ->where("fim_teste", date("Y-m-d"))
+            ->where("teste", 1)
+            ->whereNull(["data_assinatura", "data_renovacao", "data_pagamento", "referencia_id"] )->update(["teste" => 0]);
+
         //dd($os);
         foreach($os as $key => $value)
         {
@@ -271,35 +282,40 @@ class OrdemServicosController extends Controller
         }
         return response()->json($os, 200);
     }
-    public function pedidoPagamento($ordemServicos)
+    public function pedidoPagamento($agendamento_id)
     {
 
 
-        $os = OrdemServicos::where('id',$ordemServicos)->first();
-        $ids_servicos = ordem_servico_servico::where('os_id', $ordemServicos)->select('id_servico')->get();
-        $inicio_os = explode(" ",  $os["inicio_os"]);
-        $previsao_os = explode(" ",  $os["previsao_os"]);
-        $os["inicio_os"] = $inicio_os[0];
-        $os["inicio_os_time"] =$inicio_os[1];
-        $os["previsao_os"] =$previsao_os[0];
-        $os["previsao_os_time"] =$previsao_os[1];
+        $agendamento = Agendamento::where('id',$agendamento_id)->first();
+        $ids_servicos = AgendamentoItem::where('agendamento_id', $agendamento_id)->select('servicos_id')->get();
 
-        $os['servicos'] =  Servicos::whereIn('id',$ids_servicos)->get();
-        $os['total'] = Servicos::whereIn('id', $ids_servicos)->sum('valor');
-        $os["taxa"] = 100;
-        $os['cliente'] = Clientes::where('id', $os->id_cliente)->get();
-        if($os->id_funcionario){
-            $os['funcionario'] = funcionarios::where('id', $os->id_funcionario)->get();
-        }
-        if($os->id_veiculo){
-            $os['veiculo'] = Veiculos::where('id', $os->id_veiculo)->get();
-        }
-        $os['situacao'] = Situacao::where('referencia_id',$os->situacao)->first();
+        $agendamento['servicos'] =  Servicos::whereIn('id',$ids_servicos)->get();
 
-        if($os->id_forma_pagamento){
-            $os['forma_pagamento'] = FormaPagamento::where('id', $os->id_forma_pagamento)->first();
+
+        $porcentagemCancelamento = 0.3;
+        $taxa = 100;
+        $agendamento['total'] = Servicos::whereIn('id', $ids_servicos)->sum('valor');
+        $taxaCancelamento = $agendamento['total'] * $porcentagemCancelamento;
+        $agendamento['total'] = $taxaCancelamento + $taxa +  $agendamento['total'];
+        $agendamento["taxa"] = 100;
+        $agendamento['servicos'][] =  [
+            "nome" => "Calção Agendamento",
+            "valor" => $taxaCancelamento
+        ];
+
+        $agendamento['servicos'][] =  [
+            "nome" => "Taxa",
+            "valor" => $taxa
+        ];
+        $agendamento['cliente'] = Clientes::where('id', $agendamento->clientes_id)->get();
+        if($agendamento->funcionario_id){
+            $agendamento['funcionario'] = funcionarios::where('id', $agendamento->funcionario_id)->get();
         }
-        return view('pagamento', compact('os'));
+        $agendamento['situacao'] = Situacao::where('referencia_id',$agendamento->situacao_id)->first();
+        if($agendamento->forma_pagamento_id){
+            $agendamento['forma_pagamento'] = FormaPagamento::where('id', $agendamento->forma_pagamento_id)->first();
+        }
+        return view('pagamento', compact('agendamento'));
     }
     public function addReceita($data)
     {

@@ -240,23 +240,43 @@ class PagBankController extends Controller
         if($dadosPagBank->producao){
             $url = $dadosPagBank->endpoint_producao."orders";
             $apiKey = $dadosPagBank->token_producao;
+            $accountId = $dadosPagBank->account_id_producao;
         }
         else{
             $url = $dadosPagBank->endpoint_homologacao."orders";
             $apiKey = $dadosPagBank->token_homologacao;
+            $accountId = $dadosPagBank->account_id_homologacao;
         }
         $totalITens = $this->itensAgendamentoValorTotal($agendamento);
         $taxa = 100;
-        $total = $totalITens + $taxa;
+        $porcentagemCancelamento = 0.3;
+        $taxaCancelamento = $totalITens * $porcentagemCancelamento;
+        $total = $totalITens + $taxa + $taxaCancelamento;
         $itens = [];
         foreach ($this->itensAgendamento($agendamento) as $item) {
             $itens[] =  [
-                "reference_id" => " ",
-                "name" => "nome do item",
+                "reference_id" => $item["id"],
+                "name" => $item["nome"],
                 "quantity" => 1,
                 "unit_amount" => $item["valor"]
             ];
         }
+        $itens[] =  [
+            "reference_id" => "Taxa de cancelamento",
+            "name" => "Calção Taxa de Cancelamento",
+            "quantity" => 1,
+            "unit_amount" => $taxaCancelamento + $taxa
+        ];
+        $receivers =  [
+            [
+                "account" => [
+                    "id" => $accountId //Agendos
+                ],
+                "amount" => [
+                    "value" => $total
+                ]
+            ]
+        ] ;
         $client = new Client();
         $data = [
             "reference_id" => "agendamento",
@@ -315,24 +335,7 @@ class PagBankController extends Controller
                     ],
                     "splits" => [
                         "method" => "FIXED",
-                        "receivers" => [
-                            [
-                                "account" => [
-                                    "id" => "ACCO_12345"
-                                ],
-                                "amount" => [
-                                    "value" => "6000"
-                                ]
-                            ],
-                            [
-                                "account" => [
-                                    "id" => "ACCO_67890"
-                                ],
-                                "amount" => [
-                                    "value" => "4000"
-                                ]
-                            ]
-                        ]
+                        "receivers" => $receivers
                     ]
                 ]
             ]
@@ -404,7 +407,8 @@ class PagBankController extends Controller
     }
     public function itensAgendamento($agendamento)
     {
-        return AgendamentoItem::query()->where("agendamento_id", $agendamento->id)->get();
+        return AgendamentoItem::query()->where("agendamento_id", $agendamento->id)
+            ->leftJoin('servicos', 'servicos.id', '=', 'agendamento_itens.servicos_id')->select("agendamento_itens.*", "servicos.nome")->get();
     }
     public function itensAgendamentoValorTotal($agendamento)
     {

@@ -186,8 +186,8 @@ class AgendamentoController extends Controller
                     $estabelecimento->telefone = $funcionario->celular;
                 }
             }
-            $this->notifyClient($agendamento->id, $estabelecimento, true);
-            $this->notifyClient($agendamento->id, $estabelecimento, true);
+            $this->notifyClient($agendamento->id, $estabelecimento, true, false);
+            $this->notifyClient($agendamento->id, $estabelecimento, true, true);
             return response()->json($agendamento, 200);
         }
 

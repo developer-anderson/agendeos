@@ -247,6 +247,10 @@ class PagBankController extends Controller
             $apiKey = $dadosPagBank->token_homologacao;
             $accountId = $dadosPagBank->account_id_homologacao;
         }
+        $now = Carbon::now();
+        $expirationDate = $now->addMinutes(30);
+
+        $formattedExpirationDate = $expirationDate->toIso8601String();
         $totalITens = $this->itensAgendamentoValorTotal($agendamento);
         $taxa = 100;
         $porcentagemCancelamento = 0.3;
@@ -277,6 +281,46 @@ class PagBankController extends Controller
                 ]
             ]
         ] ;
+        $qr_codes = [
+            "amount" => [
+                "value" => $total
+            ],
+            "expiration_date" => $formattedExpirationDate,
+            "splits" => [
+                "method" => "FIXED",
+                "receivers" => $receivers
+            ]
+        ];
+        $charges =     [
+            [
+                "reference_id" => $request->agendamento_id,
+                "description" => "Pagamento dos serviçoes referentes ao agendamento",
+                "amount" => [
+                    "value" => $total,
+                    "currency" => "BRL"
+                ],
+                "payment_method" => [
+                    "type" => "CREDIT_CARD",
+                    "installments" => 1,
+                    "capture" => true,
+                    "card" => [
+                        "number" => str_replace(" ", "", $request->card_number),
+                        "exp_month" => $request->mes,
+                        "exp_year" => $request->ano,
+                        "security_code" => $request->cvv,
+                        "holder" => [
+                            "name" => $request->nome,
+                            "tax_id" => $request->cpf
+                        ],
+                        "store" => false
+                    ]
+                ],
+                "splits" => [
+                    "method" => "FIXED",
+                    "receivers" => $receivers
+                ]
+            ]
+        ];
         $client = new Client();
         $data = [
             "reference_id" => "agendamento",
@@ -308,38 +352,15 @@ class PagBankController extends Controller
             ],
             "notification_urls" => [
                 "https://agendos.com.br/retorno_pagamento"
-            ],
-            "charges" => [
-                [
-                    "reference_id" => $request->agendamento_id,
-                    "description" => "Pagamento dos serviçoes referentes ao agendamento",
-                    "amount" => [
-                        "value" => $total,
-                        "currency" => "BRL"
-                    ],
-                    "payment_method" => [
-                        "type" => "CREDIT_CARD",
-                        "installments" => 1,
-                        "capture" => true,
-                        "card" => [
-                            "number" => "4111111111111111",
-                            "exp_month" => "12",
-                            "exp_year" => "2026",
-                            "security_code" => "123",
-                            "holder" => [
-                                "name" => $request->nome,
-                                "tax_id" => $request->cpf
-                            ],
-                            "store" => false
-                        ]
-                    ],
-                    "splits" => [
-                        "method" => "FIXED",
-                        "receivers" => $receivers
-                    ]
-                ]
             ]
+
         ];
+        if($request->forma_pagamento = "cartao"){
+            $data["charges"] = $charges;
+        }
+        else{
+            $data["qr_codes"] = $qr_codes;
+        }
         try {
             $response = $client->request('POST', $url, [
                 'body' => json_encode($data),

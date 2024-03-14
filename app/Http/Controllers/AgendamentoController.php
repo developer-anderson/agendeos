@@ -188,7 +188,8 @@ class AgendamentoController extends Controller
             }
             $this->notifyClient($agendamento->id, $estabelecimento, true, false);
             $this->notifyClient($agendamento->id, $estabelecimento, true, true);
-            return response()->json($agendamento, 200);
+            return redirect('https://site.agendos.com.br/');
+
         }
 
     }

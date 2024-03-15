@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PagBankController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 /*
@@ -20,6 +21,7 @@ Route::get('/cron', [OrdemServicosController::class, 'cron']);
 
 Route::permanentRedirect('/', 'https://site.agendos.com.br/');
 Route::get('/pedido_pagamento/{os}', [OrdemServicosController::class, 'pedidoPagamento']);
+Route::post('/pagamento', [PagBankController::class, 'criarPagarPedidoPagamento']);
 
 Route::post('/cadastrar', [App\Http\Controllers\RegisterController::class, 'store'])->name('cadastrarWeb');
 Route::post('/reset-password-token', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])->name('token_recuperar_SenhaWeb');

@@ -5,12 +5,17 @@ use App\Models\Agendamento;
 use App\Models\AgendamentoItem;
 use App\Models\Empresas;
 use App\Models\fluxo_caixa;
+use App\Models\FormaPagamento;
+use App\Models\funcionarios;
 use App\Models\GatewayPagamento;
 use App\Models\ordem_servico_servico;
 use App\Models\OrdemServicos;
 use App\Models\Planos;
+use App\Models\Situacao;
+use App\Models\token;
 use App\Models\User;
 use App\Models\UsuarioAssinatura;
+use App\Models\whatsapp;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Carbon;
 use GuzzleHttp\Client;
@@ -236,7 +241,10 @@ class PagBankController extends Controller
     {
         $dadosPagBank = GatewayPagamento::query()->where("nome", "PagBank")->first();
         $agendamento = Agendamento::query()->where("id", $request->agendamento_id)->first();
+        $telefoneLimpo = preg_replace('/[^0-9]/', '', $agendamento->telefone);
 
+        $ddd = substr($telefoneLimpo, 0, 2);
+        $numero = substr($telefoneLimpo, 2);
         if($dadosPagBank->producao){
             $url = $dadosPagBank->endpoint_producao."orders";
             $apiKey = $dadosPagBank->token_producao;
@@ -247,6 +255,7 @@ class PagBankController extends Controller
             $apiKey = $dadosPagBank->token_homologacao;
             $accountId = $dadosPagBank->account_id_homologacao;
         }
+        $url = str_replace(".assinaturas", "", $url);
         $now = Carbon::now();
         $expirationDate = $now->addMinutes(30);
 
@@ -255,9 +264,10 @@ class PagBankController extends Controller
         $taxa = 100;
         $porcentagemCancelamento = 0.3;
         $taxaCancelamento = $totalITens * $porcentagemCancelamento;
-        $total = $totalITens + $taxa + $taxaCancelamento;
+        $total = $totalITens + $taxa;
         $itens = [];
-        foreach ($this->itensAgendamento($agendamento) as $item) {
+        $servicos = $this->itensAgendamento($agendamento);
+        foreach ($servicos as $item) {
             $itens[] =  [
                 "reference_id" => $item["id"],
                 "name" => $item["nome"],
@@ -303,6 +313,7 @@ class PagBankController extends Controller
                     "type" => "CREDIT_CARD",
                     "installments" => 1,
                     "capture" => true,
+
                     "card" => [
                         "number" => str_replace(" ", "", $request->card_number),
                         "exp_month" => $request->mes,
@@ -312,27 +323,30 @@ class PagBankController extends Controller
                             "name" => $request->nome,
                             "tax_id" => $request->cpf
                         ],
+                        "encrypted" => $request->cartaoHash,
                         "store" => false
                     ]
-                ],
-                "splits" => [
-                    "method" => "FIXED",
-                    "receivers" => $receivers
                 ]
+
             ]
         ];
+        /*
+        $charges["splits"] =  [
+            "method" => "FIXED",
+            "receivers" => $receivers
+        ];*/
         $client = new Client();
         $data = [
             "reference_id" => "agendamento",
             "customer" => [
-                "name" => $request->nome,
-                "email" => $request->email,
+                "name" => $agendamento->nome,
+                "email" => $agendamento->email,
                 "tax_id" => $request->cpf,
                 "phones" => [
                     [
                         "country" => "55",
-                        "area" => "11",
-                        "number" => "999999999",
+                        "area" => $ddd,
+                        "number" => $numero,
                         "type" => "MOBILE"
                     ]
                 ]
@@ -377,16 +391,30 @@ class PagBankController extends Controller
                 $agendamento->situacao_id = 2;
                 $agendamento->forma_pagamento_id = 3;
                 $agendamento->save();
+
+                $this->gerarComanda($agendamento->id, $servicos);
+                $administrador  = User::where('id', $agendamento->user_id)->first();
+                $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
+                if($agendamento->funcionario_id){
+                    $funcionario = funcionarios::query()->where('id', $agendamento->funcionario_id)->first();
+                    if($funcionario->celular){
+                        $estabelecimento->telefone = $funcionario->celular;
+                    }
+                }
+                $this->notifyClient($agendamento->id,$estabelecimento, false );
+                $this->notifyClient($agendamento->id,$estabelecimento, true );
             }
             return $body;
         } catch (\Exception $e) {
             // Tratar erros, se necessário
-            return null;
+            return response()->json(["request" => $data, "response" => $e->getMessage()." ".$e->getLine() ], 500);
+
         }
     }
 
-    public function gerarComanda($agendamento)
+    public function gerarComanda($id, $servicos)
     {
+        $agendamento = Agendamento::query()->where("id", $id)->first();
         $comanda = OrdemServicos::create(
             [
                 "id_cliente" => $agendamento->clientes_id,
@@ -394,19 +422,20 @@ class PagBankController extends Controller
                 "id_servico" => 0,
                 "situacao" => $agendamento->situacao_id,
                 "id_forma_pagamento" => $agendamento->forma_pagamento_id,
-                "inicio_os" => $agendamento->data_agendamento." ".$agendamento->hora_agendamento,
-                "previsao_os" => $agendamento->data_agendamento." ".$agendamento->hora_agendamento,
+                "inicio_os" => date("Y-m-d H:i:s", strtotime($agendamento->data_agendamento->format('Y-m-d')." ".$agendamento->hora_agendamento)),
+                "previsao_os" => date("Y-m-d H:i:s", strtotime($agendamento->data_agendamento->format('Y-m-d')." ".$agendamento->hora_agendamento)),
                 "user_id" => $agendamento->user_id,
             ]
         );
         $comanda->valor = 0;
-        foreach ($this->itensAgendamento($agendamento->id) as $item) {
+
+        foreach ($servicos as $item) {
             $valor_temp = $item['valor'];
             $comanda->valor += $valor_temp;
             $data = array(
                 "os_id"      => $comanda->id,
                 "id_servico" => $item['servicos_id'],
-                "quantidade" => $item['quantidade'] ?? 1,
+                "quantidade" => $item['quantidade'],
                 "valor" => $valor_temp
             );
             ordem_servico_servico::create($data);
@@ -415,25 +444,123 @@ class PagBankController extends Controller
     }
     public function gerarFluxoCaixa($data)
     {
-        $data['cliente_id'] = $data['id_cliente'];
-        $data['os_id'] = $data['id'];
-
-        $data['nome'] = "Ordem de Serviço #" . $data['os_id'];
-        $data['produto_id'] = null;
-        $data['pagamento_id'] = 3;
-        $data['data'] = date("Y-m-d");
-        $data['tipo_id'] = 1;
-        fluxo_caixa::create($data);
+        fluxo_caixa::create(
+            [
+                "nome" => "Ordem de Serviço #" . $data->id,
+                "user_id" => $data->user_id,
+                "tipo_id" => 1,
+                "data" => date("Y-m-d"),
+                "pagamento_id" => 3,
+                "produto_id" => null,
+                "os_id" => $data->id,
+                "cliente_id" => $data->id_cliente,
+                "quantidade" => 1,
+                "situacao" => 3,
+                "valor" => $data->valor
+            ]
+        );
         return true;
     }
     public function itensAgendamento($agendamento)
     {
         return AgendamentoItem::query()->where("agendamento_id", $agendamento->id)
-            ->leftJoin('servicos', 'servicos.id', '=', 'agendamento_itens.servicos_id')->select("agendamento_itens.*", "servicos.nome")->get();
+            ->leftJoin('servicos', 'servicos.id', '=', 'agendamento_itens.servicos_id')
+            ->select("agendamento_itens.*", "servicos.nome")
+            ->get();
     }
     public function itensAgendamentoValorTotal($agendamento)
     {
         return AgendamentoItem::query()->where("agendamento_id", $agendamento->id)->sum('valor');
     }
+    public function getServicosNotifyClint($dados)
+    {
+        $data = array();
+        $nomes = "";
+        $total = 0;
+
+        foreach ($dados as $item) {
+            $nomes .= " | " . $item->servico->nome;
+            $total += ($item->valor/100);
+        }
+        return array("nomes" => $nomes, "total" => $total);
+    }
+
+    public function notifyClient($id, $empresa, $notificar_empresa=false)
+    {
+        $data = Agendamento::query()->where("id", $id)->first();
+        $itens = AgendamentoItem::where('agendamento_id', $id)
+            ->with('servico')
+            ->get();
+        $extras = $this->getServicosNotifyClint($itens);
+        $cancelar = "";
+
+        if($notificar_empresa){
+            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone );
+        }
+        else{
+            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
+        }
+
+        $nome_cliente = $data->nome.", esta é uma confirmação do pagamento do seu agendamento realizado na empresa ".$empresa->razao_social;
+
+        $situacao = Situacao::where('id',$data->situacao_id)->first()->nome;
+
+        $values = [
+            "1" => [
+                "type" => "text",
+                "text" => $nome_cliente
+            ],
+            "2" => [
+                "type" => "text",
+                "text" => $id
+            ],
+            "3" => [
+                "type" => "text",
+                "text" => $extras['nomes']
+            ],
+            "4" => [
+                "type" => "text",
+                "text" => number_format($extras['total'], 2, ".", ",")
+            ],
+            "5" => [
+                "type" => "text",
+                "text" => $situacao
+            ],
+            "6" => [
+                "type" => "text",
+                "text" =>  FormaPagamento::where('id', $data->forma_pagamento_id)->first()->nome
+            ]
+            ,
+            "7" => [
+                "type" => "text",
+                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento."  ".$cancelar
+            ]
+        ];
+        $vetor = array(
+            "messaging_product" => "whatsapp",
+            "to"           => $telefone,
+            "type"         => 'template',
+            "template"     => array(
+                "name"     => "agendamento",
+                "language" => array(
+                    "code" => "pt_BR",
+                    "policy" => "deterministic"
+                ),
+                "components"     =>
+                    array(
+                        array(
+                            "type"       => "body",
+                            "parameters" => $values
+                        )
+                    )
+            ),
+
+
+        );
+
+        $zap =  whatsapp::sendMessage($vetor, token::token());
+        return [$vetor,$zap];
+    }
+
 
 }

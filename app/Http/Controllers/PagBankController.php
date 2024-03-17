@@ -296,10 +296,6 @@ class PagBankController extends Controller
                 "value" => $total
             ],
             "expiration_date" => $formattedExpirationDate,
-            "splits" => [
-                "method" => "FIXED",
-                "receivers" => $receivers
-            ]
         ];
         $charges =     [
             [
@@ -331,6 +327,7 @@ class PagBankController extends Controller
             ]
         ];
         /*
+         * // ou $qr_codes
         $charges["splits"] =  [
             "method" => "FIXED",
             "receivers" => $receivers
@@ -369,11 +366,11 @@ class PagBankController extends Controller
             ]
 
         ];
-        if($request->forma_pagamento = "cartao"){
+        if($request->forma_pagamento == 3){
             $data["charges"] = $charges;
         }
         else{
-            $data["qr_codes"] = $qr_codes;
+            $data["qr_codes"] = [$qr_codes];
         }
         try {
             $response = $client->request('POST', $url, [
@@ -387,24 +384,34 @@ class PagBankController extends Controller
 
             $statusCode = $response->getStatusCode();
             $body = $response->getBody()->getContents();
+            $body = json_decode($body, true);
             if($statusCode >= 200 and $statusCode <= 299){
-                $agendamento->situacao_id = 2;
-                $agendamento->forma_pagamento_id = 3;
-                $agendamento->save();
-
-                $this->gerarComanda($agendamento->id, $servicos);
                 $administrador  = User::where('id', $agendamento->user_id)->first();
                 $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
-                if($agendamento->funcionario_id){
-                    $funcionario = funcionarios::query()->where('id', $agendamento->funcionario_id)->first();
-                    if($funcionario->celular){
-                        $estabelecimento->telefone = $funcionario->celular;
+                if(isset($body["charges"][0]["status"]) and  $body["charges"][0]["status"] == "PAID"){
+                    $agendamento->situacao_id = 2;
+                    $agendamento->forma_pagamento_id = $request->forma_pagamento;
+                    $agendamento->save();
+                    $this->gerarComanda($agendamento->id, $servicos);
+                    if($agendamento->funcionario_id){
+                        $funcionario = funcionarios::query()->where('id', $agendamento->funcionario_id)->first();
+                        if($funcionario->celular){
+                            $estabelecimento->telefone = $funcionario->celular;
+                        }
                     }
+                    $this->notifyClient($agendamento->id,$estabelecimento, false );
+                    $this->notifyClient($agendamento->id,$estabelecimento, true );
                 }
-                $this->notifyClient($agendamento->id,$estabelecimento, false );
-                $this->notifyClient($agendamento->id,$estabelecimento, true );
+                elseif(isset($body["qr_codes"][0]["text"])){
+                    $agendamento->situacao_id = 1;
+                    $agendamento->forma_pagamento_id = $request->forma_pagamento;
+                    $agendamento->save();
+                    $this->notifyClient($agendamento->id,$estabelecimento, false, $body["qr_codes"][0]["text"] );
+                    $this->notifyClient($agendamento->id,$estabelecimento, true , $body["qr_codes"][0]["text"]);
+                }
             }
-            return $body;
+
+            return response()->json($body, $statusCode);
         } catch (\Exception $e) {
             // Tratar erros, se necessário
             return response()->json(["request" => $data, "response" => $e->getMessage()." ".$e->getLine() ], 500);
@@ -485,7 +492,7 @@ class PagBankController extends Controller
         return array("nomes" => $nomes, "total" => $total);
     }
 
-    public function notifyClient($id, $empresa, $notificar_empresa=false)
+    public function notifyClient($id, $empresa, $notificar_empresa=false, $textoPagamento = null)
     {
         $data = Agendamento::query()->where("id", $id)->first();
         $itens = AgendamentoItem::where('agendamento_id', $id)
@@ -500,8 +507,15 @@ class PagBankController extends Controller
         else{
             $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
         }
+        if($textoPagamento){
+            $nome_cliente = $data->nome.", este é o Pix copia-e-cola para realizar o pagamento do agendamento na empresa ".$empresa->razao_social." ";
+            $nome_cliente .= $textoPagamento;
 
-        $nome_cliente = $data->nome.", esta é uma confirmação do pagamento do seu agendamento realizado na empresa ".$empresa->razao_social;
+        }
+        else{
+            $nome_cliente = $data->nome.", esta é uma confirmação do pagamento do seu agendamento realizado na empresa ".$empresa->razao_social;
+
+        }
 
         $situacao = Situacao::where('id',$data->situacao_id)->first()->nome;
 

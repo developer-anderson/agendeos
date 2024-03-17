@@ -508,7 +508,7 @@ class PagBankController extends Controller
             $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
         }
         if($textoPagamento){
-            $nome_cliente = $data->nome.", este é o Pix copia-e-cola para realizar o pagamento do agendamento na empresa ".$empresa->razao_social." ";
+            $nome_cliente = $data->nome.", este é o Pix copia-e-cola para realizar o pagamento do agendamento na empresa ".$empresa->razao_social." copie o código a seguir ";
             $nome_cliente .= $textoPagamento;
 
         }

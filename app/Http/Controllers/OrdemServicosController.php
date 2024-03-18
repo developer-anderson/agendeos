@@ -295,13 +295,9 @@ class OrdemServicosController extends Controller
         $porcentagemCancelamento = 0.3;
         $taxa = 100;
         $agendamento['total'] = Servicos::whereIn('id', $ids_servicos)->sum('valor');
-        $taxaCancelamento = $agendamento['total'] * $porcentagemCancelamento;
-        $agendamento['total'] = $taxaCancelamento + $taxa +  $agendamento['total'];
+        $agendamento['total'] =  $taxa +  $agendamento['total'];
         $agendamento["taxa"] = 100;
-        $agendamento['servicos'][] =  [
-            "nome" => "Calção Agendamento",
-            "valor" => $taxaCancelamento
-        ];
+
 
         $agendamento['servicos'][] =  [
             "nome" => "Taxa",

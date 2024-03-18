@@ -338,7 +338,7 @@ class PagBankController extends Controller
             "customer" => [
                 "name" => $agendamento->nome,
                 "email" => $agendamento->email,
-                "tax_id" => $request->cpf,
+                "tax_id" => str_replace(array(".", "-"), "", $request->cpf),
                 "phones" => [
                     [
                         "country" => "55",

@@ -30,6 +30,13 @@
     <title>Pagamento AgendOS</title>
 </head>
 <body>
+<div id="overlay">
+    <div id="loading-container">
+        <div class="spinner-border text-primary" role="status"></div>
+        <span class="">Carregando...</span>
+
+    </div>
+</div>
 <header class="header">
     <div class="container">
         <div class="row">
@@ -64,97 +71,148 @@
                         <div class="col-lg-6">
                             <form novalidate name="payment-form" action="" onsubmit="">
                                 <div class="mb-4">
-                                    <label for="card-number" class="form-label"
-                                    >Número do cartão</label
-                                    >
-                                    <input
-                                        placeholder="0000 0000 0000 0000"
-                                        type="text"
-                                        class="form-control"
-                                        id="card-number"
-                                        name="card-number"
-                                    />
-                                    <span
-                                        id="error-message-card-number"
-                                        class="error-message"
-                                    ></span>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label for="holder-name" class="form-label"
-                                    >Nome completo</label
-                                    >
-                                    <input
-                                        placeholder="Nome do titular"
-                                        type="text"
-                                        class="form-control"
-                                        id="holder-name"
-                                        name="holder-name"
-                                    />
-                                    <div id="emailHelp" class="form-text">
-                                        Conforme aparece no cartão.
+                                    <label for="payment-method" class="form-label">Método de pagamento</label>
+                                    <div class="form-check form-check-inline me-4">
+                                        <input class="form-check-input" type="radio" name="payment-method" id="credit-card" value="credit-card" checked>
+                                        <label class="form-check-label" for="credit-card">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24">
+                                                <path d="M21.422 4H2.578C1.571 4 1 4.57 1 5.422v13.156C1 19.43 1.571 20 2.422 20h18c.851 0 1.422-.57 1.422-1.422V5.422C22.844 4.57 22.274 4 21.422 4zM20 15H4v-2h16v2zm0-4H4v-2h16v2zm-2-5H6v3h12V6zm-6 2a1 1 0 1 0 1 1 1 1 0 0 0-1-1z"/>
+                                            </svg>
+                                            Cartão de Crédito
+                                        </label>
                                     </div>
-                                    <span
-                                        id="error-message-holder-name"
-                                        class="error-message"
-                                    ></span>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="payment-method" id="pix" value="pix">
+                                        <label class="form-check-label" for="pix">
+                                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0 0 50 50">
+                                                <path d="M 25 0.046875 C 22.924964 0.046875 20.850972 0.83457408 19.273438 2.4121094 L 2.4121094 19.271484 C -0.7429612 22.426555 -0.7429612 27.571493 2.4121094 30.726562 L 19.273438 47.587891 C 22.42773 50.742184 27.57227 50.742184 30.726562 47.587891 L 47.587891 30.728516 C 50.742961 27.573445 50.742961 22.428507 47.587891 19.273438 L 30.728516 2.4121094 C 29.15098 0.83457408 27.075036 0.046875 25 0.046875 z M 25 2.0332031 C 26.558964 2.0332031 28.118988 2.6307072 29.314453 3.8261719 L 38.486328 13 L 37.070312 13 C 35.479355 13 33.953288 13.631896 32.828125 14.755859 A 1.0001 1.0001 0 0 0 32.828125 14.757812 L 26.060547 21.525391 C 25.466839 22.119099 24.532404 22.119686 23.9375 21.525391 L 17.169922 14.757812 C 16.046276 13.632967 14.520644 13 12.929688 13 L 11.511719 13 L 20.6875 3.8261719 C 21.882965 2.6307072 23.441036 2.0332031 25 2.0332031 z M 9.5117188 15 L 12.929688 15 C 13.99073 15 15.007506 15.420769 15.755859 16.169922 A 1.0001 1.0001 0 0 0 15.755859 16.171875 L 22.523438 22.939453 C 23.882532 24.297158 26.116318 24.297745 27.474609 22.939453 L 34.242188 16.171875 C 34.993023 15.421792 36.00927 15 37.070312 15 L 40.486328 15 L 46.173828 20.6875 C 48.564758 23.078429 48.564758 26.923524 46.173828 29.314453 L 40.488281 35 L 37.070312 35 C 36.00927 35 34.993023 34.578161 34.242188 33.828125 L 27.474609 27.060547 C 26.795464 26.381401 25.897789 26.042986 25 26.042969 C 24.102211 26.042952 23.202984 26.381695 22.523438 27.060547 L 15.755859 33.828125 A 1.0001 1.0001 0 0 0 15.755859 33.830078 C 15.007506 34.579184 13.99073 35 12.929688 35 L 9.5136719 35 L 3.8261719 29.3125 C 1.4352424 26.921571 1.4352424 23.076476 3.8261719 20.685547 L 9.5117188 15 z M 25 28.029297 C 25.382185 28.02937 25.763693 28.177755 26.060547 28.474609 L 32.828125 35.242188 A 1.0001 1.0001 0 0 0 32.828125 35.244141 C 33.953288 36.368057 35.479355 37 37.070312 37 L 38.488281 37 L 29.3125 46.173828 C 26.922793 48.563535 23.077207 48.563535 20.6875 46.173828 L 11.513672 37 L 12.929688 37 C 14.520644 37 16.046276 36.367033 17.169922 35.242188 L 23.9375 28.474609 C 24.234952 28.177462 24.617815 28.029224 25 28.029297 z"></path>
+                                            </svg>
+                                            PIX
+                                        </label>
+                                    </div>
                                 </div>
-
-                                <div class="d-flex gap-3">
+                                <div id="credit-card-fields" style="display: none;">
                                     <div class="mb-4">
-                                        <label for="due-date" class="form-label"
-                                        >Data de vencimento</label
+                                        <label for="card-number" class="form-label"
+                                        >Número do cartão</label
                                         >
                                         <input
-                                            placeholder="11/2027"
+                                            placeholder="0000 0000 0000 0000"
                                             type="text"
                                             class="form-control"
-                                            id="due-date"
-                                            name="due-date"
+                                            id="card-number"
+                                            name="card-number"
                                         />
-                                        <div id="emailHelp" class="form-text">Mês / Ano</div>
                                         <span
-                                            id="error-message-due-date"
+                                            id="error-message-card-number"
                                             class="error-message"
                                         ></span>
                                     </div>
 
                                     <div class="mb-4">
-                                        <label for="cvv" class="form-label"
-                                        >Código de segurança</label
+                                        <label for="holder-name" class="form-label"
+                                        >Nome completo</label
                                         >
                                         <input
-                                            placeholder="123"
+                                            placeholder="Nome do titular"
                                             type="text"
                                             class="form-control"
-                                            id="cvv"
-                                            name="cvv"
+                                            id="holder-name"
+                                            name="holder-name"
                                         />
-                                        <div id="emailHelp" class="form-text">CVV</div>
+                                        <div id="emailHelp" class="form-text">
+                                            Conforme aparece no cartão.
+                                        </div>
                                         <span
-                                            id="error-message-cvv"
+                                            id="error-message-holder-name"
+                                            class="error-message"
+                                        ></span>
+                                    </div>
+
+                                    <div class="d-flex gap-3">
+                                        <div class="mb-4">
+                                            <label for="due-date" class="form-label"
+                                            >Data de vencimento</label
+                                            >
+                                            <input
+                                                placeholder="11/2027"
+                                                type="text"
+                                                class="form-control"
+                                                id="due-date"
+                                                name="due-date"
+                                            />
+                                            <div id="emailHelp" class="form-text">Mês / Ano</div>
+                                            <span
+                                                id="error-message-due-date"
+                                                class="error-message"
+                                            ></span>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="cvv" class="form-label"
+                                            >Código de segurança</label
+                                            >
+                                            <input
+                                                placeholder="123"
+                                                type="text"
+                                                class="form-control"
+                                                id="cvv"
+                                                name="cvv"
+                                            />
+                                            <div id="emailHelp" class="form-text">CVV</div>
+                                            <span
+                                                id="error-message-cvv"
+                                                class="error-message"
+                                            ></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="holder-cpf" class="form-label"
+                                        >CPF do titular do cartão</label
+                                        >
+                                        <input
+                                            placeholder="000.000.000-00"
+                                            type="text"
+                                            class="form-control"
+                                            id="holder-cpf"
+                                            name="holder-cpf"
+                                        />
+                                        <span
+                                            id="error-message-holder-cpf"
                                             class="error-message"
                                         ></span>
                                     </div>
                                 </div>
+                                <div id="pix-fields" style="display: none;">
+                                    <div class="mb-4">
+                                        <label for="holder-cpf" class="form-label"
+                                        >CPF</label
+                                        >
+                                        <input
+                                            placeholder="000.000.000-00"
+                                            type="text"
+                                            class="form-control"
+                                            id="holder-cpf-pix"
+                                            name="holder-cpf"
+                                        />
+                                        <span
+                                            id="error-message-holder-cpf-pix"
+                                            class="error-message"
+                                        ></span>
+                                    </div>
+                                    <div id="dados-pix" style="display: none;">
+                                        <div class="mb-4">
+                                            <label for="pix-image" class="form-label">Imagem PIX</label>
+                                            <img src="caminho/para/imagem-pix.png" id="pix-image" alt="Imagem PIX">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="pix-text" class="form-label">PIX copia-e-cola</label>
+                                            <input placeholder="Copie e cole o texto PIX aqui" type="text" class="form-control" id="pix-text" name="pix-text">
+                                        </div>
+                                    </div>
 
-                                <div class="mb-4">
-                                    <label for="holder-cpf" class="form-label"
-                                    >CPF do titular do cartão</label
-                                    >
-                                    <input
-                                        placeholder="000.000.000-00"
-                                        type="text"
-                                        class="form-control"
-                                        id="holder-cpf"
-                                        name="holder-cpf"
-                                    />
-                                    <span
-                                        id="error-message-holder-cpf"
-                                        class="error-message"
-                                    ></span>
                                 </div>
-
                                 <button type="submit" class="btn btn-primary submit-button">
                                     Continuar
                                 </button>
@@ -182,7 +240,7 @@
 
                     <div class="flex-space-between mt-3">
                         <p>Você pagará</p>
-                        <p class="text-bold fs-5">R$ {{ number_format(($agendamento->total+$agendamento->taxa)/100, 2, ",", ".") }}</p>
+                        <p class="text-bold fs-5">R$ {{ number_format(($agendamento->total)/100, 2, ",", ".") }}</p>
                     </div>
                 </div>
             </div>

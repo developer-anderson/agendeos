@@ -14,7 +14,7 @@ class whatsapp extends Model
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v17.0/107409368882191/messages',
+            CURLOPT_URL => 'https://graph.facebook.com/v18.0/234377473099729/messages',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -30,7 +30,7 @@ class whatsapp extends Model
         ));
 
         $response = curl_exec($curl);
-
+        logger($response);
         curl_close($curl);
         return $response;
     }

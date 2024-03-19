@@ -317,7 +317,7 @@ class PagBankController extends Controller
                         "security_code" => $request->cvv,
                         "holder" => [
                             "name" => $request->nome,
-                            "tax_id" => $request->cpf
+                            "tax_id" => str_replace(array(".", "-"), "", $request->cpf)
                         ],
                         "encrypted" => $request->cartaoHash,
                         "store" => false

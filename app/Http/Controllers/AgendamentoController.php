@@ -188,7 +188,7 @@ class AgendamentoController extends Controller
             }
             $this->notifyClient($agendamento->id, $estabelecimento, true, false);
             $this->notifyClient($agendamento->id, $estabelecimento, true, true);
-            return redirect('https://site.agendos.com.br/');
+            return redirect('https://site.agendos.com.br/cancelamento-de-agendamento/');
 
         }
 

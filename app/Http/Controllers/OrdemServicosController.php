@@ -23,14 +23,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\Usuarios;
 use App\Models\Veiculos;
 use Exception;
-use Illuminate\Support\Facades\Log;
-use PagSeguro\Configuration\Configure;
-
-use PagSeguro\Domains\Requests\DirectPayment\OnlineDebit;
-use PagSeguro\Domains\Requests\DirectPayment\CreditCard;
+use App\Models\Log;
 class OrdemServicosController extends Controller
 {
     /**
@@ -40,23 +35,18 @@ class OrdemServicosController extends Controller
      */
     public function cron()
     {
-        //
-        $os =
-            OrdemServicos::where('inicio_os', '>=', date("Y-m-d") . ' 00:00:00')
-                ->where('inicio_os', '<=',   date("Y-m-d") . ' 23:59:59')
-                ->where('remarketing', 0)->orderBy('id', 'desc')
-                ->get();
         $periodoTeste = UsuarioAssinatura::query()
             ->where("fim_teste", date("Y-m-d"))
             ->where("teste", 1)
             ->whereNull(["data_assinatura", "data_renovacao", "data_pagamento", "referencia_id"] )->update(["teste" => 0]);
-
-        //dd($os);
-        foreach($os as $key => $value)
+        $logsForRetry = Log::whereNotBetween('code_http', [200, 299])->where("reenviado", false)->get();
+        foreach ($logsForRetry as $log)
         {
-
-            Log::info($this->notifyClient($value['id'],'remarketing'));
+            whatsapp::sendMessage(json_decode($log->request, true), token::token());
+            $log->reenviado = true;
+            $log->save();
         }
+
 
     }
     public function getEstabelecimento($slug){

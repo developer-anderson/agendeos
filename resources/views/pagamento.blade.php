@@ -7,8 +7,12 @@
     <link rel="stylesheet" href="{{ asset('styles.css') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <script src="https://assets.pagseguro.com.br/checkout-sdk-js/rc/dist/browser/pagseguro.min.js"></script>
-
-    <!-- fonts -->
+    <script src="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.all.min.js
+"></script>
+    <link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css
+" rel="stylesheet">    <!-- fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
@@ -206,7 +210,7 @@
                                     <div id="dados-pix" style="display: none;">
                                         <div class="mb-4">
                                             <label for="pix-image" class="form-label">Imagem PIX</label>
-                                            <img src="caminho/para/imagem-pix.png" id="pix-image" alt="Imagem PIX">
+                                            <img src="" id="pix-image" alt="Imagem PIX">
                                         </div>
                                         <div class="mb-4">
                                             <label for="pix-text" class="form-label">PIX copia-e-cola</label>

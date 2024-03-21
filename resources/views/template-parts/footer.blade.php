@@ -51,6 +51,8 @@
 
 
 <script>
+    const overlay = document.getElementById('overlay');
+
     var agendamentoData = {
         "data_agendamento": "",
         "hora_agendamento": "",
@@ -309,6 +311,7 @@
             function checkHours(empresa, funcionario, data) {
                 const url =
                     `https://producao.agendos.com.br/public/api/agendamentos/agenda_funcionario/${empresa}/${funcionario}/${data}`;
+                overlay.style.display = 'flex';
 
                 // Variável para rastrear o estado de carregamento
                 let isLoading = false;
@@ -361,6 +364,8 @@
                         .then(data => {
                             $(".title-horarios").html("Escolha um horário:")
                             showHours(data);
+                            overlay.style.display = 'none';
+
                             isLoading = false;
                         })
                         .catch(error => {
@@ -412,6 +417,8 @@
 
     });
     function agendarServico() {
+        overlay.style.display = 'flex';
+
         $(".btAgendar").attr("disabled", true);
         var settings = {
             "url": "https://producao.agendos.com.br/public/api/agendamentos",
@@ -430,11 +437,17 @@
                 $(".modal-body").html(
                     response.mensagem
                 );
-                $('#msgModal').modal('show');
-                setTimeout(function() {
-                    location.reload();
-                }, 2000);
+                overlay.style.display = 'none';
+                Swal.fire({
+                    icon: "success",
+                    title: "Confirmado!",
+                    text: "Seu agendamento foi realizado com sucesso. Logo você receberá detalhes em seu WhatsApp",
+                    footer: '<a href="https://site.agendos.com.br/">Conheça o AgendOS</a>'
+                });
+                $(".btAgendar").attr("disabled", false);
             } else {
+                overlay.style.display = 'none';
+
                 $(".btAgendar").attr("disabled", false);
                 // Se houver erro, você pode tratar de acordo com sua lógica
                 console.error('Erro ao cadastrar:', response.mensagem);

@@ -39,13 +39,31 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
+    <script src="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.all.min.js
+"></script>
+    <link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.min.css
+" rel="stylesheet">
     <style>
-        /*!
- * FullCalendar v3.9.0
- * Docs & License: https://fullcalendar.io/
- * (c) 2018 Adam Shaw
- */
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            z-index: 1;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Opacidade de 50% */
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loading-container {
+            text-align: center;
+        }
+
         .fc {
             direction: ltr;
             text-align: left;
@@ -2011,6 +2029,14 @@ be a descendant of the grid when it is being dragged.
 @include('template-parts/header')
 
 <main>
+    <div id="overlay">
+        <div id="loading-container">
+            <div class="spinner-border text-primary" role="status"></div>
+            <h2 class="" style="
+    color: white;
+">Carregando, por favor aguarde...</h2>
+        </div>
+    </div>
     <div class="container py-5">
         <div class="row">
             <div class="col-sm-12 text-center">

@@ -201,7 +201,7 @@ class OrdemServicosController extends Controller
 
             $post['id_servico'] = $os_servicos;
             $this->addReceita($post);
-            /*
+
             if(isset($post['remarketing']) and $post['remarketing'] > 0){
                 $dias_remarketing = Carbon::createFromFormat('Y-m-d', $request->inicio_os);
                 $dias_remarketing->addDays($post['remarketing']);
@@ -210,7 +210,7 @@ class OrdemServicosController extends Controller
                     "enviado" => false,
                     "os_id" => $os->id
                 ]);
-            }*/
+            }
             return response()->json( ["erro" => false, 'id' =>$os->id, 'zap' => $this->notifyClient($os->id), "mensagem" => "Ordem de Servicos com  sucesso!"], 200);
         }catch( Exception $e){
             echo ($e->getMessage()." linha ". $e->getLine(). " arquivo ". $e->getFile());

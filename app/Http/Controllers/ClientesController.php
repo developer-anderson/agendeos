@@ -70,14 +70,13 @@ class ClientesController extends Controller
         //
         $user = Auth::user();
         $post = $request->all();
-        $validar = Clientes::where('email_f', $post['email_f'])->first();
-        if($validar and !empty($post['email_f'])){
-                  return response()->json([
-            "erro" => true,
-            "mensagem" => "Já possui um cliente com o e-mail informado!",
-
-        ], 200);
+        if(isset($post['email_f']) and  !empty($post['email_f'])){
+            $validar = Clientes::where('email_f', $post['email_f'])->first();
+            if($validar and !empty($post['email_f'])){
+                return response()->json(["erro" => true, "mensagem" => "Já possui um cliente com o e-mail informado!",], 200);
+            }
         }
+
         if(isset($post['celular_f'])  and !empty($post['celular_f'])){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_f']);
         }

@@ -8,6 +8,7 @@ use App\Models\OrdemServicos;
 use App\Models\ordem_servico_servico;
 use App\Models\Empresas;
 use App\Models\fluxo_caixa;
+use App\Models\Remarketing;
 use App\Models\RetornoPagamento;
 use App\Models\UsuarioAssinatura;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -150,22 +151,7 @@ class OrdemServicosController extends Controller
         $osData["previsao_os_time"] =$fim[1];
     }
 
-    private function formatDateTimeField($dateTime)
-    {
-        $dateTimeParts = explode(" ", $dateTime);
-        return [
-            'date' => $dateTimeParts[0],
-            'time' => $dateTimeParts[1]
-        ];
-    }
-    public function getModeloMensagem($os_id)
-    {
-        //
-        $os = DB::table('ordem_servicos')->join('clientes', 'clientes.id', '=', 'ordem_servicos.id_cliente')->join('ordem_servico_servicos', 'ordem_servico_servicos.os_id', '=', 'ordem_servicos.id')
-            ->join('servicos', 'servicos.id', '=', 'ordem_servico_servicos.id_servico')->join('users', 'users.id', '=', 'ordem_servicos.user_id')->where('ordem_servicos.id', $os_id)
-            ->select('ordem_servicos.*', 'clientes.nome_f', 'clientes.razao_social',  'servicos.nome', 'servicos.valor', 'users.name as loja')->get();
-        return  $os;
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -215,6 +201,15 @@ class OrdemServicosController extends Controller
 
             $post['id_servico'] = $os_servicos;
             $this->addReceita($post);
+            if($post['remarketing']){
+                $dias_remarketing = Carbon::createFromFormat('Y-m-d', $post['inicio_os']);
+                $dias_remarketing->addDays($post['remarketing']);
+                Remarketing::query()->create([
+                    "data_envio" => $dias_remarketing->format('Y-m-d'),
+                    "enviado" => false,
+                    "os_id" => $os->id
+                ]);
+            }
             return response()->json( ["erro" => false, 'id' =>$os->id, 'zap' => $this->notifyClient($os->id), "mensagem" => "Ordem de Servicos com  sucesso!"], 200);
         }catch( Exception $e){
             echo ($e->getMessage()." linha ". $e->getLine(). " arquivo ". $e->getFile());

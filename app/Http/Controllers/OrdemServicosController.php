@@ -202,7 +202,7 @@ class OrdemServicosController extends Controller
             $post['id_servico'] = $os_servicos;
             $this->addReceita($post);
             if(isset($post['remarketing']) and $post['remarketing'] > 0){
-                $dias_remarketing = Carbon::createFromFormat('Y-m-d', $post['inicio_os']);
+                $dias_remarketing = Carbon::createFromFormat('Y-m-d', $request->inicio_os);
                 $dias_remarketing->addDays($post['remarketing']);
                 Remarketing::query()->create([
                     "data_envio" => $dias_remarketing->format('Y-m-d'),

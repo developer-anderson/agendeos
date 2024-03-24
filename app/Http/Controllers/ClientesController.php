@@ -70,6 +70,7 @@ class ClientesController extends Controller
         //
         $user = Auth::user();
         $post = $request->all();
+
         if(isset($post['email_f']) and  !empty($post['email_f'])){
             $validar = Clientes::where('email_f', $post['email_f'])->first();
             if($validar and !empty($post['email_f'])){
@@ -83,20 +84,47 @@ class ClientesController extends Controller
         elseif(isset($post['celular_rj']) and  !empty($post['celular_rj'])){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_rj']);
         }
-
-        $vetor = array(
+        $clientes = Clientes::create( $post);
+        $empresa = Empresas::query()->where("id", $user->empresa_id)->first();
+        $vetor = [
             "messaging_product" => "whatsapp",
             "to" => $telefone,
-            "type" => 'template',
-            "template" => array(
+            "type" => "template",
+            "template" => [
                 "name" => "bem_vindo",
-                "language" => array(
-                    "code" => "pt_BR"
-                )
-            )
-        );
+                "language" => [
+                    "code" => "pt_BR",
+                    "policy" => "deterministic"
+                ],
+                "components" => [
+                    [
+                        "type" => "body",
+                        "parameters" => [
+                            [
+                                "type" => "text",
+                                "text" => $post["nome_f"]
+                            ],
+                            [
+                                "type" => "text",
+                                "text" => $empresa->telefone
+                            ]
+                        ]
+                    ],
+                    [
+                        "type" => "button",
+                        "sub_type" => "url",
+                        "index" => "0",
+                        "parameters" => [
+                            [
+                                "type" => "text",
+                                "text" => $empresa->slug
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
         $zap = whatsapp::sendMessage($vetor, token::token());
-        $clientes = Clientes::create( $post);
         return response()->json([
             "erro" => false,
             "mensagem" => "Cliente cadastrado com  sucesso!",

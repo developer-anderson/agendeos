@@ -40,6 +40,63 @@ class OrdemServicosController extends Controller
             ->where("fim_teste", date("Y-m-d"))
             ->where("teste", 1)
             ->whereNull(["data_assinatura", "data_renovacao", "data_pagamento", "referencia_id"] )->update(["teste" => 0]);
+        $remarketing  = DB::table('remarketing as r')
+            ->select('r.*', 'os.remarketing as dias', 'c.nome_f', 'c.telefone_f', 'c.celular_f', 'e.slug')
+            ->leftJoin('ordem_servicos as os', 'r.os_id', '=', 'os.id')
+            ->leftJoin('users as u', 'os.user_id', '=', 'u.id')
+            ->leftJoin('empresas as e', 'u.empresa_id', '=', 'e.id')
+            ->leftJoin('clientes as c', 'os.id_cliente', '=', 'c.id')
+            ->whereDate('r.data_envio', DB::raw('CURDATE()'))
+            ->where('r.enviado', '=', 0)
+            ->get();
+        foreach ($remarketing as $resultado) {
+            if ($resultado->celular_f) {
+                $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $resultado->celular_f);
+            }
+            else{
+                $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $resultado->telefone_f);
+            }
+            $vetor = [
+                "messaging_product" => "whatsapp",
+                "to" => $telefone,
+                "type" => "template",
+                "template" => [
+                    "name" => "remarketing",
+                    "language" => [
+                        "code" => "pt_BR",
+                        "policy" => "deterministic"
+                    ],
+                    "components" => [
+                        [
+                            "type" => "body",
+                            "parameters" => [
+                                [
+                                    "type" => "text",
+                                    "text" => $resultado->nome_f
+                                ],
+                                [
+                                    "type" => "text",
+                                    "text" => $resultado->dias
+                                ]
+                            ]
+                        ],
+                        [
+                            "type" => "button",
+                            "sub_type" => "url",
+                            "index" => "0",
+                            "parameters" => [
+                                [
+                                    "type" => "text",
+                                    "text" => $resultado->slug
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+            whatsapp::sendMessage($vetor, token::token());
+            DB::table('remarketing')->where('id', $resultado->id)->update(['enviado' => 1]);
+        }
         $logsForRetry = Log::whereNotBetween('code_http', [200, 299])->where("reenviado", false)->get();
         foreach ($logsForRetry as $log)
         {
@@ -51,6 +108,7 @@ class OrdemServicosController extends Controller
 
     }
     public function getEstabelecimento($slug){
+        $slug = str_replace("{{1}}", "", $slug);
         $estabelecimento  =  Empresas::where('situacao', 1)->where('slug', $slug)->first();
         if(empty($slug) or  !$estabelecimento)
         {
@@ -395,21 +453,7 @@ class OrdemServicosController extends Controller
                 ]
             ];
         }
-        elseif($tipo == 'remarketing'){
-            $id_origem = ($ordemServicos-1);
-            $dias_remarketing = OrdemServicos::where('id',$id_origem)->first();
 
-            $values = [
-                "0" => [
-                    "type" => "text",
-                    "text" => $nome_cliente
-                ],
-                "1" => [
-                    "type" => "text",
-                    "text" => $dias_remarketing->remarketing
-                ]
-            ];
-        }
         $vetor = array(
             "messaging_product" => "whatsapp",
             "to"           => $telefone,

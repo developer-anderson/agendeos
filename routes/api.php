@@ -2,6 +2,7 @@
 
 //use Illuminate\Http\Request;
 use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\ExcecaoHorariosController;
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\EmpresasController;
@@ -97,6 +98,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/agendamentos/{agendamento}/{situacao_id}', [AgendamentoController::class, 'updateStatusAgendamento']);
     Route::put('/agendamentos/{id}', [AgendamentoController::class, 'update']);
     Route::delete('/agendamentos/{agendamento}', [AgendamentoController::class, 'destroy']);
+
+    Route::put('/excecao_horarios/{id}', [ExcecaoHorariosController::class, 'update']);
+    Route::delete('/excecao_horarios/{id}', [ExcecaoHorariosController::class, 'delete']);
+    Route::post('/excecao_horarios', [ExcecaoHorariosController::class, 'store']);
+    Route::get('/excecao_horarios/{id}/{filter?}', [ExcecaoHorariosController::class, 'getAll'])->name('excecao_horariosGetAll');
+    Route::get('/buscar_horarios/{id}', [ExcecaoHorariosController::class, 'show'])->name("excecao_horariosBuscar");
+
 });
 Route::post('/agendamentos', [AgendamentoController::class, 'store'])->name("adicionarAgendamento");
 

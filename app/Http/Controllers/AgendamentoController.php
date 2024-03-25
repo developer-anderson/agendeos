@@ -6,6 +6,7 @@ use App\Models\Agendamento;
 use App\Models\AgendamentoItem;
 use App\Models\Clientes;
 use App\Models\Empresas;
+use App\Models\ExcecaoHorarios;
 use App\Models\FormaPagamento;
 use App\Models\funcionarios;
 use App\Models\OrdemServicos;
@@ -318,7 +319,11 @@ class AgendamentoController extends Controller
                 ->where('hora_agendamento', ">=", $anterior->format('H:i'))
                 ->where('hora_agendamento', "<=", $proximo->format('H:i'))
                 ->exists();
-            if (!$agendamentoExists) {
+            $excecao = ExcecaoHorarios::query()
+                ->where("funcionario_id", $funcionario_id)
+                ->where('data', $data)
+                ->whereBetween("horario", [$anterior->format('H:i'),$proximo->format('H:i') ])->exists();
+            if (!$agendamentoExists and !$excecao) {
                 $horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 1];
             }
             else{

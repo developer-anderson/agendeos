@@ -6,6 +6,8 @@ use App\Models\Clientes;
 use App\Models\whatsapp;
 use App\Models\Empresas;
 use App\Models\token;
+use Carbon\Carbon;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +85,11 @@ class ClientesController extends Controller
         }
         elseif(isset($post['celular_rj']) and  !empty($post['celular_rj'])){
             $telefone  = "55".str_replace(array("(", ")", ".", "-", " "), "", $post['celular_rj']);
+        }
+        if(isset($post["data_aniversario"]) and !empty($post["data_aniversario"]))
+        {
+            $date = Carbon::createFromFormat('d/m/Y', $post["data_aniversario"]);
+            $post["data_aniversario"] = $date->format('Y/m/d');
         }
         $clientes = Clientes::create( $post);
         $empresa = Empresas::query()->where("id", $user->empresa_id)->first();

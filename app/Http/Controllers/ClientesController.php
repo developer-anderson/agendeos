@@ -150,7 +150,7 @@ class ClientesController extends Controller
     public function exibirCliente($id)
     {
 
-        $registro = Clientes::find($id)->first();
+        $registro = Clientes::where("id",$id)->first();
         if( $registro->data_aniversario){
             $registro->data_aniversario = date("d/m/Y", strtotime($registro->data_aniversario));
         }

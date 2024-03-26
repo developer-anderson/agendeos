@@ -18,7 +18,7 @@ class ExcecaoHorariosController extends Controller
     public function getAll($id, $filter = null)
     {
         $user = Auth::user();
-        $query = ExcecaoHorarios::where('user_id', $user->id)->where("funcionario_id", $id);
+        $query = ExcecaoHorarios::where('user_id', $user->id)->where("funcionario_id", $id)->where('data', '>=', date("Y-m-d"));
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {
@@ -48,20 +48,22 @@ class ExcecaoHorariosController extends Controller
     {
         $user = Auth::user();
 
-        $request->validate([
-            'data' => 'required',
-            'horario' => 'required',
-            'funcionario_id' => 'required',
-        ]);
         $post = $request->all();
+        foreach($post["datas"] as $item){
+            $data = [
+                'data' => $item["data"],
+                'horario' => $item["horario"],
+                'funcionario_id' => $post["funcionario_id"],
+                'user_id' => $user->id,
+            ];
+            ExcecaoHorarios::create($data);
 
-        $post["user_id"] = $user->id;
-        $excecaoHorario = ExcecaoHorarios::create($post);
+        }
+
 
         return response()->json([
             "erro" => false,
-            "mensagem" => "Error",
-            "excecaoHorario" => $excecaoHorario
+            "mensagem" => "Cadastrado com sucesso",
         ], 200);
     }
 
@@ -80,9 +82,9 @@ class ExcecaoHorariosController extends Controller
         return response()->json($excecaoHorario, 200);
     }
 
-    public function delete($funcionario_id)
+    public function delete($id)
     {
-        $excecaoHorario = ExcecaoHorarios::where('id', $funcionario_id)->delete();
+        $excecaoHorario = ExcecaoHorarios::where('id', $id)->delete();
 
         return response()->json([
             "erro" => false,
@@ -98,23 +100,24 @@ class ExcecaoHorariosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $funcionario_id)
     {
-        $request->validate([
-            'data' => 'required',
-            'horario' => 'required',
-        ]);
 
-        $excecaoHorario = ExcecaoHorarios::find($id);
-        if (!$excecaoHorario) {
-            return response()->json(["erro" => true, "mensagem" => "não encontrado!"], 404);
+
+        $user = Auth::user();
+        ExcecaoHorarios::where('funcionario_id', $funcionario_id)->delete();
+        $post = $request->all();
+        foreach($post["datas"] as $item){
+            $data = [
+                'data' => $item["data"],
+                'horario' => $item["horario"],
+                'funcionario_id' => $funcionario_id,
+                'user_id' => $user->id,
+            ];
+            ExcecaoHorarios::create($data);
         }
-        $excecaoHorario->update($request->all());
-
-
         return [
             "erro" => false,
-            'excecaoHorario' => $excecaoHorario->load('funcionario'),
             "mensagem" => "Editado com sucesso!"
         ];
     }

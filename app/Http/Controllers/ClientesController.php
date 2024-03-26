@@ -147,12 +147,16 @@ class ClientesController extends Controller
      * @param  \App\Models\Clientes  $clientes
      * @return \Illuminate\Http\Response
      */
-    public function exibirCliente(Clientes $id)
+    public function exibirCliente($id)
     {
 
-        //$registro = Clientes::find($id)->first();
+        $registro = Clientes::find($id)->first();
+        if( $registro->data_aniversario){
+            $registro->data_aniversario = date("d/m/Y", strtotime($registro->data_aniversario));
+        }
+
         return response()->json(
-            $id
+            $registro
         , 200);
     }
 
@@ -175,7 +179,11 @@ class ClientesController extends Controller
                 "mensagem" => "Cliente não encontrado!"
             ];
         }
-
+        if(isset($dados["data_aniversario"]) and !empty($dados["data_aniversario"]))
+        {
+            $date = Carbon::createFromFormat('d/m/Y', $dados["data_aniversario"]);
+            $dados["data_aniversario"] = $date->format('Y/m/d');
+        }
         $cliente->fill($dados);
         $cliente->save();
 

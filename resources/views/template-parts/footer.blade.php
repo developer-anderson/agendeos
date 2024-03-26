@@ -239,7 +239,7 @@
 
             const currentDate = new Date();
             const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui',
-                'Sex', 'Sáb'
+                'Sex', 'Sab'
             ];
 
             const arrayDiasSemana = Object.entries(diasSemana);

@@ -20,6 +20,6 @@ class Empresas extends Model
         'sexta_horario_inicio', 'sexta_horario_fim',
         'sabado_horario_inicio', 'sabado_horario_fim',
         'domingo_horario_inicio', 'domingo_horario_fim', "somar_tempo_servicos", "intervalo_tempo_agendamento",
-        "segunda", "terca", "quarta", "quinta","sexta","sabado", "domingo", "instagram", "slug"
+        "segunda", "terca", "quarta", "quinta","sexta","sabado", "domingo", "instagram", "slug", "token"
     ];
 }

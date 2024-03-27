@@ -146,8 +146,8 @@ class AgendamentoController extends Controller
             return response()->json([
                 "erro" => false,
                 "mensagem" => "Agendamento cadastrado com sucesso!",
-                "zap" => $this->notifyClient($agendamento->id, $estabelecimento, false, false),
-                "zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento, false, true ),
+                "zap" => $this->notifyClient($agendamento->id, $estabelecimento, false, false, false),
+                "zap_adm" => $this->notifyClient($agendamento->id, $estabelecimento, false, true, false ),
                 'id' => $agendamento->id
             ], 200);
         }
@@ -187,10 +187,9 @@ class AgendamentoController extends Controller
                     $estabelecimento->telefone = $funcionario->celular;
                 }
             }
-            $this->notifyClient($agendamento->id, $estabelecimento, true, false);
-            $this->notifyClient($agendamento->id, $estabelecimento, true, true);
+            $this->notifyClient($agendamento->id, $estabelecimento, true, false, false);
+            $this->notifyClient($agendamento->id, $estabelecimento, true, true, false);
             return redirect('https://site.agendos.com.br/cancelamento-de-agendamento/');
-
         }
 
     }
@@ -362,7 +361,7 @@ class AgendamentoController extends Controller
         }
         return array("nomes" => $nomes, "total" => $total);
     }
-    public function notifyClient($id, $empresa , $cancelando_agendamento = null, $notificar_empresa)
+    public function notifyClient($id, $empresa , $cancelando_agendamento = null, $notificar_empresa, $alerta = false)
     {
         $data = Agendamento::query()->where("id", $id)->first();
         $itens = AgendamentoItem::where('agendamento_id', $id)
@@ -379,8 +378,10 @@ class AgendamentoController extends Controller
         else{
             $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
         }
-
-        if($cancelando_agendamento){
+        if($alerta){
+            $nome_cliente = $data->nome.", vinhemos aqui para lembrar sobre o agendamento confirmado para o dia $alerta na empresa, ".$empresa->razao_social;
+        }
+        elseif($cancelando_agendamento){
             $nome_cliente = $data->nome.", esta é uma confirmação do cancelamento do seu agendamento realizado na empresa ".$empresa->razao_social;
 
         }else{

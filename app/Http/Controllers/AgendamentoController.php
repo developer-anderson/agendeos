@@ -35,7 +35,7 @@ class AgendamentoController extends Controller
     public function getAll($id, $filter = null)
     {
         $user = Auth::user();
-        $query = Agendamento::where('user_id', $id)->where("situacao_id", "<>", 7);
+        $query = Agendamento::where('user_id', $id)->where("situacao_id", "<>", 7)->where("situacao_id", "<>", 6) ;
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {

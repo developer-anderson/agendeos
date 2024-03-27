@@ -104,7 +104,29 @@ class OrdemServicosController extends Controller
             $log->reenviado = true;
             $log->save();
         }
+        $agendamentos = Agendamento::whereDate('data_agendamento', '=', now()->subDay())
+            ->whereNull('notificado')
+            ->orderByDesc('id')
+            ->get();
+        foreach ($agendamentos as $agendamento) {
+            if($agendamento->situacao_id <> 7){
+                $administrador  = User::where('id', $agendamento->user_id)->first();
+                $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
+                if($agendamento->funcionario_id){
+                    $funcionario = funcionarios::query()->where('id', $agendamento->funcionario_id)->first();
+                    if($funcionario->celular){
+                        $estabelecimento->telefone = $funcionario->celular;
+                    }
+                }
+                $temp_data =date("d/m/Y", strtotime($agendamento->data_agendamento));
+                $this->notificarAgendamento($agendamento->id, $estabelecimento, false, false, $temp_data);
+                $this->notificarAgendamento($agendamento->id, $estabelecimento, false, true, $temp_data );;
+                $agendamento->notificado = 1;
+                $agendamento->save();
+            }
 
+
+        }
 
     }
     public function getEstabelecimento($slug){
@@ -685,4 +707,91 @@ class OrdemServicosController extends Controller
         $dados = $request->all();
         RetornoPagamento::query()->create(["retorno" => json_encode($dados)]);
     }
+
+    public function notificarAgendamento($id, $empresa , $cancelando_agendamento = null, $notificar_empresa, $alerta = false)
+    {
+        $data = Agendamento::query()->where("id", $id)->first();
+        $itens = AgendamentoItem::where('agendamento_id', $id)
+            ->with('servico')
+            ->get();
+        $extras = $this->getServicosNotifyClint($itens);
+        $cancelar = "";
+        if(!$cancelando_agendamento){
+            $cancelar = "Para cancelar este agendamento acesse: https://agendos.com.br/cancelar_agendamento/{$id}";
+        }
+        if($notificar_empresa){
+            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $empresa->telefone );
+        }
+        else{
+            $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "",   $data->telefone);
+        }
+        if($alerta){
+            $nome_cliente = $data->nome.", vinhemos aqui para lembrar sobre o agendamento confirmado para o dia $alerta na empresa, ".$empresa->razao_social;
+        }
+        elseif($cancelando_agendamento){
+            $nome_cliente = $data->nome.", esta é uma confirmação do cancelamento do seu agendamento realizado na empresa ".$empresa->razao_social;
+
+        }else{
+            $nome_cliente = $data->nome.", esta é uma confirmação do agendamento realizado na empresa ".$empresa->razao_social;
+
+        }
+        $situacao = Situacao::where('referencia_id',$data->situacao_id)->first()->nome;
+
+        $values = [
+            "1" => [
+                "type" => "text",
+                "text" => $nome_cliente
+            ],
+            "2" => [
+                "type" => "text",
+                "text" => $id
+            ],
+            "3" => [
+                "type" => "text",
+                "text" => $extras['nomes']
+            ],
+            "4" => [
+                "type" => "text",
+                "text" => number_format($extras['total'], 2, ".", ",")
+            ],
+            "5" => [
+                "type" => "text",
+                "text" => $situacao
+            ],
+            "6" => [
+                "type" => "text",
+                "text" =>  FormaPagamento::where('id', $data->forma_pagamento_id)->first()->nome
+            ]
+            ,
+            "7" => [
+                "type" => "text",
+                "text" =>  date("d/m/Y", strtotime($data->data_agendamento))." ".$data->hora_agendamento."  ".$cancelar
+            ]
+        ];
+        $vetor = array(
+            "messaging_product" => "whatsapp",
+            "to"           => $telefone,
+            "type"         => 'template',
+            "template"     => array(
+                "name"     => "agendamento",
+                "language" => array(
+                    "code" => "pt_BR",
+                    "policy" => "deterministic"
+                ),
+                "components"     =>
+                    array(
+                        array(
+                            "type"       => "body",
+                            "parameters" => $values
+                        )
+                    )
+            ),
+
+
+        );
+
+        $zap =  whatsapp::sendMessage($vetor, token::token());
+        return [$vetor,$zap];
+    }
+
 }

@@ -113,7 +113,7 @@ class ClientesController extends Controller
                             ],
                             [
                                 "type" => "text",
-                                "text" => $telefone
+                                "text" => $empresa->telefone ?? " "
                             ]
                         ]
                     ],

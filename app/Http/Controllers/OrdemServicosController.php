@@ -104,7 +104,7 @@ class OrdemServicosController extends Controller
             $log->reenviado = true;
             $log->save();
         }
-        $agendamentos = Agendamento::whereDate('data_agendamento', '=', now()->subDay())
+        $agendamentos = Agendamento::whereDate('data_agendamento', '=', now()->addDay())
             ->whereNull('notificado')
             ->orderByDesc('id')
             ->get();

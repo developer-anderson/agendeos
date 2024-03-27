@@ -35,7 +35,7 @@ class AgendamentoController extends Controller
     public function getAll($id, $filter = null)
     {
         $user = Auth::user();
-        $query = Agendamento::where('user_id', $id);
+        $query = Agendamento::where('user_id', $id)->where("situacao_id", "<>", 7);
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {
@@ -388,7 +388,7 @@ class AgendamentoController extends Controller
             $nome_cliente = $data->nome.", esta é uma confirmação do agendamento realizado na empresa ".$empresa->razao_social;
 
         }
-        $situacao = Situacao::where('id',$data->situacao_id)->first()->nome;
+        $situacao = Situacao::where('referencia_id',$data->situacao_id)->first()->nome;
 
         $values = [
             "1" => [

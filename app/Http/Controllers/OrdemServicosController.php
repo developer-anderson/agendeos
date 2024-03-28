@@ -40,6 +40,9 @@ class OrdemServicosController extends Controller
             ->where("fim_teste", date("Y-m-d"))
             ->where("teste", 1)
             ->whereNull(["data_assinatura", "data_renovacao", "data_pagamento", "referencia_id"] )->update(["teste" => 0]);
+        $planoVenceu = UsuarioAssinatura::query()
+            ->where("data_renovacao", date("Y-m-d"))
+            ->where("ativo", 1)->update(["ativo" => 0]);
         $remarketing  = DB::table('remarketing as r')
             ->select('r.*', 'os.remarketing as dias', 'c.nome_f', 'c.telefone_f', 'c.celular_f', 'e.slug')
             ->leftJoin('ordem_servicos as os', 'r.os_id', '=', 'os.id')
@@ -48,6 +51,7 @@ class OrdemServicosController extends Controller
             ->leftJoin('clientes as c', 'os.id_cliente', '=', 'c.id')
             ->whereDate('r.data_envio', DB::raw('CURDATE()'))
             ->where('r.enviado', '=', 0)
+            ->whereNotNull('c.nome_f')
             ->get();
         foreach ($remarketing as $resultado) {
             if ($resultado->celular_f) {
@@ -125,6 +129,35 @@ class OrdemServicosController extends Controller
                 $agendamento->save();
             }
 
+
+        }
+
+        $notificar_fim_teste = DB::table('usuario_assinatura')
+            ->leftJoin('users', 'users.id', '=', 'usuario_assinatura.user_id')
+            ->leftJoin('empresas', 'empresas.id', '=', 'users.empresa_id')
+            ->select('usuario_assinatura.data_renovacao', 'usuario_assinatura.fim_teste', 'users.name as adm', 'empresas.razao_social', 'empresas.telefone')
+            ->whereRaw('CURDATE() >= COALESCE(usuario_assinatura.fim_teste)')
+            ->where('usuario_assinatura.ativo', 0)
+            ->where('usuario_assinatura.teste', 0)
+            ->whereNotNull('empresas.telefone')
+            ->get();
+        foreach ($notificar_fim_teste as $resultado) {
+            if ($resultado->telefone) {
+                $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $resultado->telefone);
+                $vetor = [
+                    "messaging_product" => "whatsapp",
+                    "to" => $telefone,
+                    "type" => "template",
+                    "template" => [
+                        "name" => "cobranca_periodo_teste",
+                        "language" => [
+                            "code" => "pt_BR"
+                        ]
+                    ]
+                ];
+                whatsapp::sendMessage($vetor, token::token());
+
+            }
 
         }
 

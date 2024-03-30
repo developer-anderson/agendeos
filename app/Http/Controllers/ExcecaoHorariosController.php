@@ -49,18 +49,8 @@ class ExcecaoHorariosController extends Controller
         $user = Auth::user();
 
         $post = $request->all();
-        foreach($post["datas"] as $item){
-            $data = [
-                'data' => $item["data"],
-                'horario' => $item["horario"],
-                'funcionario_id' => $post["funcionario_id"],
-                'user_id' => $user->id,
-            ];
-            ExcecaoHorarios::create($data);
-
-        }
-
-
+        $post["user_id"] = $user->id;
+        ExcecaoHorarios::create($post);
         return response()->json([
             "erro" => false,
             "mensagem" => "Cadastrado com sucesso",
@@ -100,25 +90,27 @@ class ExcecaoHorariosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $funcionario_id)
+    public function update(Request $request, $id)
     {
 
 
         $user = Auth::user();
-        ExcecaoHorarios::where('funcionario_id', $funcionario_id)->delete();
-        $post = $request->all();
-        foreach($post["datas"] as $item){
-            $data = [
-                'data' => $item["data"],
-                'horario' => $item["horario"],
-                'funcionario_id' => $funcionario_id,
-                'user_id' => $user->id,
-            ];
-            ExcecaoHorarios::create($data);
+        $exececaoHorario =  ExcecaoHorarios::where('id', $id)->first();
+        if(!$exececaoHorario){
+           return [
+               "erro" => true,
+               "mensagem" => "Não encontrado"
+           ];
         }
+        $post = $request->all();
+        $exececaoHorario->data = $post["data"];
+        $exececaoHorario->horario = $post["horario"];
+        $exececaoHorario->save();
+
         return [
             "erro" => false,
             "mensagem" => "Editado com sucesso!"
         ];
+
     }
 }

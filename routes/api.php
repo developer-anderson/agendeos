@@ -3,6 +3,8 @@
 //use Illuminate\Http\Request;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ExcecaoHorariosController;
+use App\Http\Controllers\FuncionarioAtendeServicoController;
+
 use App\Http\Controllers\ProdutosController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\EmpresasController;
@@ -104,6 +106,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/excecao_horarios', [ExcecaoHorariosController::class, 'store']);
     Route::get('/excecao_horarios/{id}/{filter?}', [ExcecaoHorariosController::class, 'getAll'])->name('excecao_horariosGetAll');
     Route::get('/buscar_horarios/{id}', [ExcecaoHorariosController::class, 'show'])->name("excecao_horariosBuscar");
+
+    Route::put('/funcionario_atende_servico/{id}', [FuncionarioAtendeServicoController::class, 'update']);
+    Route::delete('/funcionario_atende_servico/{id}', [FuncionarioAtendeServicoController::class, 'delete']);
+    Route::post('/funcionario_atende_servico', [FuncionarioAtendeServicoController::class, 'store']);
+    Route::get('/funcionario_atende_servico/{id}/{filter?}', [FuncionarioAtendeServicoController::class, 'getAll'])->name('funcionario_atende_servicoGetAll');
+    Route::get('/funcionario_atende_servico/{id}', [FuncionarioAtendeServicoController::class, 'show'])->name("funcionario_atende_servicoBuscar");
 
 });
 Route::post('/agendamentos', [AgendamentoController::class, 'store'])->name("adicionarAgendamento");

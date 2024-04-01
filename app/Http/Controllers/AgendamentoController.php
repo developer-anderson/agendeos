@@ -309,24 +309,29 @@ class AgendamentoController extends Controller
         $horarioInicio = Carbon::createFromFormat('H:i:s', $horarioInicio);
         $anterior = $horarioInicio;
         $proximo  = $horarioInicio ;
+        $agora = Carbon::now();
+
         while ($horarioInicio->lessThan($ultimo_horario)) {
-            $agendamentoExists = Agendamento::where('user_id', $user_id)
-                ->where('funcionario_id', $funcionario_id)
-                ->where('data_agendamento', $data)
-                ->where('situacao_id', "<>", 7)
-                ->where('situacao_id', "<>", 9)
-                ->where('hora_agendamento', ">=", $anterior->format('H:i'))
-                ->where('hora_agendamento', "<=", $proximo->format('H:i'))
-                ->exists();
-            $excecao = ExcecaoHorarios::query()
-                ->where("funcionario_id", $funcionario_id)
-                ->where('data', $data)
-                ->whereBetween("horario", [$anterior->format('H:i'),$proximo->format('H:i') ])->exists();
-            if (!$agendamentoExists and !$excecao) {
-                $horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 1];
-            }
-            else{
+            if ($horarioInicio->lessThanOrEqualTo($agora) && $data === date("Y-m-d")) {
                 $horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 0];
+            } else {
+                $agendamentoExists = Agendamento::where('user_id', $user_id)
+                    ->where('funcionario_id', $funcionario_id)
+                    ->where('data_agendamento', $data)
+                    ->where('situacao_id', "<>", 7)
+                    ->where('situacao_id', "<>", 9)
+                    ->where('hora_agendamento', ">=", $anterior->format('H:i'))
+                    ->where('hora_agendamento', "<=", $proximo->format('H:i'))
+                    ->exists();
+                $excecao = ExcecaoHorarios::query()
+                    ->where("funcionario_id", $funcionario_id)
+                    ->where('data', $data)
+                    ->whereBetween("horario", [$anterior->format('H:i'),$proximo->format('H:i') ])->exists();
+                if (!$agendamentoExists and !$excecao) {
+                    $horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 1];
+                } else {
+                    $horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 0];
+                }
             }
             $anterior = $horarioInicio;
             $horarioInicio->addHours($horasASomar->hour);

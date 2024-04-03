@@ -313,7 +313,7 @@ class AgendamentoController extends Controller
 
         while ($horarioInicio->lessThan($ultimo_horario)) {
             if ($horarioInicio->lessThanOrEqualTo($agora) && $data === date("Y-m-d")) {
-                $horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 0];
+                //$horarios[] = ["horario" => $horarioInicio->format('H:i'), "disponivel" => 0];
             } else {
                 $agendamentoExists = Agendamento::where('user_id', $user_id)
                     ->where('funcionario_id', $funcionario_id)

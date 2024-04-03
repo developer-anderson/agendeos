@@ -155,7 +155,7 @@ class OrdemServicosController extends Controller
                         ]
                     ]
                 ];
-                whatsapp::sendMessage($vetor, token::token());
+                //whatsapp::sendMessage($vetor, token::token());
 
             }
 
@@ -324,7 +324,7 @@ class OrdemServicosController extends Controller
                     "os_id" => $os->id
                 ]);
             }
-            return response()->json( ["erro" => false, 'id' =>$os->id, 'zap' => $this->notifyClient($os->id), "mensagem" => "Ordem de Servicos com  sucesso!"], 200);
+            return response()->json( ["erro" => false, 'id' =>$os->id, 'zap' => "", "mensagem" => "Ordem de Servicos com  sucesso!"], 200);
         }catch( Exception $e){
             echo ($e->getMessage()." linha ". $e->getLine(). " arquivo ". $e->getFile());
         }
@@ -707,7 +707,7 @@ class OrdemServicosController extends Controller
 
         return response()->json(
             [
-                'zap' => $this->notifyClient($ordemServicos, "atualizacao_ordem_servico"),
+                'zap' => "",
                 "erro" => false,
                 "mensagem" => "Ordem de Servicos editado com  sucesso!"
             ],

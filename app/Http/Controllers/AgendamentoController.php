@@ -318,8 +318,7 @@ class AgendamentoController extends Controller
                 $agendamentoExists = Agendamento::where('user_id', $user_id)
                     ->where('funcionario_id', $funcionario_id)
                     ->where('data_agendamento', $data)
-                    ->where('situacao_id', "<>", 7)
-                    ->where('situacao_id', "<>", 9)
+                    ->where('situacao_id', "<>", 6)
                     ->where('hora_agendamento', ">=", $anterior->format('H:i'))
                     ->where('hora_agendamento', "<=", $proximo->format('H:i'))
                     ->exists();

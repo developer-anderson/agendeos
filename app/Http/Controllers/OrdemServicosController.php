@@ -702,6 +702,7 @@ class OrdemServicosController extends Controller
         $caixa = fluxo_caixa::where('os_id', $OrdemServicos->id)->first();
         if($caixa){
             $caixa->valor = $valor_total;
+            $caixa->situacao = $dados["situacao"];
             $caixa->save();
         }
 

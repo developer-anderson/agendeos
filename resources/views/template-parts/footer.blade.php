@@ -63,7 +63,7 @@
         'email':"",
         'nome': "",
         "validar": 1,
-        "situacao_id": 1,
+        "situacao_id": 0,
         "user_id": {{ $administrador->id }}
     };
     const swiper = new Swiper('.swiper', {

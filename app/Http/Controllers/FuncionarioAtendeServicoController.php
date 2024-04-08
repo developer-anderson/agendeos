@@ -28,7 +28,7 @@ class FuncionarioAtendeServicoController extends Controller
                 });
             });
         }
-        $result = $query->with('funcionario', 'servico')->orderBy('id', 'desc')->get();
+        $result = $query->with('servico')->orderBy('id', 'desc')->get();
         return response()->json($result, 200);
     }
 
@@ -42,10 +42,17 @@ class FuncionarioAtendeServicoController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        FuncionarioAtendeServico::where('funcionario_id', $request->funcionario_id)->delete();
+        $servicos = $request->input('servicos');
+        foreach ($servicos as $servico){
+            $data = [
+                "servico_id" => $servico["id"],
+                "funcionario_id" => $request->funcionario_id,
+                "user_id" => $user->id
+            ];
+            FuncionarioAtendeServico::create($data);
+        }
 
-        $post = $request->all();
-        $post["user_id"] = $user->id;
-        FuncionarioAtendeServico::create($post);
         return response()->json([
             "erro" => false,
             "mensagem" => "Cadastrado com sucesso",
@@ -61,7 +68,7 @@ class FuncionarioAtendeServicoController extends Controller
     public function show($id)
     {
         $funcionarioAtendeServico = FuncionarioAtendeServico::where('id', $id)
-            ->with('funcionario', 'servico')->orderBy('id', 'desc')
+            ->with('servico')->orderBy('id', 'desc')
             ->first();
 
         return response()->json($funcionarioAtendeServico, 200);

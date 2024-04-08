@@ -49,57 +49,62 @@ class OrdemServicosController extends Controller
             ->leftJoin('users as u', 'os.user_id', '=', 'u.id')
             ->leftJoin('empresas as e', 'u.empresa_id', '=', 'e.id')
             ->leftJoin('clientes as c', 'os.id_cliente', '=', 'c.id')
+            ->leftJoin('usuario_assinatura as ua', 'os.user_id', '=', 'ua.user_id')
             ->whereDate('r.data_envio', DB::raw('CURDATE()'))
             ->where('r.enviado', '=', 0)
+
             ->whereNotNull('c.nome_f')
             ->get();
         foreach ($remarketing as $resultado) {
-            if ($resultado->celular_f) {
-                $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $resultado->celular_f);
-            }
-            else{
-                $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $resultado->telefone_f);
-            }
-            $vetor = [
-                "messaging_product" => "whatsapp",
-                "to" => $telefone,
-                "type" => "template",
-                "template" => [
-                    "name" => "remarketing",
-                    "language" => [
-                        "code" => "pt_BR",
-                        "policy" => "deterministic"
-                    ],
-                    "components" => [
-                        [
-                            "type" => "body",
-                            "parameters" => [
-                                [
-                                    "type" => "text",
-                                    "text" => $resultado->nome_f
-                                ],
-                                [
-                                    "type" => "text",
-                                    "text" => $resultado->dias
-                                ]
-                            ]
+            if($resultado->ativo or $resultado->teste){
+                if ($resultado->celular_f) {
+                    $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $resultado->celular_f);
+                }
+                else{
+                    $telefone  = "55" . str_replace(array("(", ")", ".", "-", " "), "", $resultado->telefone_f);
+                }
+                $vetor = [
+                    "messaging_product" => "whatsapp",
+                    "to" => $telefone,
+                    "type" => "template",
+                    "template" => [
+                        "name" => "remarketing",
+                        "language" => [
+                            "code" => "pt_BR",
+                            "policy" => "deterministic"
                         ],
-                        [
-                            "type" => "button",
-                            "sub_type" => "url",
-                            "index" => "0",
-                            "parameters" => [
-                                [
-                                    "type" => "text",
-                                    "text" => $resultado->slug
+                        "components" => [
+                            [
+                                "type" => "body",
+                                "parameters" => [
+                                    [
+                                        "type" => "text",
+                                        "text" => $resultado->nome_f
+                                    ],
+                                    [
+                                        "type" => "text",
+                                        "text" => $resultado->dias
+                                    ]
+                                ]
+                            ],
+                            [
+                                "type" => "button",
+                                "sub_type" => "url",
+                                "index" => "0",
+                                "parameters" => [
+                                    [
+                                        "type" => "text",
+                                        "text" => $resultado->slug
+                                    ]
                                 ]
                             ]
                         ]
                     ]
-                ]
-            ];
-            whatsapp::sendMessage($vetor, token::token());
-            DB::table('remarketing')->where('id', $resultado->id)->update(['enviado' => 1]);
+                ];
+                whatsapp::sendMessage($vetor, token::token());
+                DB::table('remarketing')->where('id', $resultado->id)->update(['enviado' => 1]);
+            }
+
         }
         $logsForRetry = Log::whereNotBetween('code_http', [200, 299])->where("reenviado", false)->get();
         foreach ($logsForRetry as $log)
@@ -110,10 +115,11 @@ class OrdemServicosController extends Controller
         }
         $agendamentos = Agendamento::whereDate('data_agendamento', '=', now()->addDay())
             ->whereNull('notificado')
+            ->leftJoin('usuario_assinatura as ua', 'agendamento.user_id', '=', 'ua.user_id')
             ->orderByDesc('id')
             ->get();
         foreach ($agendamentos as $agendamento) {
-            if($agendamento->situacao_id <> 7){
+            if($agendamento->situacao_id <> 7 and ($agendamento->ativo or $agendamento->teste)){
                 $administrador  = User::where('id', $agendamento->user_id)->first();
                 $estabelecimento  =  Empresas::where('situacao', 1)->where('id', $administrador->empresa_id)->first();
                 if($agendamento->funcionario_id){
